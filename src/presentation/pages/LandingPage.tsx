@@ -1,15 +1,5 @@
-import React, { useState, useEffect } from "react";
-import {
-  Button,
-  Card,
-  Progress,
-  Badge,
-  Typography,
-  Row,
-  Col,
-  Space,
-  Divider,
-} from "antd";
+import { useState, useEffect } from "react";
+import { Button, Badge } from "antd";
 import {
   PlayCircleOutlined,
   TrophyOutlined,
@@ -18,1014 +8,509 @@ import {
   SafetyOutlined,
   ScissorOutlined,
   StarOutlined,
-  RocketOutlined,
+  EyeOutlined,
   CrownOutlined,
   BugOutlined,
-  EyeOutlined,
+  TeamOutlined,
+  GiftOutlined,
   DashboardOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { Monster } from "../../domain/entities/Monster";
+import MonsterCard from "../components/MonsterCard";
 
-const { Title, Paragraph, Text } = Typography;
-
-interface Monster {
-  id: number;
-  name: string;
-  type: string;
-  attack: number;
-  defense: number;
-  health: number;
-  rarity: "common" | "rare" | "epic" | "legendary";
-  element: string;
-  image: string;
-  description: string;
-}
-
-const monsters: Monster[] = [
+const duelMonsters: Monster[] = [
   {
     id: 1,
     name: "Dragão Flamejante",
-    type: "Dragão",
     attack: 95,
     defense: 80,
-    health: 120,
-    rarity: "legendary",
-    element: "Fogo",
-    image: "https://via.placeholder.com/200x200/ff6b6b/ffffff?text=Dragon",
-    description: "Um dragão ancestral que domina as chamas eternas",
+    speed: 70,
+    hp: 120,
+    image_url: null,
   },
   {
     id: 2,
     name: "Lobo Sombrio",
-    type: "Besta",
     attack: 75,
     defense: 60,
-    health: 90,
-    rarity: "epic",
-    element: "Sombra",
-    image: "https://via.placeholder.com/200x200/6c5ce7/ffffff?text=Wolf",
-    description: "Predador das trevas com velocidade sobrenatural",
+    speed: 95,
+    hp: 90,
+    image_url: null,
   },
   {
     id: 3,
     name: "Golem de Cristal",
-    type: "Elemental",
     attack: 60,
     defense: 95,
-    health: 110,
-    rarity: "rare",
-    element: "Terra",
-    image: "https://via.placeholder.com/200x200/00b894/ffffff?text=Golem",
-    description: "Guardião de cristal com defesa impenetrável",
+    speed: 30,
+    hp: 110,
+    image_url: null,
   },
 ];
 
-const rarityColors = {
-  common: "#9ca3af",
-  rare: "#3b82f6",
-  epic: "#8b5cf6",
-  legendary: "#f59e0b",
-};
-
-const rarityNames = {
-  common: "COMUM",
-  rare: "RARO",
-  epic: "ÉPICO",
-  legendary: "LENDÁRIO",
-};
-
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedMonster, setSelectedMonster] = useState<Monster | null>(null);
-  const [battleAnimation, setBattleAnimation] = useState(false);
-  const [currentSlide, setCurrentSlide] = useState(0);
+  const [selectedCard, setSelectedCard] = useState<Monster | null>(null);
+  const [duelAnimation, setDuelAnimation] = useState(false);
+  const [mysticalEffect, setMysticalEffect] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentSlide((prev) => (prev + 1) % monsters.length);
-    }, 4000);
+      setMysticalEffect(true);
+      setTimeout(() => setMysticalEffect(false), 1000);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const startBattle = () => {
-    setBattleAnimation(true);
-    setTimeout(() => setBattleAnimation(false), 2000);
+  const startDuel = () => {
+    setDuelAnimation(true);
+    setTimeout(() => setDuelAnimation(false), 3000);
   };
 
   const goToDashboard = () => {
     navigate("/dashboard");
   };
 
-  const stats = [
-    { label: "Monstros Únicos", value: "500+", icon: <BugOutlined /> },
-    { label: "Jogadores Ativos", value: "10K+", icon: <TrophyOutlined /> },
-    { label: "Batalhas Diárias", value: "50K+", icon: <ScissorOutlined /> },
-    { label: "Elementos", value: "12", icon: <FireOutlined /> },
-  ];
-
-  const features = [
-    {
-      icon: <BugOutlined className="text-3xl" style={{ color: "#8b5cf6" }} />,
-      title: "500+ Monstros Únicos",
-      description: "Colete criaturas de diferentes elementos e raridades",
-    },
-    {
-      icon: (
-        <ScissorOutlined className="text-3xl" style={{ color: "#ef4444" }} />
-      ),
-      title: "Batalhas Estratégicas",
-      description: "Sistema de combate baseado em turnos e habilidades",
-    },
-    {
-      icon: (
-        <TrophyOutlined className="text-3xl" style={{ color: "#f59e0b" }} />
-      ),
-      title: "Torneios Épicos",
-      description: "Participe de competições e ganhe recompensas exclusivas",
-    },
-    {
-      icon: <StarOutlined className="text-3xl" style={{ color: "#3b82f6" }} />,
-      title: "Evolução de Monstros",
-      description: "Aprimore seus monstros e desbloqueie novas habilidades",
-    },
-    {
-      icon: <FireOutlined className="text-3xl" style={{ color: "#f97316" }} />,
-      title: "12 Elementos Diferentes",
-      description: "Domine as vantagens e desvantagens elementais",
-    },
-    {
-      icon: <CrownOutlined className="text-3xl" style={{ color: "#f59e0b" }} />,
-      title: "Rankings Globais",
-      description: "Compete com jogadores do mundo todo",
-    },
-  ];
-
   return (
-    <div
-      style={{
-        minHeight: "100vh",
-        background:
-          "linear-gradient(135deg, #1e1b4b 0%, #1e3a8a 50%, #312e81 100%)",
-        color: "white",
-        overflow: "hidden",
-        position: "relative",
-      }}
-    >
-      {/* Animated Background Elements */}
-      <div
-        style={{
-          position: "fixed",
-          inset: 0,
-          overflow: "hidden",
-          pointerEvents: "none",
-        }}
-      >
+    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900 text-white overflow-hidden relative">
+      {/* Mystical Background Pattern */}
+      <div className="fixed inset-0 opacity-10 pointer-events-none">
+        <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=60 height=60 viewBox=0 0 60 60 xmlns=http://www.w3.org/2000/svg%3E%3Cg fill=none fillRule=evenodd%3E%3Cg fill=%23FFD700 fillOpacity=0.1%3E%3Cpath d=M30 30l15-15v30l-15-15zm0 0l-15 15h30l-15-15z/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] bg-repeat"></div>
+      </div>
+
+      {/* Floating Mystical Elements */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div
-          style={{
-            position: "absolute",
-            top: 80,
-            left: 40,
-            width: 8,
-            height: 8,
-            backgroundColor: "#fbbf24",
-            borderRadius: "50%",
-            animation: "pulse 2s infinite",
-          }}
+          className={`absolute top-20 left-10 w-4 h-4 bg-yellow-400 rounded-full ${
+            mysticalEffect ? "animate-ping" : "animate-pulse"
+          }`}
         ></div>
-        <div
-          style={{
-            position: "absolute",
-            top: 160,
-            right: 80,
-            width: 4,
-            height: 4,
-            backgroundColor: "#60a5fa",
-            borderRadius: "50%",
-            animation: "ping 1s infinite",
-          }}
-        ></div>
-        <div
-          style={{
-            position: "absolute",
-            bottom: 160,
-            left: "25%",
-            width: 12,
-            height: 12,
-            backgroundColor: "#a78bfa",
-            borderRadius: "50%",
-            animation: "bounce 2s infinite",
-          }}
-        ></div>
-        <div
-          style={{
-            position: "absolute",
-            top: "33%",
-            right: "33%",
-            width: 8,
-            height: 8,
-            backgroundColor: "#34d399",
-            borderRadius: "50%",
-            animation: "pulse 3s infinite",
-          }}
-        ></div>
+        <div className="absolute top-40 right-20 w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
+        <div className="absolute bottom-40 left-1/4 w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
+        <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-red-400 rounded-full animate-ping"></div>
+
+        {/* Egyptian Hieroglyph-like symbols */}
+        <div className="absolute top-1/4 left-1/2 text-6xl text-yellow-400/20 animate-pulse">
+          𓂀
+        </div>
+        <div className="absolute bottom-1/4 right-1/4 text-4xl text-purple-400/20 animate-bounce">
+          𓁹
+        </div>
       </div>
 
       {/* Header */}
-      <header
-        style={{
-          position: "relative",
-          zIndex: 10,
-          padding: "24px",
-          backdropFilter: "blur(8px)",
-          backgroundColor: "rgba(0,0,0,0.2)",
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            maxWidth: "1280px",
-            margin: "0 auto",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            <div
-              style={{
-                width: 40,
-                height: 40,
-                background: "linear-gradient(45deg, #fbbf24, #ef4444)",
-                borderRadius: 8,
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              }}
-            >
-              <CrownOutlined style={{ fontSize: 20, color: "white" }} />
+      <header className="relative z-10 p-6 backdrop-blur-sm bg-black/40 border-b border-yellow-600/30">
+        <nav className="flex justify-between items-center max-w-7xl mx-auto">
+          <div className="flex items-center space-x-3">
+            <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center border-2 border-yellow-500 shadow-lg shadow-yellow-500/50">
+              <BugOutlined className="text-xl text-black" />
             </div>
-            <Title
-              level={3}
-              style={{
-                margin: 0,
-                background: "linear-gradient(45deg, #fbbf24, #ef4444)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              MonsterArena
-            </Title>
+            <div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+                MONSTER ARENA
+              </h1>
+              <p className="text-xs text-gray-400">SHADOW EDITION</p>
+            </div>
           </div>
-          <div style={{ display: "flex", gap: 32 }}>
+
+          <div className="hidden md:flex space-x-8">
             <a
-              href="#monsters"
-              style={{
-                color: "white",
-                textDecoration: "none",
-                transition: "color 0.3s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#fbbf24")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "white")}
+              href="#cards"
+              className="hover:text-yellow-400 transition-colors font-medium"
             >
               Monstros
             </a>
             <a
-              href="#battle"
-              style={{
-                color: "white",
-                textDecoration: "none",
-                transition: "color 0.3s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#fbbf24")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "white")}
+              href="#duel"
+              className="hover:text-yellow-400 transition-colors font-medium"
             >
-              Batalha
+              Arena
             </a>
             <a
-              href="#features"
-              style={{
-                color: "white",
-                textDecoration: "none",
-                transition: "color 0.3s",
-              }}
-              onMouseEnter={(e) => (e.currentTarget.style.color = "#fbbf24")}
-              onMouseLeave={(e) => (e.currentTarget.style.color = "white")}
+              href="#tournament"
+              className="hover:text-yellow-400 transition-colors font-medium"
             >
-              Features
+              Torneios
             </a>
-            <Button
-              type="text"
-              style={{
-                color: "white",
-                borderColor: "white",
-                border: "1px solid white",
-              }}
-              icon={<DashboardOutlined />}
-              onClick={goToDashboard}
+            <a
+              href="#collection"
+              className="hover:text-yellow-400 transition-colors font-medium"
             >
-              Dashboard
-            </Button>
+              Coleção
+            </a>
           </div>
+
           <Button
             type="primary"
             size="large"
-            style={{
-              background: "linear-gradient(45deg, #fbbf24, #ef4444)",
-              border: "none",
-              height: 40,
-            }}
-            icon={<PlayCircleOutlined />}
+            className="bg-gradient-to-r from-yellow-600 to-yellow-800 border-none hover:from-yellow-700 hover:to-yellow-900 shadow-lg shadow-yellow-600/30"
+            icon={<DashboardOutlined />}
             onClick={goToDashboard}
           >
-            Jogar Agora
+            Entrar na Arena
           </Button>
-        </div>
+        </nav>
       </header>
 
       {/* Hero Section */}
-      <section
-        style={{ position: "relative", zIndex: 10, padding: "80px 24px" }}
-      >
-        <div
-          style={{ maxWidth: "1280px", margin: "0 auto", textAlign: "center" }}
-        >
-          <div style={{ marginBottom: 32 }}>
-            <Badge.Ribbon text="BETA" color="gold">
-              <Title
-                level={1}
-                style={{
-                  fontSize: "4rem",
-                  marginBottom: 24,
-                  background:
-                    "linear-gradient(45deg, #fbbf24, #ef4444, #8b5cf6)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                  animation: "pulse 2s infinite",
-                }}
+      <section className="relative z-10 py-24 px-6">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="mb-12">
+            <div className="inline-block mb-6">
+              <Badge.Ribbon
+                text="SHADOW EDITION"
+                color="gold"
+                className="text-xs"
               >
-                MONSTER ARENA
-              </Title>
-            </Badge.Ribbon>
+                <div className="bg-black/60 backdrop-blur-sm p-8 rounded-2xl border border-yellow-600/50">
+                  <h2 className="text-7xl md:text-9xl font-bold mb-4 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent drop-shadow-2xl">
+                    MONSTER
+                  </h2>
+                  <h3 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">
+                    ARENA
+                  </h3>
+                </div>
+              </Badge.Ribbon>
+            </div>
           </div>
 
-          <Paragraph
-            style={{
-              fontSize: "1.5rem",
-              marginBottom: 32,
-              color: "#d1d5db",
-              maxWidth: "768px",
-              margin: "0 auto 32px",
-            }}
-          >
-            Entre no mundo épico das batalhas de monstros! Colete criaturas
-            lendárias, desenvolva estratégias únicas e torne-se o campeão
-            supremo da arena!
-          </Paragraph>
+          <p className="text-xl md:text-2xl mb-8 text-gray-300 max-w-4xl mx-auto leading-relaxed">
+            Desperte o poder das trevas e da luz. Invoque criaturas lendárias,
+            domine magias ancestrais e torne-se o Mestre dos Monstros neste
+            universo épico inspirado nos mistérios do antigo mundo.
+          </p>
 
-          <Space size="large" style={{ marginBottom: 48 }}>
+          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
             <Button
               type="primary"
               size="large"
-              style={{
-                background: "linear-gradient(45deg, #10b981, #3b82f6)",
-                border: "none",
-                height: 56,
-                padding: "0 32px",
-                fontSize: "1.125rem",
-              }}
-              icon={<RocketOutlined />}
-              onClick={goToDashboard}
+              className="bg-gradient-to-r from-purple-600 to-purple-800 border-none hover:from-purple-700 hover:to-purple-900 h-16 px-10 text-lg shadow-lg shadow-purple-600/30"
+              icon={<ThunderboltOutlined />}
+              onClick={startDuel}
             >
-              Começar Aventura
+              Iniciar Batalha das Sombras
             </Button>
             <Button
               size="large"
-              style={{
-                borderColor: "#fbbf24",
-                color: "#fbbf24",
-                height: 56,
-                padding: "0 32px",
-                fontSize: "1.125rem",
-              }}
-              icon={<DashboardOutlined />}
-              onClick={goToDashboard}
+              className="border-2 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black h-16 px-10 text-lg backdrop-blur-sm bg-black/20"
+              icon={<EyeOutlined />}
             >
-              Acessar Dashboard
+              Assistir Trailer Épico
             </Button>
-          </Space>
+          </div>
 
-          {/* Stats Counter */}
-          <Row gutter={24} style={{ maxWidth: "1024px", margin: "0 auto" }}>
-            {stats.map((stat, index) => (
-              <Col xs={12} md={6} key={index}>
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: 16,
-                    borderRadius: 8,
-                    backgroundColor: "rgba(255,255,255,0.1)",
-                    backdropFilter: "blur(8px)",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "2rem",
-                      color: "#fbbf24",
-                      marginBottom: 8,
-                    }}
-                  >
-                    {stat.icon}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "1.5rem",
-                      fontWeight: "bold",
-                      color: "white",
-                    }}
-                  >
-                    {stat.value}
-                  </div>
-                  <div style={{ fontSize: "0.875rem", color: "#d1d5db" }}>
-                    {stat.label}
-                  </div>
+          {/* Mystical Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+            {[
+              {
+                label: "Monstros Místicos",
+                value: "500+",
+                icon: <BugOutlined />,
+                color: "purple",
+              },
+              {
+                label: "Guerreiros Ativos",
+                value: "10K+",
+                icon: <TeamOutlined />,
+                color: "blue",
+              },
+              {
+                label: "Batalhas Diárias",
+                value: "50K+",
+                icon: <ScissorOutlined />,
+                color: "red",
+              },
+              {
+                label: "Torneios Épicos",
+                value: "24/7",
+                icon: <TrophyOutlined />,
+                color: "yellow",
+              },
+            ].map((stat, index) => (
+              <div
+                key={index}
+                className="text-center p-6 rounded-xl bg-black/40 backdrop-blur-sm border border-gray-700/50 hover:border-yellow-500/50 transition-all duration-300"
+              >
+                <div className={`text-4xl text-${stat.color}-400 mb-3`}>
+                  {stat.icon}
                 </div>
-              </Col>
+                <div className="text-3xl font-bold text-white mb-1">
+                  {stat.value}
+                </div>
+                <div className="text-sm text-gray-400">{stat.label}</div>
+              </div>
             ))}
-          </Row>
+          </div>
         </div>
       </section>
 
-      {/* Monster Showcase */}
-      <section
-        id="monsters"
-        style={{ padding: "80px 24px", position: "relative", zIndex: 10 }}
-      >
-        <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 64 }}>
-            <Title
-              level={2}
-              style={{
-                fontSize: "3rem",
-                marginBottom: 16,
-                background: "linear-gradient(45deg, #60a5fa, #8b5cf6)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Conheça os Monstros
-            </Title>
-            <Paragraph style={{ fontSize: "1.25rem", color: "#d1d5db" }}>
-              Cada criatura possui habilidades únicas e estatísticas especiais
-            </Paragraph>
+      {/* Card Showcase */}
+      <section id="cards" className="py-24 px-6 relative z-10 bg-black/20">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h3 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+              MONSTROS LENDÁRIOS
+            </h3>
+            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+              Cada criatura possui poder ancestral. Domine os segredos da
+              batalha e invoque as criaturas mais temidas do reino das sombras.
+            </p>
           </div>
 
-          <Row gutter={32}>
-            {monsters.map((monster) => (
-              <Col xs={24} md={8} key={monster.id}>
-                <Card
-                  style={{
-                    background: "linear-gradient(135deg, #1f2937, #111827)",
-                    border: `2px solid ${rarityColors[monster.rarity]}`,
-                    cursor: "pointer",
-                    transition: "all 0.3s",
-                    transform: "translateY(0)",
-                    boxShadow: `0 0 20px ${rarityColors[monster.rarity]}40`,
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.transform = "translateY(-8px)";
-                    e.currentTarget.style.boxShadow = `0 8px 32px ${
-                      rarityColors[monster.rarity]
-                    }60`;
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = `0 0 20px ${
-                      rarityColors[monster.rarity]
-                    }40`;
-                  }}
-                  onClick={() => setSelectedMonster(monster)}
-                  cover={
-                    <div style={{ position: "relative", overflow: "hidden" }}>
-                      <img
-                        src={monster.image}
-                        alt={monster.name}
-                        style={{
-                          width: "100%",
-                          height: 200,
-                          objectFit: "cover",
-                        }}
-                      />
-                      <div
-                        style={{
-                          position: "absolute",
-                          top: 8,
-                          right: 8,
-                          padding: "4px 8px",
-                          borderRadius: "16px",
-                          fontSize: "0.75rem",
-                          fontWeight: "bold",
-                          color: "white",
-                          backgroundColor: rarityColors[monster.rarity],
-                        }}
-                      >
-                        {rarityNames[monster.rarity]}
-                      </div>
-                      <div
-                        style={{
-                          position: "absolute",
-                          bottom: 8,
-                          left: 8,
-                          backgroundColor: "rgba(0,0,0,0.7)",
-                          padding: "4px 8px",
-                          borderRadius: 4,
-                          fontSize: "0.75rem",
-                        }}
-                      >
-                        {monster.element}
-                      </div>
-                    </div>
-                  }
-                >
-                  <div style={{ color: "white" }}>
-                    <Title
-                      level={4}
-                      style={{ color: "#fbbf24", marginBottom: 8 }}
-                    >
-                      {monster.name}
-                    </Title>
-                    <Paragraph
-                      style={{
-                        color: "#d1d5db",
-                        fontSize: "0.875rem",
-                        marginBottom: 16,
-                      }}
-                    >
-                      {monster.description}
-                    </Paragraph>
-
-                    <Space
-                      direction="vertical"
-                      style={{ width: "100%" }}
-                      size="small"
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <span
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 4,
-                          }}
-                        >
-                          <ScissorOutlined style={{ color: "#ef4444" }} />
-                          Ataque
-                        </span>
-                        <Progress
-                          percent={monster.attack}
-                          size="small"
-                          strokeColor="#ef4444"
-                          showInfo={false}
-                          style={{ width: 80 }}
-                        />
-                        <span style={{ color: "#ef4444", fontWeight: "bold" }}>
-                          {monster.attack}
-                        </span>
-                      </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <span
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 4,
-                          }}
-                        >
-                          <SafetyOutlined style={{ color: "#3b82f6" }} />
-                          Defesa
-                        </span>
-                        <Progress
-                          percent={monster.defense}
-                          size="small"
-                          strokeColor="#3b82f6"
-                          showInfo={false}
-                          style={{ width: 80 }}
-                        />
-                        <span style={{ color: "#3b82f6", fontWeight: "bold" }}>
-                          {monster.defense}
-                        </span>
-                      </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          alignItems: "center",
-                        }}
-                      >
-                        <span
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            gap: 4,
-                          }}
-                        >
-                          <ThunderboltOutlined style={{ color: "#10b981" }} />
-                          Vida
-                        </span>
-                        <Progress
-                          percent={monster.health}
-                          size="small"
-                          strokeColor="#10b981"
-                          showInfo={false}
-                          style={{ width: 80 }}
-                        />
-                        <span style={{ color: "#10b981", fontWeight: "bold" }}>
-                          {monster.health}
-                        </span>
-                      </div>
-                    </Space>
-                  </div>
-                </Card>
-              </Col>
+          <div className="flex justify-center items-center gap-12">
+            {duelMonsters.map((monster) => (
+              <div
+                key={monster.id}
+                className="transform hover:scale-110 transition-all duration-500 hover:-translate-y-4 cursor-pointer"
+                onClick={() => setSelectedCard(monster)}
+              >
+                <MonsterCard monster={monster} />
+              </div>
             ))}
-          </Row>
+          </div>
         </div>
       </section>
 
-      {/* Battle Preview */}
+      {/* Duel Arena */}
       <section
-        id="battle"
-        style={{
-          padding: "80px 24px",
-          backgroundColor: "rgba(0,0,0,0.3)",
-          position: "relative",
-          zIndex: 10,
-        }}
+        id="duel"
+        className="py-24 px-6 bg-gradient-to-r from-purple-900/30 to-black/30 relative z-10"
       >
-        <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 64 }}>
-            <Title
-              level={2}
-              style={{
-                fontSize: "3rem",
-                marginBottom: 16,
-                background: "linear-gradient(45deg, #f87171, #fbbf24)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Arena de Batalha
-            </Title>
-            <Paragraph style={{ fontSize: "1.25rem", color: "#d1d5db" }}>
-              Estratégia, timing e sorte determinam o vencedor
-            </Paragraph>
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h3 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-red-400 to-purple-600 bg-clip-text text-transparent">
+              ARENA DAS SOMBRAS
+            </h3>
+            <p className="text-xl text-gray-300">
+              Onde lendas nascem e destinos são selados
+            </p>
           </div>
 
-          <div
-            style={{
-              background:
-                "linear-gradient(45deg, rgba(127,29,29,0.5), rgba(30,58,138,0.5))",
-              borderRadius: 16,
-              padding: 32,
-              backdropFilter: "blur(8px)",
-              border: "1px solid #374151",
-            }}
-          >
-            <Row
-              justify="space-between"
-              align="middle"
-              style={{ marginBottom: 32 }}
-            >
-              <Col span={8} style={{ textAlign: "center" }}>
-                <div
-                  style={{
-                    width: 96,
-                    height: 96,
-                    backgroundColor: "#ef4444",
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    margin: "0 auto 16px",
-                  }}
-                >
-                  <FireOutlined style={{ fontSize: "2rem", color: "white" }} />
+          <div className="bg-gradient-to-br from-black/60 to-purple-900/60 rounded-3xl p-8 backdrop-blur-sm border-2 border-yellow-600/30 shadow-2xl">
+            <div className="flex justify-between items-center mb-12">
+              {/* Player 1 */}
+              <div className="text-center">
+                <div className="w-32 h-32 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center mb-4 mx-auto border-4 border-blue-400 shadow-lg shadow-blue-500/50">
+                  <BugOutlined className="text-4xl text-white" />
                 </div>
-                <Title level={4} style={{ color: "#ef4444", marginBottom: 4 }}>
-                  Dragão Flamejante
-                </Title>
-                <Text style={{ color: "#d1d5db", fontSize: "0.875rem" }}>
-                  ATK: 95 | DEF: 80
-                </Text>
-              </Col>
+                <h4 className="text-xl font-bold text-blue-400 mb-2">
+                  GUERREIRO
+                </h4>
+                <div className="text-sm text-gray-300">HP: 100</div>
+                <div className="text-xs text-gray-400">Monstros: 3</div>
+              </div>
 
-              <Col span={8} style={{ textAlign: "center" }}>
+              {/* VS Section */}
+              <div className="text-center">
                 <div
-                  style={{
-                    fontSize: "3rem",
-                    animation: battleAnimation
-                      ? "bounce 0.5s infinite"
-                      : "none",
-                  }}
+                  className={`text-8xl mb-4 ${
+                    duelAnimation
+                      ? "animate-pulse text-red-500"
+                      : "text-yellow-400"
+                  }`}
                 >
-                  ⚔️
+                  ⚡
                 </div>
                 <Button
                   type="primary"
                   size="large"
-                  style={{
-                    marginTop: 16,
-                    background: "linear-gradient(45deg, #fbbf24, #ef4444)",
-                    border: "none",
-                  }}
-                  onClick={startBattle}
-                  loading={battleAnimation}
+                  className="bg-gradient-to-r from-red-600 to-purple-600 border-none hover:from-red-700 hover:to-purple-700 px-8 py-3 text-lg shadow-lg shadow-red-600/30"
+                  onClick={startDuel}
+                  loading={duelAnimation}
+                  icon={<ThunderboltOutlined />}
                 >
-                  {battleAnimation ? "Batalha!" : "Iniciar Batalha"}
+                  {duelAnimation
+                    ? "BATALHA EM ANDAMENTO!"
+                    : "INICIAR BATALHA DAS SOMBRAS"}
                 </Button>
-              </Col>
+                <div className="mt-4 text-sm text-gray-400">
+                  "O coração dos monstros guiará sua vitória"
+                </div>
+              </div>
 
-              <Col span={8} style={{ textAlign: "center" }}>
-                <div
-                  style={{
-                    width: 96,
-                    height: 96,
-                    backgroundColor: "#3b82f6",
-                    borderRadius: "50%",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    margin: "0 auto 16px",
-                  }}
-                >
-                  <SafetyOutlined
-                    style={{ fontSize: "2rem", color: "white" }}
-                  />
+              {/* Player 2 */}
+              <div className="text-center">
+                <div className="w-32 h-32 bg-gradient-to-br from-purple-600 to-purple-800 rounded-full flex items-center justify-center mb-4 mx-auto border-4 border-purple-400 shadow-lg shadow-purple-500/50">
+                  <CrownOutlined className="text-4xl text-white" />
                 </div>
-                <Title level={4} style={{ color: "#3b82f6", marginBottom: 4 }}>
-                  Golem de Cristal
-                </Title>
-                <Text style={{ color: "#d1d5db", fontSize: "0.875rem" }}>
-                  ATK: 60 | DEF: 95
-                </Text>
-              </Col>
-            </Row>
+                <h4 className="text-xl font-bold text-purple-400 mb-2">
+                  SOMBRA
+                </h4>
+                <div className="text-sm text-gray-300">HP: 100</div>
+                <div className="text-xs text-gray-400">Monstros: 3</div>
+              </div>
+            </div>
 
-            <Row gutter={24}>
-              <Col span={8}>
-                <div
-                  style={{
-                    backgroundColor: "rgba(255,255,255,0.1)",
-                    borderRadius: 8,
-                    padding: 16,
-                    textAlign: "center",
-                  }}
-                >
-                  <StarOutlined
-                    style={{
-                      fontSize: "1.5rem",
-                      color: "#fbbf24",
-                      marginBottom: 8,
-                    }}
-                  />
-                  <Title level={5} style={{ color: "white", marginBottom: 8 }}>
-                    Sistema de Turnos
-                  </Title>
-                  <Text style={{ color: "#d1d5db", fontSize: "0.875rem" }}>
-                    Planeje cada movimento estrategicamente
-                  </Text>
-                </div>
-              </Col>
-              <Col span={8}>
-                <div
-                  style={{
-                    backgroundColor: "rgba(255,255,255,0.1)",
-                    borderRadius: 8,
-                    padding: 16,
-                    textAlign: "center",
-                  }}
-                >
-                  <ThunderboltOutlined
-                    style={{
-                      fontSize: "1.5rem",
-                      color: "#8b5cf6",
-                      marginBottom: 8,
-                    }}
-                  />
-                  <Title level={5} style={{ color: "white", marginBottom: 8 }}>
-                    Habilidades Especiais
-                  </Title>
-                  <Text style={{ color: "#d1d5db", fontSize: "0.875rem" }}>
-                    Cada monstro possui ataques únicos
-                  </Text>
-                </div>
-              </Col>
-              <Col span={8}>
-                <div
-                  style={{
-                    backgroundColor: "rgba(255,255,255,0.1)",
-                    borderRadius: 8,
-                    padding: 16,
-                    textAlign: "center",
-                  }}
-                >
-                  <TrophyOutlined
-                    style={{
-                      fontSize: "1.5rem",
-                      color: "#10b981",
-                      marginBottom: 8,
-                    }}
-                  />
-                  <Title level={5} style={{ color: "white", marginBottom: 8 }}>
-                    Recompensas Épicas
-                  </Title>
-                  <Text style={{ color: "#d1d5db", fontSize: "0.875rem" }}>
-                    Ganhe novos monstros e itens raros
-                  </Text>
-                </div>
-              </Col>
-            </Row>
+            {/* Game Features */}
+            <div className="grid md:grid-cols-4 gap-6 text-center">
+              <div className="bg-black/40 rounded-xl p-4 border border-gray-700/50">
+                <ScissorOutlined className="text-3xl text-red-400 mb-3" />
+                <h5 className="font-bold mb-2 text-white">Invocações Épicas</h5>
+                <p className="text-sm text-gray-300">
+                  Invoque monstros lendários
+                </p>
+              </div>
+              <div className="bg-black/40 rounded-xl p-4 border border-gray-700/50">
+                <FireOutlined className="text-3xl text-yellow-400 mb-3" />
+                <h5 className="font-bold mb-2 text-white">
+                  Poderes Ancestrais
+                </h5>
+                <p className="text-sm text-gray-300">
+                  Domine habilidades poderosas
+                </p>
+              </div>
+              <div className="bg-black/40 rounded-xl p-4 border border-gray-700/50">
+                <SafetyOutlined className="text-3xl text-blue-400 mb-3" />
+                <h5 className="font-bold mb-2 text-white">Defesas Místicas</h5>
+                <p className="text-sm text-gray-300">
+                  Proteja-se com barreiras mágicas
+                </p>
+              </div>
+              <div className="bg-black/40 rounded-xl p-4 border border-gray-700/50">
+                <TrophyOutlined className="text-3xl text-purple-400 mb-3" />
+                <h5 className="font-bold mb-2 text-white">Vitória Suprema</h5>
+                <p className="text-sm text-gray-300">
+                  Torne-se o Mestre dos Monstros
+                </p>
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Features */}
-      <section
-        id="features"
-        style={{ padding: "80px 24px", position: "relative", zIndex: 10 }}
-      >
-        <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
-          <div style={{ textAlign: "center", marginBottom: 64 }}>
-            <Title
-              level={2}
-              style={{
-                fontSize: "3rem",
-                marginBottom: 16,
-                background: "linear-gradient(45deg, #34d399, #3b82f6)",
-                WebkitBackgroundClip: "text",
-                WebkitTextFillColor: "transparent",
-                backgroundClip: "text",
-              }}
-            >
-              Recursos do Jogo
-            </Title>
+      {/* Tournament Section */}
+      <section id="tournament" className="py-24 px-6 relative z-10">
+        <div className="max-w-7xl mx-auto">
+          <div className="text-center mb-20">
+            <h3 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-red-600 bg-clip-text text-transparent">
+              TORNEIOS MÍSTICOS
+            </h3>
           </div>
 
-          <Row gutter={32}>
-            {features.map((feature, index) => (
-              <Col xs={24} md={12} lg={8} key={index}>
-                <div
-                  style={{
-                    backgroundColor: "rgba(255,255,255,0.1)",
-                    backdropFilter: "blur(8px)",
-                    borderRadius: 12,
-                    padding: 24,
-                    transition: "all 0.3s",
-                    transform: "scale(1)",
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor =
-                      "rgba(255,255,255,0.2)";
-                    e.currentTarget.style.transform = "scale(1.05)";
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor =
-                      "rgba(255,255,255,0.1)";
-                    e.currentTarget.style.transform = "scale(1)";
-                  }}
-                >
-                  <div style={{ marginBottom: 16 }}>{feature.icon}</div>
-                  <Title level={4} style={{ color: "white", marginBottom: 8 }}>
-                    {feature.title}
-                  </Title>
-                  <Text style={{ color: "#d1d5db" }}>
-                    {feature.description}
-                  </Text>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {[
+              {
+                icon: <TrophyOutlined className="text-4xl text-yellow-400" />,
+                title: "Campeonato Mundial",
+                description: "Compete contra os melhores domadores do mundo",
+                reward: "Monstros Exclusivos + 100,000 XP",
+              },
+              {
+                icon: <CrownOutlined className="text-4xl text-purple-400" />,
+                title: "Torneio das Sombras",
+                description: "Apenas os mais corajosos ousam participar",
+                reward: "Título de Mestre das Sombras",
+              },
+              {
+                icon: <FireOutlined className="text-4xl text-red-400" />,
+                title: "Arena do Dragão",
+                description: "Desperte os poderes dos dragões ancestrais",
+                reward: "Dragões Lendários + Raridades",
+              },
+              {
+                icon: (
+                  <ThunderboltOutlined className="text-4xl text-blue-400" />
+                ),
+                title: "Liga dos Elementos",
+                description: "Domine todos os atributos elementais",
+                reward: "Monstros Elementais Supremos",
+              },
+              {
+                icon: <StarOutlined className="text-4xl text-green-400" />,
+                title: "Batalha dos Deuses",
+                description: "Enfrente as criaturas mais poderosas",
+                reward: "Monstros Divinos Ancestrais",
+              },
+              {
+                icon: <GiftOutlined className="text-4xl text-pink-400" />,
+                title: "Evento Semanal",
+                description: "Novos desafios toda semana",
+                reward: "Pacotes Premium",
+              },
+            ].map((tournament, index) => (
+              <div
+                key={index}
+                className="bg-gradient-to-br from-black/60 to-gray-900/60 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50 hover:border-yellow-500/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/20"
+              >
+                <div className="mb-4">{tournament.icon}</div>
+                <h4 className="text-xl font-bold mb-3 text-white">
+                  {tournament.title}
+                </h4>
+                <p className="text-gray-300 mb-4 text-sm">
+                  {tournament.description}
+                </p>
+                <div className="bg-yellow-600/20 rounded-lg p-3 border border-yellow-600/30">
+                  <div className="text-xs text-yellow-400 font-semibold mb-1">
+                    RECOMPENSA:
+                  </div>
+                  <div className="text-sm text-white">{tournament.reward}</div>
                 </div>
-              </Col>
+              </div>
             ))}
-          </Row>
+          </div>
         </div>
       </section>
 
       {/* CTA Section */}
-      <section
-        style={{
-          padding: "80px 24px",
-          background: "linear-gradient(45deg, #1e1b4b, #1e3a8a)",
-          position: "relative",
-          zIndex: 10,
-        }}
-      >
-        <div
-          style={{ maxWidth: "1024px", margin: "0 auto", textAlign: "center" }}
-        >
-          <Title
-            level={2}
-            style={{ fontSize: "3rem", marginBottom: 24, color: "white" }}
-          >
-            Pronto para a Batalha?
-          </Title>
-          <Paragraph
-            style={{ fontSize: "1.25rem", color: "#d1d5db", marginBottom: 32 }}
-          >
-            Junte-se a milhares de treinadores e prove que você é o melhor!
-          </Paragraph>
-          <Space size="large">
+      <section className="py-24 px-6 bg-gradient-to-r from-black via-purple-900/50 to-black relative z-10">
+        <div className="max-w-5xl mx-auto text-center">
+          <div className="mb-8">
+            <div className="text-6xl mb-4">𓁹</div>
+            <h3 className="text-5xl md:text-6xl font-bold mb-6 text-white">
+              SEU DESTINO AGUARDA
+            </h3>
+            <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+              Os monstros do destino foram invocados. O poder das trevas e da
+              luz está em suas mãos. Você tem coragem para enfrentar a batalha
+              suprema?
+            </p>
+          </div>
+
+          <div className="flex flex-col sm:flex-row gap-6 justify-center">
             <Button
               type="primary"
               size="large"
-              style={{
-                background: "linear-gradient(45deg, #10b981, #3b82f6)",
-                border: "none",
-                height: 64,
-                padding: "0 48px",
-                fontSize: "1.25rem",
-              }}
+              className="bg-gradient-to-r from-yellow-600 to-red-600 border-none hover:from-yellow-700 hover:to-red-700 h-20 px-12 text-xl shadow-2xl shadow-yellow-600/30"
               icon={<PlayCircleOutlined />}
               onClick={goToDashboard}
             >
-              Jogar Gratuitamente
+              DESPERTAR O PODER
             </Button>
             <Button
               size="large"
-              style={{
-                borderColor: "#fbbf24",
-                color: "#fbbf24",
-                height: 64,
-                padding: "0 48px",
-                fontSize: "1.25rem",
-              }}
-              icon={<DashboardOutlined />}
-              onClick={goToDashboard}
+              className="border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-black h-20 px-12 text-xl backdrop-blur-sm bg-black/20"
+              icon={<EyeOutlined />}
             >
-              Acessar Dashboard
+              ASSISTIR GAMEPLAY
             </Button>
-          </Space>
+          </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer
-        style={{
-          padding: "48px 24px",
-          backgroundColor: "rgba(0,0,0,0.5)",
-          position: "relative",
-          zIndex: 10,
-        }}
-      >
-        <div style={{ maxWidth: "1280px", margin: "0 auto" }}>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              gap: 16,
-            }}
-          >
-            <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div
-                style={{
-                  width: 32,
-                  height: 32,
-                  background: "linear-gradient(45deg, #fbbf24, #ef4444)",
-                  borderRadius: 8,
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <CrownOutlined style={{ color: "white" }} />
+      <footer className="py-16 px-6 bg-black/80 relative z-10 border-t border-yellow-600/30">
+        <div className="max-w-7xl mx-auto">
+          <div className="flex flex-col md:flex-row justify-between items-center">
+            <div className="flex items-center space-x-3 mb-6 md:mb-0">
+              <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center border-2 border-yellow-500">
+                <BugOutlined className="text-black" />
               </div>
-              <span
-                style={{
-                  fontSize: "1.25rem",
-                  fontWeight: "bold",
-                  background: "linear-gradient(45deg, #fbbf24, #ef4444)",
-                  WebkitBackgroundClip: "text",
-                  WebkitTextFillColor: "transparent",
-                  backgroundClip: "text",
-                }}
-              >
-                MonsterArena
-              </span>
+              <div>
+                <span className="text-xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+                  MONSTER ARENA
+                </span>
+                <div className="text-xs text-gray-400">SHADOW EDITION</div>
+              </div>
             </div>
-            <div style={{ color: "#9ca3af", fontSize: "0.875rem" }}>
-              © 2024 MonsterArena. Todos os direitos reservados.
+
+            <div className="text-center md:text-right">
+              <div className="text-gray-400 text-sm mb-2">
+                © 2024 Monster Arena. Todos os direitos reservados.
+              </div>
+              <div className="text-xs text-gray-500">
+                "O coração dos monstros nunca mente" - Mestre Ancestral
+              </div>
             </div>
           </div>
         </div>

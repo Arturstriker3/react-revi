@@ -29,11 +29,6 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       icon: <DashboardOutlined />,
       label: <Link to="/dashboard">Dashboard</Link>,
     },
-    {
-      key: "/tasks",
-      icon: <UserOutlined />,
-      label: <Link to="/tasks">Gerenciador de Tarefas</Link>,
-    },
   ];
 
   return (
@@ -86,14 +81,6 @@ const App: React.FC = () => {
             element={
               <AppLayout>
                 <Dashboard />
-              </AppLayout>
-            }
-          />
-          <Route
-            path="/tasks"
-            element={
-              <AppLayout>
-                <TaskManager />
               </AppLayout>
             }
           />
