@@ -110,6 +110,32 @@
   }
 }
 
+/* Rainbow Shift Effect for Card Rarity */
+@keyframes rainbow-shift {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Enhanced Card Rarity Effects */
+.card-rainbow-effect {
+  background-size: 200% 200%;
+  animation: rainbow-shift 2s ease-in-out infinite;
+}
+
+.card-metallic-effect {
+  mix-blend-mode: overlay;
+  transition: opacity 0.3s ease;
+}
+
+.card-glitter-effect {
+  animation: ping 2s ease-in-out infinite;
+}
+
 /* Pokemon TCG Card Effects */
 .animate-shimmer {
   animation: shimmer 2s ease-in-out infinite;
