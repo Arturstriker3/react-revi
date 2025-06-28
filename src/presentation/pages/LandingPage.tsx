@@ -12,50 +12,19 @@ import {
   CrownOutlined,
   TeamOutlined,
   GiftOutlined,
-  DashboardOutlined,
-  MenuOutlined,
   CloseOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Monster } from "../../domain/entities/Monster";
-import MonsterCard from "../components/MonsterCard";
 import MonsterCardSwiper from "../components/MonsterCardSwiper";
 import { GiDragonHead, GiHamburgerMenu } from "react-icons/gi";
 import FloatingActionButton from "../components/FloatingActionButton";
-
-const duelMonsters: Monster[] = [
-  {
-    id: 1,
-    name: "Dragão Flamejante",
-    attack: 95,
-    defense: 80,
-    speed: 70,
-    hp: 120,
-    image_url: null,
-  },
-  {
-    id: 2,
-    name: "Lobo Sombrio",
-    attack: 75,
-    defense: 60,
-    speed: 95,
-    hp: 90,
-    image_url: null,
-  },
-  {
-    id: 3,
-    name: "Golem de Cristal",
-    attack: 60,
-    defense: 95,
-    speed: 30,
-    hp: 110,
-    image_url: null,
-  },
-];
+import AOS from "aos";
+import { motion } from "framer-motion";
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
-  const [selectedCard, setSelectedCard] = useState<Monster | null>(null);
+  // const [selectedCard, setSelectedCard] = useState<Monster | null>(null);
   const [duelAnimation, setDuelAnimation] = useState(false);
   const [mysticalEffect, setMysticalEffect] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -76,6 +45,11 @@ const LandingPage: React.FC = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: "auto" });
+    AOS.init({ duration: 900, once: true, offset: 60 });
   }, []);
 
   const startDuel = () => {
@@ -104,7 +78,32 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900 text-white overflow-hidden relative">
-      {/* Mystical Background Pattern */}
+      {/* Parallax Background Layer */}
+      <div className="fixed inset-0 w-full h-[350px] bg-gradient-to-b from-yellow-400/20 via-purple-900/10 to-transparent opacity-80 pointer-events-none z-0" />
+      {/* Parallax SVG Layer */}
+      <div className="fixed left-1/2 -translate-x-1/2 top-0 w-[180px] h-[180px] opacity-20 z-0 pointer-events-none">
+        <svg
+          viewBox="0 0 100 100"
+          fill="none"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M50 10 Q70 30 50 50 Q30 70 50 90"
+            stroke="#FFD700"
+            strokeWidth="6"
+            fill="none"
+          />
+          <circle
+            cx="50"
+            cy="50"
+            r="30"
+            stroke="#FFD700"
+            strokeWidth="2"
+            fill="none"
+          />
+        </svg>
+      </div>
+      {/* Mystical Background Pattern (mantido para textura) */}
       <div className="fixed inset-0 opacity-10 pointer-events-none">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=60 height=60 viewBox=0 0 60 60 xmlns=http://www.w3.org/2000/svg%3E%3Cg fill=none fillRule=evenodd%3E%3Cg fill=%23FFD700 fillOpacity=0.1%3E%3Cpath d=M30 30l15-15v30l-15-15zm0 0l-15 15h30l-15-15z/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] bg-repeat"></div>
       </div>
@@ -230,6 +229,8 @@ const LandingPage: React.FC = () => {
             alignItems: "center",
             justifyContent: "center",
             height: "100%",
+            width: "100vw",
+            maxWidth: "100vw",
           },
           header: {
             background: "rgba(0,0,0,0.8)",
@@ -238,6 +239,7 @@ const LandingPage: React.FC = () => {
           },
           mask: { background: "rgba(0,0,0,0.8)" },
         }}
+        width="100vw"
       >
         <div className="w-full flex flex-col justify-center items-center h-full p-6">
           <Button
@@ -261,12 +263,22 @@ const LandingPage: React.FC = () => {
               className="text-xs"
             >
               <div className="w-full max-w-lg sm:max-w-2xl md:max-w-3xl bg-black/60 backdrop-blur-sm px-4 py-6 sm:px-8 sm:py-10 rounded-2xl border border-yellow-600/50 flex flex-col items-center">
-                <h2 className="w-full text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent drop-shadow-2xl text-center">
+                <motion.h2
+                  initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 1, delay: 0.2, type: "spring" }}
+                  className="w-full text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent drop-shadow-2xl text-center"
+                >
                   MONSTER
-                </h2>
-                <h3 className="w-full text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent text-center">
+                </motion.h2>
+                <motion.h3
+                  initial={{ opacity: 0, y: 40, scale: 0.95 }}
+                  animate={{ opacity: 1, y: 0, scale: 1 }}
+                  transition={{ duration: 1, delay: 0.5, type: "spring" }}
+                  className="w-full text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent text-center"
+                >
                   ARENA
-                </h3>
+                </motion.h3>
               </div>
             </Badge.Ribbon>
           </div>
@@ -347,6 +359,7 @@ const LandingPage: React.FC = () => {
       <section
         id="cards"
         className="py-16 sm:py-24 px-4 sm:px-6 relative z-10 bg-black/20"
+        data-aos="fade-up"
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 sm:mb-20">
@@ -359,7 +372,9 @@ const LandingPage: React.FC = () => {
             </p>
           </div>
 
-          <MonsterCardSwiper />
+          <div data-aos="fade-up" data-aos-duration="800" data-aos-delay="400">
+            <MonsterCardSwiper />
+          </div>
         </div>
       </section>
 
@@ -367,6 +382,7 @@ const LandingPage: React.FC = () => {
       <section
         id="duel"
         className="py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-r from-purple-900/30 to-black/30 relative z-10"
+        data-aos="fade-up"
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 sm:mb-20">
@@ -480,6 +496,7 @@ const LandingPage: React.FC = () => {
       <section
         id="tournament"
         className="py-16 sm:py-24 px-4 sm:px-6 relative z-10"
+        data-aos="fade-up"
       >
         <div className="max-w-7xl mx-auto">
           <div className="text-center mb-12 sm:mb-20">
@@ -565,7 +582,10 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* CTA Section - Mobile Optimized */}
-      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-r from-black via-purple-900/50 to-black relative z-10">
+      <section
+        className="py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-r from-black via-purple-900/50 to-black relative z-10"
+        data-aos="fade-up"
+      >
         <div className="max-w-5xl mx-auto text-center">
           <div className="mb-6 sm:mb-8">
             <div className="text-4xl sm:text-6xl mb-4">𓁹</div>
@@ -594,29 +614,41 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Footer - Mobile Optimized */}
-      <footer className="py-12 sm:py-16 px-4 sm:px-6 bg-black/80 relative z-10 border-t border-yellow-600/30">
+      <footer
+        className="py-12 sm:py-16 px-4 sm:px-6 bg-black/80 relative z-10 border-t border-yellow-600/30"
+        data-aos="fade-up"
+      >
         <div className="max-w-7xl mx-auto">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
-            <div className="flex items-center space-x-2 sm:space-x-3">
-              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center border-2 border-yellow-500">
-                <GiDragonHead className="text-base sm:text-lg text-black" />
-              </div>
-              <div>
-                <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
-                  MONSTER ARENA
-                </span>
-                <div className="text-xs text-gray-400">SHADOW EDITION</div>
-              </div>
+            <div
+              className="flex items-center space-x-4"
+              data-aos="fade-up"
+              data-aos-duration="800"
+            >
+              <GiDragonHead
+                className="text-3xl sm:text-4xl text-yellow-500"
+                data-aos="fade-up"
+                data-aos-duration="600"
+                data-aos-delay="200"
+              />
+              <span
+                className="text-xl sm:text-2xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent"
+                data-aos="fade-up"
+                data-aos-duration="600"
+                data-aos-delay="300"
+              >
+                MONSTER ARENA
+              </span>
             </div>
 
-            <div className="text-center md:text-right">
-              <div className="text-gray-400 text-xs sm:text-sm mb-2">
-                © {new Date().getFullYear()} Monster Arena. Todos os direitos
-                reservados.
-              </div>
-              <div className="text-xs text-gray-500">
-                "O coração dos monstros nunca mente" - Mestre Ancestral
-              </div>
+            <div
+              className="text-gray-400 text-sm sm:text-base"
+              data-aos="fade-up"
+              data-aos-duration="600"
+              data-aos-delay="400"
+            >
+              © {new Date().getFullYear()} Monster Arena. Todos os direitos
+              reservados.
             </div>
           </div>
         </div>
