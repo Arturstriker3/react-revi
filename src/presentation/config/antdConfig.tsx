@@ -1,5 +1,6 @@
 import { ConfigProvider } from "antd";
 import ptBR from "antd/locale/pt_BR";
+import React from "react";
 
 export const antdConfig = {
   locale: ptBR,

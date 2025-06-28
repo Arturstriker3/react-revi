@@ -9,7 +9,6 @@ import {
 } from "@ant-design/icons";
 import { AntdConfigProvider } from "./config/antdConfig";
 import TaskManager from "./pages/TaskManager";
-import AntDesignExample from "./components/AntDesignExample";
 import Dashboard from "./pages/Dashboard";
 
 const { Header, Sider, Content } = Layout;
@@ -31,11 +30,6 @@ const App: React.FC = () => {
       key: "/dashboard",
       icon: <DashboardOutlined />,
       label: <Link to="/dashboard">Dashboard</Link>,
-    },
-    {
-      key: "/components",
-      icon: <SettingOutlined />,
-      label: <Link to="/components">Componentes Ant Design</Link>,
     },
   ];
 
@@ -74,7 +68,6 @@ const App: React.FC = () => {
                 <Route path="/" element={<Home />} />
                 <Route path="/tasks" element={<TaskManager />} />
                 <Route path="/dashboard" element={<Dashboard />} />
-                <Route path="/components" element={<AntDesignExample />} />
               </Routes>
             </Content>
           </Layout>
