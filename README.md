@@ -20,40 +20,56 @@ The project follows a layered architecture pattern:
 - **Zustand** for state management
 - **LocalStorage** for data persistence
 - **Vitest** for testing
+- **pnpm** for package management
 
-## Getting Started
-
-### Prerequisites
+## Prerequisites
 
 - Node.js 18+
-- npm or yarn
+- pnpm 8+ (recommended for faster installs)
+
+### Installing pnpm
+
+If you don't have pnpm installed:
+
+```bash
+# Using npm
+npm install -g pnpm
+
+# Using corepack (Node.js 16.13+)
+corepack enable
+corepack prepare pnpm@latest --activate
+```
+
+## Getting Started
 
 ### Installation
 
 1. Install dependencies:
 
 ```bash
-npm install
+pnpm install
 ```
 
 2. Start the development server:
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 3. Open your browser and navigate to `http://localhost:5173`
 
 ### Available Scripts
 
-- `npm run dev` - Start development server
-- `npm run build` - Build for production
-- `npm run preview` - Preview production build
-- `npm run lint` - Run ESLint
-- `npm test` - Run tests in watch mode
-- `npm run test:ui` - Run tests with UI
-- `npm run test:run` - Run tests once
-- `npm run test:coverage` - Run tests with coverage report
+- `pnpm dev` - Start development server
+- `pnpm build` - Build for production
+- `pnpm preview` - Preview production build
+- `pnpm lint` - Run ESLint
+- `pnpm test` - Run tests in watch mode
+- `pnpm test:ui` - Run tests with UI
+- `pnpm test:run` - Run tests once
+- `pnpm test:coverage` - Run tests with coverage report
+- `pnpm clean` - Clean node_modules and cache
+- `pnpm reinstall` - Clean and reinstall dependencies
 
 ## Project Structure
 
@@ -90,6 +106,7 @@ src/
 - ✅ Dashboard with statistics
 - ✅ Component examples
 - ✅ Testing setup with Vitest
+- ✅ Fast package management with pnpm
 
 ## Pages
 
@@ -112,16 +129,16 @@ The project includes a complete testing setup with:
 
 ```bash
 # Run tests in watch mode
-npm test
+pnpm test
 
 # Run tests with UI
-npm run test:ui
+pnpm test:ui
 
 # Run tests once
-npm run test:run
+pnpm test:run
 
 # Run tests with coverage
-npm run test:coverage
+pnpm test:coverage
 ```
 
 ### Test Structure
@@ -129,6 +146,14 @@ npm run test:coverage
 - `src/test/setup.ts` - Global test setup
 - `src/test/utils/test-utils.tsx` - Custom render with providers
 - `src/test/examples/` - Example tests for components and use cases
+
+## Why pnpm?
+
+- **Faster**: Up to 2x faster than npm and yarn
+- **Disk space efficient**: Uses hard links and symlinks
+- **Strict**: Prevents phantom dependencies
+- **Monorepo support**: Built-in workspace support
+- **Security**: Better dependency resolution
 
 ## Architecture Benefits
 
