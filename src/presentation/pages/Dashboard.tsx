@@ -1,125 +1,50 @@
 import React from "react";
+import { Card, Row, Col, Typography, Button, Space, Statistic } from "antd";
 import {
-  Card,
-  Row,
-  Col,
-  Statistic,
-  Progress,
-  Typography,
-  Space,
-  List,
-  Avatar,
-  Tag,
-} from "antd";
-import {
-  CheckCircleOutlined,
-  ClockCircleOutlined,
-  ExclamationCircleOutlined,
   UserOutlined,
-  FileTextOutlined,
-  CalendarOutlined,
+  TrophyOutlined,
+  FireOutlined,
+  CrownOutlined,
+  ArrowLeftOutlined,
+  PlusOutlined,
+  SettingOutlined,
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
-const { Title, Text } = Typography;
+const { Title, Paragraph } = Typography;
 
 const Dashboard: React.FC = () => {
-  const recentTasks = [
-    {
-      id: "1",
-      title: "Implementar autenticação",
-      status: "completed",
-      assignee: "João Silva",
-      priority: "high",
-    },
-    {
-      id: "2",
-      title: "Criar dashboard",
-      status: "in-progress",
-      assignee: "Maria Santos",
-      priority: "medium",
-    },
-    {
-      id: "3",
-      title: "Testes unitários",
-      status: "pending",
-      assignee: "Pedro Costa",
-      priority: "low",
-    },
-  ];
+  const navigate = useNavigate();
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "completed":
-        return "green";
-      case "in-progress":
-        return "blue";
-      case "pending":
-        return "orange";
-      default:
-        return "default";
-    }
-  };
-
-  const getStatusText = (status: string) => {
-    switch (status) {
-      case "completed":
-        return "Concluído";
-      case "in-progress":
-        return "Em andamento";
-      case "pending":
-        return "Pendente";
-      default:
-        return status;
-    }
-  };
-
-  const getPriorityColor = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "red";
-      case "medium":
-        return "orange";
-      case "low":
-        return "green";
-      default:
-        return "default";
-    }
-  };
-
-  const getPriorityText = (priority: string) => {
-    switch (priority) {
-      case "high":
-        return "Alta";
-      case "medium":
-        return "Média";
-      case "low":
-        return "Baixa";
-      default:
-        return priority;
-    }
+  const goBack = () => {
+    navigate("/");
   };
 
   return (
-    <div>
-      <Title level={2}>Dashboard</Title>
-      <Text type="secondary">Visão geral do projeto e estatísticas</Text>
+    <div style={{ padding: "24px" }}>
+      {/* Header */}
+      <div style={{ marginBottom: "32px" }}>
+        <Space style={{ marginBottom: "16px" }}>
+          <Button icon={<ArrowLeftOutlined />} onClick={goBack} type="text">
+            Voltar
+          </Button>
+        </Space>
+        <Title level={2} style={{ margin: 0 }}>
+          🏆 Dashboard - Monster Arena
+        </Title>
+        <Paragraph style={{ color: "#666", margin: 0 }}>
+          Gerencie seus monstros, batalhas e progresso no jogo
+        </Paragraph>
+      </div>
 
-      <Row gutter={[16, 16]} style={{ marginTop: "24px" }}>
+      {/* Stats Cards */}
+      <Row gutter={[16, 16]} style={{ marginBottom: "32px" }}>
         <Col xs={24} sm={12} lg={6}>
           <Card>
             <Statistic
-              title="Total de Tarefas"
-              value={25}
-              prefix={<FileTextOutlined />}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card>
-            <Statistic
-              title="Concluídas"
-              value={15}
-              prefix={<CheckCircleOutlined />}
+              title="Monstros Coletados"
+              value={42}
+              prefix={<FireOutlined style={{ color: "#ff4d4f" }} />}
               valueStyle={{ color: "#3f8600" }}
             />
           </Card>
@@ -127,89 +52,101 @@ const Dashboard: React.FC = () => {
         <Col xs={24} sm={12} lg={6}>
           <Card>
             <Statistic
-              title="Em Andamento"
-              value={7}
-              prefix={<ClockCircleOutlined />}
-              valueStyle={{ color: "#1890ff" }}
+              title="Batalhas Vencidas"
+              value={156}
+              prefix={<TrophyOutlined style={{ color: "#faad14" }} />}
+              valueStyle={{ color: "#3f8600" }}
             />
           </Card>
         </Col>
         <Col xs={24} sm={12} lg={6}>
           <Card>
             <Statistic
-              title="Pendentes"
-              value={3}
-              prefix={<ExclamationCircleOutlined />}
-              valueStyle={{ color: "#faad14" }}
+              title="Nível Atual"
+              value={15}
+              prefix={<CrownOutlined style={{ color: "#722ed1" }} />}
+              valueStyle={{ color: "#3f8600" }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card>
+            <Statistic
+              title="Ranking Global"
+              value={1}
+              suffix="/ 10,000"
+              prefix={<UserOutlined style={{ color: "#1890ff" }} />}
+              valueStyle={{ color: "#3f8600" }}
             />
           </Card>
         </Col>
       </Row>
 
-      <Row gutter={[16, 16]} style={{ marginTop: "16px" }}>
-        <Col xs={24} lg={12}>
-          <Card title="Progresso Geral" extra={<CalendarOutlined />}>
+      {/* Main Content Area */}
+      <Row gutter={[16, 16]}>
+        <Col xs={24} lg={16}>
+          <Card
+            title="📊 Estatísticas Recentes"
+            extra={
+              <Button type="primary" icon={<PlusOutlined />}>
+                Nova Batalha
+              </Button>
+            }
+          >
+            <div style={{ textAlign: "center", padding: "40px" }}>
+              <Title level={4} style={{ color: "#666" }}>
+                Área para Gráficos e Estatísticas
+              </Title>
+              <Paragraph>
+                Aqui você pode adicionar gráficos de progresso, histórico de
+                batalhas, e outras métricas importantes do jogo.
+              </Paragraph>
+            </div>
+          </Card>
+        </Col>
+
+        <Col xs={24} lg={8}>
+          <Card title="⚡ Ações Rápidas">
             <Space direction="vertical" style={{ width: "100%" }}>
-              <div>
-                <Text>Completude do Projeto</Text>
-                <Progress percent={60} status="active" />
-              </div>
-              <div>
-                <Text>Qualidade do Código</Text>
-                <Progress percent={85} />
-              </div>
-              <div>
-                <Text>Testes</Text>
-                <Progress percent={45} status="exception" />
-              </div>
+              <Button type="primary" block icon={<FireOutlined />} size="large">
+                Iniciar Batalha
+              </Button>
+              <Button block icon={<TrophyOutlined />} size="large">
+                Ver Torneios
+              </Button>
+              <Button block icon={<CrownOutlined />} size="large">
+                Evoluir Monstros
+              </Button>
+              <Button block icon={<SettingOutlined />} size="large">
+                Configurações
+              </Button>
             </Space>
           </Card>
-        </Col>
-        <Col xs={24} lg={12}>
-          <Card title="Tarefas Recentes" extra={<FileTextOutlined />}>
-            <List
-              dataSource={recentTasks}
-              renderItem={(task) => (
-                <List.Item>
-                  <List.Item.Meta
-                    avatar={<Avatar icon={<UserOutlined />} />}
-                    title={
-                      <Space>
-                        <Text strong>{task.title}</Text>
-                        <Tag color={getStatusColor(task.status)}>
-                          {getStatusText(task.status)}
-                        </Tag>
-                        <Tag color={getPriorityColor(task.priority)}>
-                          {getPriorityText(task.priority)}
-                        </Tag>
-                      </Space>
-                    }
-                    description={`Responsável: ${task.assignee}`}
-                  />
-                </List.Item>
-              )}
-            />
+
+          <Card title="🏆 Ranking Semanal" style={{ marginTop: "16px" }}>
+            <div style={{ textAlign: "center", padding: "20px" }}>
+              <Title level={4} style={{ color: "#666" }}>
+                Top Players
+              </Title>
+              <Paragraph>Lista dos melhores jogadores da semana</Paragraph>
+            </div>
           </Card>
         </Col>
       </Row>
 
-      <Row gutter={[16, 16]} style={{ marginTop: "16px" }}>
-        <Col span={24}>
-          <Card title="Atividade Recente">
-            <List
-              dataSource={[
-                'João Silva concluiu a tarefa "Implementar login"',
-                'Maria Santos iniciou a tarefa "Criar dashboard"',
-                'Pedro Costa comentou na tarefa "Testes unitários"',
-                "Sistema criou backup automático",
-                "Nova versão foi deployada em produção",
-              ]}
-              renderItem={(item) => (
-                <List.Item>
-                  <Text>{item}</Text>
-                </List.Item>
-              )}
-            />
+      {/* Bottom Section */}
+      <Row gutter={[16, 16]} style={{ marginTop: "32px" }}>
+        <Col xs={24}>
+          <Card title="📈 Progresso do Jogo">
+            <div style={{ textAlign: "center", padding: "40px" }}>
+              <Title level={4} style={{ color: "#666" }}>
+                Área para Progresso e Conquistas
+              </Title>
+              <Paragraph>
+                Aqui você pode adicionar barras de progresso, conquistas
+                desbloqueadas, e próximos objetivos do jogador.
+              </Paragraph>
+            </div>
           </Card>
         </Col>
       </Row>

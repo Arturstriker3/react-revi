@@ -2,6 +2,65 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Custom animations for Monster Arena landing page */
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes ping {
+  75%,
+  100% {
+    transform: scale(2);
+    opacity: 0;
+  }
+}
+
+@keyframes bounce {
+  0%,
+  100% {
+    transform: translateY(-25%);
+    animation-timing-function: cubic-bezier(0.8, 0, 1, 1);
+  }
+  50% {
+    transform: none;
+    animation-timing-function: cubic-bezier(0, 0, 0.2, 1);
+  }
+}
+
+/* Ant Design overrides for better integration */
+.ant-btn-primary {
+  background: linear-gradient(45deg, #1890ff, #722ed1);
+  border: none;
+}
+
+.ant-btn-primary:hover {
+  background: linear-gradient(45deg, #40a9ff, #9254de);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #1f2937;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4b5563;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6b7280;
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
