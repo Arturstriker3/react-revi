@@ -1,113 +1,94 @@
 import React from "react";
-import { Card, Row, Col, Typography, Button, Space, Statistic } from "antd";
+import { Card, Button, Statistic } from "antd";
 import {
   UserOutlined,
   TrophyOutlined,
   FireOutlined,
   CrownOutlined,
-  ArrowLeftOutlined,
   PlusOutlined,
   SettingOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
-
-const { Title, Paragraph } = Typography;
 
 const Dashboard: React.FC = () => {
-  const navigate = useNavigate();
-
-  const goBack = () => {
-    navigate("/");
-  };
-
   return (
-    <div style={{ padding: "24px" }}>
+    <div className="w-full max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 py-4">
       {/* Header */}
-      <div style={{ marginBottom: "32px" }}>
-        <Space style={{ marginBottom: "16px" }}>
-          <Button icon={<ArrowLeftOutlined />} onClick={goBack} type="text">
-            Voltar
-          </Button>
-        </Space>
-        <Title level={2} style={{ margin: 0 }}>
-          🏆 Dashboard - Monster Arena
-        </Title>
-        <Paragraph style={{ color: "#666", margin: 0 }}>
+      <div className="mb-8 text-center sm:text-left">
+        <h2 className="text-2xl sm:text-3xl font-bold flex items-center justify-center sm:justify-start gap-2">
+          <span role="img" aria-label="troféu">
+            🏆
+          </span>{" "}
+          Dashboard - Monster Arena
+        </h2>
+        <p className="text-gray-500 mt-1">
           Gerencie seus monstros, batalhas e progresso no jogo
-        </Paragraph>
+        </p>
       </div>
 
       {/* Stats Cards */}
-      <Row gutter={[16, 16]} style={{ marginBottom: "32px" }}>
-        <Col xs={24} sm={12} lg={6}>
-          <Card>
-            <Statistic
-              title="Monstros Coletados"
-              value={42}
-              prefix={<FireOutlined style={{ color: "#ff4d4f" }} />}
-              valueStyle={{ color: "#3f8600" }}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card>
-            <Statistic
-              title="Batalhas Vencidas"
-              value={156}
-              prefix={<TrophyOutlined style={{ color: "#faad14" }} />}
-              valueStyle={{ color: "#3f8600" }}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card>
-            <Statistic
-              title="Nível Atual"
-              value={15}
-              prefix={<CrownOutlined style={{ color: "#722ed1" }} />}
-              valueStyle={{ color: "#3f8600" }}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card>
-            <Statistic
-              title="Ranking Global"
-              value={1}
-              suffix="/ 10,000"
-              prefix={<UserOutlined style={{ color: "#1890ff" }} />}
-              valueStyle={{ color: "#3f8600" }}
-            />
-          </Card>
-        </Col>
-      </Row>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <Card>
+          <Statistic
+            title="Monstros Coletados"
+            value={42}
+            prefix={<FireOutlined style={{ color: "#ff4d4f" }} />}
+            valueStyle={{ color: "#3f8600" }}
+          />
+        </Card>
+        <Card>
+          <Statistic
+            title="Batalhas Vencidas"
+            value={156}
+            prefix={<TrophyOutlined style={{ color: "#faad14" }} />}
+            valueStyle={{ color: "#3f8600" }}
+          />
+        </Card>
+        <Card>
+          <Statistic
+            title="Nível Atual"
+            value={15}
+            prefix={<CrownOutlined style={{ color: "#722ed1" }} />}
+            valueStyle={{ color: "#3f8600" }}
+          />
+        </Card>
+        <Card>
+          <Statistic
+            title="Ranking Global"
+            value={1}
+            suffix="/ 10,000"
+            prefix={<UserOutlined style={{ color: "#1890ff" }} />}
+            valueStyle={{ color: "#3f8600" }}
+          />
+        </Card>
+      </div>
 
       {/* Main Content Area */}
-      <Row gutter={[16, 16]}>
-        <Col xs={24} lg={16}>
+      <div className="flex flex-col lg:flex-row gap-4">
+        <div className="flex-1 min-w-0">
           <Card
-            title="📊 Estatísticas Recentes"
+            title={
+              <span className="font-semibold">📊 Estatísticas Recentes</span>
+            }
             extra={
               <Button type="primary" icon={<PlusOutlined />}>
                 Nova Batalha
               </Button>
             }
           >
-            <div style={{ textAlign: "center", padding: "40px" }}>
-              <Title level={4} style={{ color: "#666" }}>
+            <div className="text-center py-10">
+              <h4 className="text-lg font-semibold text-gray-600 mb-2">
                 Área para Gráficos e Estatísticas
-              </Title>
-              <Paragraph>
+              </h4>
+              <p className="text-gray-500">
                 Aqui você pode adicionar gráficos de progresso, histórico de
                 batalhas, e outras métricas importantes do jogo.
-              </Paragraph>
+              </p>
             </div>
           </Card>
-        </Col>
-
-        <Col xs={24} lg={8}>
-          <Card title="⚡ Ações Rápidas">
-            <Space direction="vertical" style={{ width: "100%" }}>
+        </div>
+        <div className="flex flex-col gap-4 w-full lg:w-[340px]">
+          <Card title={<span className="font-semibold">⚡ Ações Rápidas</span>}>
+            <div className="flex flex-col gap-2">
               <Button type="primary" block icon={<FireOutlined />} size="large">
                 Iniciar Batalha
               </Button>
@@ -120,36 +101,39 @@ const Dashboard: React.FC = () => {
               <Button block icon={<SettingOutlined />} size="large">
                 Configurações
               </Button>
-            </Space>
-          </Card>
-
-          <Card title="🏆 Ranking Semanal" style={{ marginTop: "16px" }}>
-            <div style={{ textAlign: "center", padding: "20px" }}>
-              <Title level={4} style={{ color: "#666" }}>
-                Top Players
-              </Title>
-              <Paragraph>Lista dos melhores jogadores da semana</Paragraph>
             </div>
           </Card>
-        </Col>
-      </Row>
+          <Card
+            title={<span className="font-semibold">🏆 Ranking Semanal</span>}
+          >
+            <div className="text-center py-5">
+              <h4 className="text-lg font-semibold text-gray-600 mb-2">
+                Top Players
+              </h4>
+              <p className="text-gray-500">
+                Lista dos melhores jogadores da semana
+              </p>
+            </div>
+          </Card>
+        </div>
+      </div>
 
       {/* Bottom Section */}
-      <Row gutter={[16, 16]} style={{ marginTop: "32px" }}>
-        <Col xs={24}>
-          <Card title="📈 Progresso do Jogo">
-            <div style={{ textAlign: "center", padding: "40px" }}>
-              <Title level={4} style={{ color: "#666" }}>
-                Área para Progresso e Conquistas
-              </Title>
-              <Paragraph>
-                Aqui você pode adicionar barras de progresso, conquistas
-                desbloqueadas, e próximos objetivos do jogador.
-              </Paragraph>
-            </div>
-          </Card>
-        </Col>
-      </Row>
+      <div className="mt-8">
+        <Card
+          title={<span className="font-semibold">📈 Progresso do Jogo</span>}
+        >
+          <div className="text-center py-10">
+            <h4 className="text-lg font-semibold text-gray-600 mb-2">
+              Área para Progresso e Conquistas
+            </h4>
+            <p className="text-gray-500">
+              Aqui você pode adicionar barras de progresso, conquistas
+              desbloqueadas, e próximos objetivos do jogador.
+            </p>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 };
