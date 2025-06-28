@@ -18,6 +18,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { Monster } from "../../domain/entities/Monster";
 import MonsterCard from "../components/MonsterCard";
+import MonsterCardSwiper from "../components/MonsterCardSwiper";
 
 const duelMonsters: Monster[] = [
   {
@@ -258,17 +259,7 @@ const LandingPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="flex justify-center items-center gap-12">
-            {duelMonsters.map((monster) => (
-              <div
-                key={monster.id}
-                className="transform hover:scale-110 transition-all duration-500 hover:-translate-y-4 cursor-pointer"
-                onClick={() => setSelectedCard(monster)}
-              >
-                <MonsterCard monster={monster} />
-              </div>
-            ))}
-          </div>
+          <MonsterCardSwiper />
         </div>
       </section>
 

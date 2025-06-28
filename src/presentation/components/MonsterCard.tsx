@@ -76,14 +76,15 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
       border-4 ${holoEffect.border} rounded-lg
       shadow-xl transform transition-all duration-300
       hover:scale-105 hover:shadow-2xl ${holoEffect.glow}
-      cursor-pointer
+      cursor-pointer select-none outline-none focus:outline-none
     `}
+      tabIndex={-1}
     >
       {/* Card Content */}
-      <div className="relative h-full flex flex-col p-4 z-10">
+      <div className="relative h-full flex flex-col p-4 z-10 select-none">
         {/* Name */}
-        <div className="text-center mb-3">
-          <h3 className="text-lg font-bold text-gray-800 truncate">
+        <div className="text-center mb-3 select-none">
+          <h3 className="text-lg font-bold text-gray-800 truncate select-none">
             {monster.name}
           </h3>
         </div>
@@ -105,6 +106,7 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
               const target = e.target as HTMLImageElement;
               target.style.display = "none";
             }}
+            draggable={false}
           />
 
           {/* Rarity indicator */}
