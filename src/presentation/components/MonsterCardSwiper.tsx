@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import TinderCard from "react-tinder-card";
 import { Monster } from "../../domain/entities/Monster";
 import MonsterCard from "./MonsterCard";
+import shuffleSoundUrl from "../assets/sounds/card-shuffle.mp3";
 
 // Exemplo de 10 monstros
 const monsters: Monster[] = [
@@ -99,8 +100,23 @@ const monsters: Monster[] = [
 
 const MonsterCardSwiper: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
+  // Referência para o efeito sonoro
+  const shuffleSoundRef = useRef<HTMLAudioElement | null>(
+    typeof Audio !== "undefined"
+      ? (() => {
+          const audio = new Audio(shuffleSoundUrl);
+          audio.volume = 0.3;
+          return audio;
+        })()
+      : null
+  );
 
   const handleSwipe = () => {
+    // Toca o som de shuffle
+    if (shuffleSoundRef.current) {
+      shuffleSoundRef.current.currentTime = 0;
+      shuffleSoundRef.current.play();
+    }
     setCurrentIndex((prev) => (prev + 1) % monsters.length);
   };
 
