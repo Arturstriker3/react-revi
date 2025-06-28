@@ -98,17 +98,6 @@ const monsters: Monster[] = [
   },
 ];
 
-// Adiciona o CSS da animação no topo do arquivo (pode ser movido para um arquivo de estilos depois)
-const fingerAnimationStyle = `
-@keyframes swipe-finger {
-  0% { transform: translateX(0); opacity: 0.7; }
-  20% { opacity: 1; }
-  50% { transform: translateX(48px); opacity: 1; }
-  80% { opacity: 1; }
-  100% { transform: translateX(0); opacity: 0.7; }
-}
-`;
-
 const MonsterCardSwiper: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
   const [isEntering, setIsEntering] = useState(false);
@@ -138,8 +127,8 @@ const MonsterCardSwiper: React.FC = () => {
 
   // Parâmetros do leque para efeito de arco curvado
   const maxFan = monsters.length - 1;
-  const arcRadius = 120; // raio do arco
-  const arcAngle = 70; // ângulo total do leque em graus (mais aberto)
+  const arcRadius = 200; // raio do arco (mais largo)
+  const arcAngle = 90; // ângulo total do leque em graus (mais aberto)
 
   return (
     <div className="flex justify-center items-center min-h-[500px]">
@@ -164,9 +153,9 @@ const MonsterCardSwiper: React.FC = () => {
               const angle = (rel / maxFan) * arcAngle; // de -arcAngle/2 a +arcAngle/2
               const rad = (angle * Math.PI) / 180;
               const offsetX = Math.sin(rad) * arcRadius;
-              const offsetY = (1 - Math.cos(rad)) * arcRadius * 0.9; // 0.9 para suavizar
+              const offsetY = (1 - Math.cos(rad)) * arcRadius * 0.9;
               const rotate = angle;
-              const scale = 1 - Math.abs(rel) * 0.025;
+              const scale = 1 - Math.abs(rel) * 0.01;
               const style = {
                 transform: `translate(${offsetX}px, ${offsetY}px) scale(${scale}) rotate(${rotate}deg)`,
                 zIndex: relIndex,
