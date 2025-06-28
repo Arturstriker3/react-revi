@@ -24,28 +24,6 @@ interface MenuItem {
 const SIDEBAR_WIDTH = 250;
 const SIDEBAR_COLLAPSED = 80;
 
-const pageTitles: Record<string, string> = {
-  "/dashboard": "Dashboard",
-  "/dashboard/monsters": "Monstros",
-  "/dashboard/battles": "Batalhas",
-};
-
-function findRouteTitle(pathname: string): string {
-  function search(routesArr: any[], path: string): string | undefined {
-    for (const route of routesArr) {
-      if (route.path && route.path === path) {
-        return route.title;
-      }
-      if (route.children) {
-        const found = search(route.children, path);
-        if (found) return found;
-      }
-    }
-    return undefined;
-  }
-  return search(routes, pathname) || "";
-}
-
 const DashboardLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
