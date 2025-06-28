@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Badge } from "antd";
+import { Button, Badge, Drawer } from "antd";
 import {
   PlayCircleOutlined,
   TrophyOutlined,
@@ -10,15 +10,17 @@ import {
   StarOutlined,
   EyeOutlined,
   CrownOutlined,
-  BugOutlined,
   TeamOutlined,
   GiftOutlined,
   DashboardOutlined,
+  MenuOutlined,
+  CloseOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { Monster } from "../../domain/entities/Monster";
 import MonsterCard from "../components/MonsterCard";
 import MonsterCardSwiper from "../components/MonsterCardSwiper";
+import { GiDragonHead, GiHamburgerMenu } from "react-icons/gi";
 
 const duelMonsters: Monster[] = [
   {
@@ -55,6 +57,8 @@ const LandingPage: React.FC = () => {
   const [selectedCard, setSelectedCard] = useState<Monster | null>(null);
   const [duelAnimation, setDuelAnimation] = useState(false);
   const [mysticalEffect, setMysticalEffect] = useState(false);
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -62,6 +66,15 @@ const LandingPage: React.FC = () => {
       setTimeout(() => setMysticalEffect(false), 1000);
     }, 5000);
     return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 50);
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const startDuel = () => {
@@ -72,6 +85,21 @@ const LandingPage: React.FC = () => {
   const goToDashboard = () => {
     navigate("/dashboard");
   };
+
+  const scrollToSection = (sectionId: string) => {
+    const element = document.getElementById(sectionId);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+    setMobileMenuOpen(false);
+  };
+
+  const menuItems = [
+    { id: "cards", label: "Monstros" },
+    { id: "duel", label: "Arena" },
+    { id: "tournament", label: "Torneios" },
+    { id: "collection", label: "Coleção" },
+  ];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900 text-white overflow-hidden relative">
@@ -100,93 +128,153 @@ const LandingPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Header */}
-      <header className="relative z-10 p-6 backdrop-blur-sm bg-black/40 border-b border-yellow-600/30">
-        <nav className="flex justify-between items-center max-w-7xl mx-auto">
-          <div className="flex items-center space-x-3">
-            <div className="w-12 h-12 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center border-2 border-yellow-500 shadow-lg shadow-yellow-500/50">
-              <BugOutlined className="text-xl text-black" />
+      {/* Sticky Header */}
+      <header
+        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+          scrolled
+            ? "backdrop-blur-md bg-black/80 border-b border-yellow-600/50 shadow-lg"
+            : "backdrop-blur-sm bg-black/40 border-b border-yellow-600/30"
+        }`}
+      >
+        <nav className="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
+          <div className="flex items-center space-x-2 sm:space-x-3">
+            <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center border-2 border-yellow-500 shadow-lg shadow-yellow-500/50">
+              <GiDragonHead className="text-lg sm:text-2xl text-black" />
             </div>
             <div>
-              <h1 className="text-2xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+              <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
                 MONSTER ARENA
               </h1>
-              <p className="text-xs text-gray-400">SHADOW EDITION</p>
+              <p className="text-xs text-gray-400 hidden sm:block">
+                SHADOW EDITION
+              </p>
             </div>
           </div>
 
-          <div className="hidden md:flex space-x-8">
-            <a
-              href="#cards"
-              className="hover:text-yellow-400 transition-colors font-medium"
+          {/* Navegação e botão alinhados à direita */}
+          <div className="hidden md:flex flex-1 justify-end items-center space-x-6 lg:space-x-8">
+            {menuItems.map((item) => (
+              <a
+                key={item.id}
+                href={`#${item.id}`}
+                className="hover:text-yellow-400 transition-colors font-medium text-sm lg:text-base"
+                onClick={(e) => {
+                  e.preventDefault();
+                  scrollToSection(item.id);
+                }}
+              >
+                {item.label}
+              </a>
+            ))}
+            <Button
+              type="primary"
+              size="large"
+              className="bg-gradient-to-r from-yellow-600 to-yellow-800 border-none hover:from-yellow-700 hover:to-yellow-900 shadow-lg shadow-yellow-600/30"
+              onClick={goToDashboard}
             >
-              Monstros
-            </a>
-            <a
-              href="#duel"
-              className="hover:text-yellow-400 transition-colors font-medium"
-            >
-              Arena
-            </a>
-            <a
-              href="#tournament"
-              className="hover:text-yellow-400 transition-colors font-medium"
-            >
-              Torneios
-            </a>
-            <a
-              href="#collection"
-              className="hover:text-yellow-400 transition-colors font-medium"
-            >
-              Coleção
-            </a>
+              Batalhar
+            </Button>
           </div>
 
-          <Button
-            type="primary"
-            size="large"
-            className="bg-gradient-to-r from-yellow-600 to-yellow-800 border-none hover:from-yellow-700 hover:to-yellow-900 shadow-lg shadow-yellow-600/30"
-            icon={<DashboardOutlined />}
-            onClick={goToDashboard}
-          >
-            Entrar na Arena
-          </Button>
+          {/* Mobile Menu Button */}
+          <div className="md:hidden">
+            <button
+              aria-label="Abrir menu"
+              onClick={() => setMobileMenuOpen(true)}
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 shadow-lg shadow-yellow-500/30 hover:from-yellow-500 hover:to-yellow-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            >
+              <GiHamburgerMenu className="text-black text-2xl" />
+            </button>
+          </div>
         </nav>
       </header>
 
-      {/* Hero Section */}
-      <section className="relative z-10 py-24 px-6">
-        <div className="max-w-7xl mx-auto text-center">
-          <div className="mb-12">
-            <div className="inline-block mb-6">
-              <Badge.Ribbon
-                text="SHADOW EDITION"
-                color="gold"
-                className="text-xs"
-              >
-                <div className="bg-black/60 backdrop-blur-sm p-8 rounded-2xl border border-yellow-600/50">
-                  <h2 className="text-7xl md:text-9xl font-bold mb-4 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent drop-shadow-2xl">
-                    MONSTER
-                  </h2>
-                  <h3 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent">
-                    ARENA
-                  </h3>
-                </div>
-              </Badge.Ribbon>
+      {/* Mobile Menu Drawer */}
+      <Drawer
+        closable={false}
+        title={
+          <div className="flex items-center justify-between w-full">
+            <div className="flex items-center space-x-3">
+              <div className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center border-2 border-yellow-500">
+                <GiDragonHead className="text-lg text-black" />
+              </div>
+              <span className="text-lg font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+                MONSTER ARENA
+              </span>
             </div>
+            <button
+              aria-label="Fechar menu"
+              onClick={() => setMobileMenuOpen(false)}
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 shadow-lg shadow-yellow-500/30 hover:from-yellow-500 hover:to-yellow-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 ml-4"
+              style={{ border: "none" }}
+            >
+              <CloseOutlined className="text-black text-xl" />
+            </button>
+          </div>
+        }
+        placement="right"
+        onClose={() => setMobileMenuOpen(false)}
+        open={mobileMenuOpen}
+        className="bg-black/95 backdrop-blur-md"
+        styles={{
+          body: {
+            padding: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "100%",
+          },
+          header: {
+            background: "rgba(0,0,0,0.8)",
+            borderBottom: "1px solid rgba(234, 179, 8, 0.3)",
+            padding: "16px 24px",
+          },
+          mask: { background: "rgba(0,0,0,0.8)" },
+        }}
+      >
+        <div className="w-full flex flex-col justify-center items-center h-full p-6">
+          <Button
+            type="primary"
+            size="large"
+            className="w-full max-w-xs h-16 text-lg bg-gradient-to-r from-yellow-600 to-yellow-800 border-none hover:from-yellow-700 hover:to-yellow-900 shadow-lg shadow-yellow-600/30"
+            onClick={goToDashboard}
+          >
+            Batalhar
+          </Button>
+        </div>
+      </Drawer>
+
+      {/* Hero Section - Adjusted for mobile */}
+      <section className="relative z-10 pt-32 sm:pt-40 pb-16 sm:py-24 px-4 sm:px-6">
+        <div className="max-w-7xl mx-auto text-center">
+          <div className="w-full flex justify-center mb-4 sm:mb-6">
+            <Badge.Ribbon
+              text="SHADOW EDITION"
+              color="gold"
+              className="text-xs"
+            >
+              <div className="w-full max-w-lg sm:max-w-2xl md:max-w-3xl bg-black/60 backdrop-blur-sm px-4 py-6 sm:px-8 sm:py-10 rounded-2xl border border-yellow-600/50 flex flex-col items-center">
+                <h2 className="w-full text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-bold mb-2 sm:mb-4 bg-gradient-to-r from-yellow-400 via-yellow-500 to-yellow-600 bg-clip-text text-transparent drop-shadow-2xl text-center">
+                  MONSTER
+                </h2>
+                <h3 className="w-full text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold bg-gradient-to-r from-purple-400 to-purple-600 bg-clip-text text-transparent text-center">
+                  ARENA
+                </h3>
+              </div>
+            </Badge.Ribbon>
           </div>
 
-          <p className="text-xl md:text-2xl mb-8 text-gray-300 max-w-4xl mx-auto leading-relaxed">
+          <p className="text-base sm:text-xl md:text-2xl mb-6 sm:mb-8 text-gray-300 max-w-4xl mx-auto leading-relaxed px-4">
             Desperte o poder das trevas e da luz. Invoque criaturas lendárias,
             domine magias ancestrais e torne-se o Mestre dos Monstros neste
             universo épico inspirado nos mistérios do antigo mundo.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center mb-16">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16 px-4">
             <Button
               type="primary"
               size="large"
-              className="bg-gradient-to-r from-purple-600 to-purple-800 border-none hover:from-purple-700 hover:to-purple-900 h-16 px-10 text-lg shadow-lg shadow-purple-600/30"
+              className="bg-gradient-to-r from-purple-600 to-purple-800 border-none hover:from-purple-700 hover:to-purple-900 h-12 sm:h-16 px-6 sm:px-10 text-base sm:text-lg shadow-lg shadow-purple-600/30"
               icon={<ThunderboltOutlined />}
               onClick={startDuel}
             >
@@ -194,20 +282,20 @@ const LandingPage: React.FC = () => {
             </Button>
             <Button
               size="large"
-              className="border-2 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black h-16 px-10 text-lg backdrop-blur-sm bg-black/20"
+              className="border-2 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black h-12 sm:h-16 px-6 sm:px-10 text-base sm:text-lg backdrop-blur-sm bg-black/20"
               icon={<EyeOutlined />}
             >
               Assistir Trailer Épico
             </Button>
           </div>
 
-          {/* Mystical Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-w-5xl mx-auto">
+          {/* Mystical Stats - Responsive Grid */}
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto px-4">
             {[
               {
                 label: "Monstros Místicos",
                 value: "500+",
-                icon: <BugOutlined />,
+                icon: <GiDragonHead />,
                 color: "purple",
               },
               {
@@ -231,15 +319,19 @@ const LandingPage: React.FC = () => {
             ].map((stat, index) => (
               <div
                 key={index}
-                className="text-center p-6 rounded-xl bg-black/40 backdrop-blur-sm border border-gray-700/50 hover:border-yellow-500/50 transition-all duration-300"
+                className="text-center p-4 sm:p-6 rounded-xl bg-black/40 backdrop-blur-sm border border-gray-700/50 hover:border-yellow-500/50 transition-all duration-300"
               >
-                <div className={`text-4xl text-${stat.color}-400 mb-3`}>
+                <div
+                  className={`text-2xl sm:text-4xl text-${stat.color}-400 mb-2 sm:mb-3`}
+                >
                   {stat.icon}
                 </div>
-                <div className="text-3xl font-bold text-white mb-1">
+                <div className="text-xl sm:text-3xl font-bold text-white mb-1">
                   {stat.value}
                 </div>
-                <div className="text-sm text-gray-400">{stat.label}</div>
+                <div className="text-xs sm:text-sm text-gray-400">
+                  {stat.label}
+                </div>
               </div>
             ))}
           </div>
@@ -247,13 +339,16 @@ const LandingPage: React.FC = () => {
       </section>
 
       {/* Card Showcase */}
-      <section id="cards" className="py-24 px-6 relative z-10 bg-black/20">
+      <section
+        id="cards"
+        className="py-16 sm:py-24 px-4 sm:px-6 relative z-10 bg-black/20"
+      >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h3 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+          <div className="text-center mb-12 sm:mb-20">
+            <h3 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
               MONSTROS LENDÁRIOS
             </h3>
-            <p className="text-xl text-gray-300 max-w-3xl mx-auto">
+            <p className="text-base sm:text-xl text-gray-300 max-w-3xl mx-auto px-4">
               Cada criatura possui poder ancestral. Domine os segredos da
               batalha e invoque as criaturas mais temidas do reino das sombras.
             </p>
@@ -263,29 +358,29 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Duel Arena */}
+      {/* Duel Arena - Mobile Optimized */}
       <section
         id="duel"
-        className="py-24 px-6 bg-gradient-to-r from-purple-900/30 to-black/30 relative z-10"
+        className="py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-r from-purple-900/30 to-black/30 relative z-10"
       >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h3 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-red-400 to-purple-600 bg-clip-text text-transparent">
+          <div className="text-center mb-12 sm:mb-20">
+            <h3 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-red-400 to-purple-600 bg-clip-text text-transparent">
               ARENA DAS SOMBRAS
             </h3>
-            <p className="text-xl text-gray-300">
+            <p className="text-base sm:text-xl text-gray-300">
               Onde lendas nascem e destinos são selados
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-black/60 to-purple-900/60 rounded-3xl p-8 backdrop-blur-sm border-2 border-yellow-600/30 shadow-2xl">
-            <div className="flex justify-between items-center mb-12">
+          <div className="bg-gradient-to-br from-black/60 to-purple-900/60 rounded-3xl p-4 sm:p-8 backdrop-blur-sm border-2 border-yellow-600/30 shadow-2xl">
+            <div className="flex flex-col lg:flex-row justify-between items-center mb-8 sm:mb-12 space-y-8 lg:space-y-0">
               {/* Player 1 */}
-              <div className="text-center">
-                <div className="w-32 h-32 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center mb-4 mx-auto border-4 border-blue-400 shadow-lg shadow-blue-500/50">
-                  <BugOutlined className="text-4xl text-white" />
+              <div className="text-center order-1 lg:order-1">
+                <div className="w-20 h-20 sm:w-32 sm:h-32 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center mb-4 mx-auto border-4 border-blue-400 shadow-lg shadow-blue-500/50">
+                  <GiDragonHead className="text-2xl sm:text-4xl text-white" />
                 </div>
-                <h4 className="text-xl font-bold text-blue-400 mb-2">
+                <h4 className="text-lg sm:text-xl font-bold text-blue-400 mb-2">
                   GUERREIRO
                 </h4>
                 <div className="text-sm text-gray-300">HP: 100</div>
@@ -293,9 +388,9 @@ const LandingPage: React.FC = () => {
               </div>
 
               {/* VS Section */}
-              <div className="text-center">
+              <div className="text-center order-2 lg:order-2">
                 <div
-                  className={`text-8xl mb-4 ${
+                  className={`text-4xl sm:text-6xl lg:text-8xl mb-4 ${
                     duelAnimation
                       ? "animate-pulse text-red-500"
                       : "text-yellow-400"
@@ -306,7 +401,7 @@ const LandingPage: React.FC = () => {
                 <Button
                   type="primary"
                   size="large"
-                  className="bg-gradient-to-r from-red-600 to-purple-600 border-none hover:from-red-700 hover:to-purple-700 px-8 py-3 text-lg shadow-lg shadow-red-600/30"
+                  className="bg-gradient-to-r from-red-600 to-purple-600 border-none hover:from-red-700 hover:to-purple-700 px-4 sm:px-8 py-2 sm:py-3 text-sm sm:text-lg shadow-lg shadow-red-600/30"
                   onClick={startDuel}
                   loading={duelAnimation}
                   icon={<ThunderboltOutlined />}
@@ -315,17 +410,17 @@ const LandingPage: React.FC = () => {
                     ? "BATALHA EM ANDAMENTO!"
                     : "INICIAR BATALHA DAS SOMBRAS"}
                 </Button>
-                <div className="mt-4 text-sm text-gray-400">
+                <div className="mt-4 text-xs sm:text-sm text-gray-400">
                   "O coração dos monstros guiará sua vitória"
                 </div>
               </div>
 
               {/* Player 2 */}
-              <div className="text-center">
-                <div className="w-32 h-32 bg-gradient-to-br from-purple-600 to-purple-800 rounded-full flex items-center justify-center mb-4 mx-auto border-4 border-purple-400 shadow-lg shadow-purple-500/50">
-                  <CrownOutlined className="text-4xl text-white" />
+              <div className="text-center order-3 lg:order-3">
+                <div className="w-20 h-20 sm:w-32 sm:h-32 bg-gradient-to-br from-purple-600 to-purple-800 rounded-full flex items-center justify-center mb-4 mx-auto border-4 border-purple-400 shadow-lg shadow-purple-500/50">
+                  <CrownOutlined className="text-2xl sm:text-4xl text-white" />
                 </div>
-                <h4 className="text-xl font-bold text-purple-400 mb-2">
+                <h4 className="text-lg sm:text-xl font-bold text-purple-400 mb-2">
                   SOMBRA
                 </h4>
                 <div className="text-sm text-gray-300">HP: 100</div>
@@ -333,35 +428,41 @@ const LandingPage: React.FC = () => {
               </div>
             </div>
 
-            {/* Game Features */}
-            <div className="grid md:grid-cols-4 gap-6 text-center">
-              <div className="bg-black/40 rounded-xl p-4 border border-gray-700/50">
-                <ScissorOutlined className="text-3xl text-red-400 mb-3" />
-                <h5 className="font-bold mb-2 text-white">Invocações Épicas</h5>
-                <p className="text-sm text-gray-300">
+            {/* Game Features - Responsive Grid */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
+              <div className="bg-black/40 rounded-xl p-3 sm:p-4 border border-gray-700/50">
+                <ScissorOutlined className="text-2xl sm:text-3xl text-red-400 mb-2 sm:mb-3" />
+                <h5 className="font-bold mb-1 sm:mb-2 text-white text-sm sm:text-base">
+                  Invocações Épicas
+                </h5>
+                <p className="text-xs sm:text-sm text-gray-300">
                   Invoque monstros lendários
                 </p>
               </div>
-              <div className="bg-black/40 rounded-xl p-4 border border-gray-700/50">
-                <FireOutlined className="text-3xl text-yellow-400 mb-3" />
-                <h5 className="font-bold mb-2 text-white">
+              <div className="bg-black/40 rounded-xl p-3 sm:p-4 border border-gray-700/50">
+                <FireOutlined className="text-2xl sm:text-3xl text-yellow-400 mb-2 sm:mb-3" />
+                <h5 className="font-bold mb-1 sm:mb-2 text-white text-sm sm:text-base">
                   Poderes Ancestrais
                 </h5>
-                <p className="text-sm text-gray-300">
+                <p className="text-xs sm:text-sm text-gray-300">
                   Domine habilidades poderosas
                 </p>
               </div>
-              <div className="bg-black/40 rounded-xl p-4 border border-gray-700/50">
-                <SafetyOutlined className="text-3xl text-blue-400 mb-3" />
-                <h5 className="font-bold mb-2 text-white">Defesas Místicas</h5>
-                <p className="text-sm text-gray-300">
+              <div className="bg-black/40 rounded-xl p-3 sm:p-4 border border-gray-700/50">
+                <SafetyOutlined className="text-2xl sm:text-3xl text-blue-400 mb-2 sm:mb-3" />
+                <h5 className="font-bold mb-1 sm:mb-2 text-white text-sm sm:text-base">
+                  Defesas Místicas
+                </h5>
+                <p className="text-xs sm:text-sm text-gray-300">
                   Proteja-se com barreiras mágicas
                 </p>
               </div>
-              <div className="bg-black/40 rounded-xl p-4 border border-gray-700/50">
-                <TrophyOutlined className="text-3xl text-purple-400 mb-3" />
-                <h5 className="font-bold mb-2 text-white">Vitória Suprema</h5>
-                <p className="text-sm text-gray-300">
+              <div className="bg-black/40 rounded-xl p-3 sm:p-4 border border-gray-700/50">
+                <TrophyOutlined className="text-2xl sm:text-3xl text-purple-400 mb-2 sm:mb-3" />
+                <h5 className="font-bold mb-1 sm:mb-2 text-white text-sm sm:text-base">
+                  Vitória Suprema
+                </h5>
+                <p className="text-xs sm:text-sm text-gray-300">
                   Torne-se o Mestre dos Monstros
                 </p>
               </div>
@@ -370,51 +471,64 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Tournament Section */}
-      <section id="tournament" className="py-24 px-6 relative z-10">
+      {/* Tournament Section - Mobile Optimized */}
+      <section
+        id="tournament"
+        className="py-16 sm:py-24 px-4 sm:px-6 relative z-10"
+      >
         <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-20">
-            <h3 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-yellow-400 to-red-600 bg-clip-text text-transparent">
+          <div className="text-center mb-12 sm:mb-20">
+            <h3 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-yellow-400 to-red-600 bg-clip-text text-transparent">
               TORNEIOS MÍSTICOS
             </h3>
           </div>
 
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {[
               {
-                icon: <TrophyOutlined className="text-4xl text-yellow-400" />,
+                icon: (
+                  <TrophyOutlined className="text-3xl sm:text-4xl text-yellow-400" />
+                ),
                 title: "Campeonato Mundial",
                 description: "Compete contra os melhores domadores do mundo",
                 reward: "Monstros Exclusivos + 100,000 XP",
               },
               {
-                icon: <CrownOutlined className="text-4xl text-purple-400" />,
+                icon: (
+                  <CrownOutlined className="text-3xl sm:text-4xl text-purple-400" />
+                ),
                 title: "Torneio das Sombras",
                 description: "Apenas os mais corajosos ousam participar",
                 reward: "Título de Mestre das Sombras",
               },
               {
-                icon: <FireOutlined className="text-4xl text-red-400" />,
+                icon: (
+                  <FireOutlined className="text-3xl sm:text-4xl text-red-400" />
+                ),
                 title: "Arena do Dragão",
                 description: "Desperte os poderes dos dragões ancestrais",
                 reward: "Dragões Lendários + Raridades",
               },
               {
                 icon: (
-                  <ThunderboltOutlined className="text-4xl text-blue-400" />
+                  <ThunderboltOutlined className="text-3xl sm:text-4xl text-blue-400" />
                 ),
                 title: "Liga dos Elementos",
                 description: "Domine todos os atributos elementais",
                 reward: "Monstros Elementais Supremos",
               },
               {
-                icon: <StarOutlined className="text-4xl text-green-400" />,
+                icon: (
+                  <StarOutlined className="text-3xl sm:text-4xl text-green-400" />
+                ),
                 title: "Batalha dos Deuses",
                 description: "Enfrente as criaturas mais poderosas",
                 reward: "Monstros Divinos Ancestrais",
               },
               {
-                icon: <GiftOutlined className="text-4xl text-pink-400" />,
+                icon: (
+                  <GiftOutlined className="text-3xl sm:text-4xl text-pink-400" />
+                ),
                 title: "Evento Semanal",
                 description: "Novos desafios toda semana",
                 reward: "Pacotes Premium",
@@ -422,20 +536,22 @@ const LandingPage: React.FC = () => {
             ].map((tournament, index) => (
               <div
                 key={index}
-                className="bg-gradient-to-br from-black/60 to-gray-900/60 backdrop-blur-sm rounded-xl p-6 border border-gray-700/50 hover:border-yellow-500/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/20"
+                className="bg-gradient-to-br from-black/60 to-gray-900/60 backdrop-blur-sm rounded-xl p-4 sm:p-6 border border-gray-700/50 hover:border-yellow-500/50 transition-all duration-300 hover:scale-105 hover:shadow-2xl hover:shadow-yellow-500/20"
               >
-                <div className="mb-4">{tournament.icon}</div>
-                <h4 className="text-xl font-bold mb-3 text-white">
+                <div className="mb-3 sm:mb-4">{tournament.icon}</div>
+                <h4 className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 text-white">
                   {tournament.title}
                 </h4>
-                <p className="text-gray-300 mb-4 text-sm">
+                <p className="text-gray-300 mb-3 sm:mb-4 text-sm">
                   {tournament.description}
                 </p>
-                <div className="bg-yellow-600/20 rounded-lg p-3 border border-yellow-600/30">
+                <div className="bg-yellow-600/20 rounded-lg p-2 sm:p-3 border border-yellow-600/30">
                   <div className="text-xs text-yellow-400 font-semibold mb-1">
                     RECOMPENSA:
                   </div>
-                  <div className="text-sm text-white">{tournament.reward}</div>
+                  <div className="text-xs sm:text-sm text-white">
+                    {tournament.reward}
+                  </div>
                 </div>
               </div>
             ))}
@@ -443,26 +559,26 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="py-24 px-6 bg-gradient-to-r from-black via-purple-900/50 to-black relative z-10">
+      {/* CTA Section - Mobile Optimized */}
+      <section className="py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-r from-black via-purple-900/50 to-black relative z-10">
         <div className="max-w-5xl mx-auto text-center">
-          <div className="mb-8">
-            <div className="text-6xl mb-4">𓁹</div>
-            <h3 className="text-5xl md:text-6xl font-bold mb-6 text-white">
+          <div className="mb-6 sm:mb-8">
+            <div className="text-4xl sm:text-6xl mb-4">𓁹</div>
+            <h3 className="text-3xl sm:text-5xl md:text-6xl font-bold mb-4 sm:mb-6 text-white">
               SEU DESTINO AGUARDA
             </h3>
-            <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto">
+            <p className="text-base sm:text-xl text-gray-300 mb-6 sm:mb-8 max-w-3xl mx-auto px-4">
               Os monstros do destino foram invocados. O poder das trevas e da
               luz está em suas mãos. Você tem coragem para enfrentar a batalha
               suprema?
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center">
+          <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center px-4">
             <Button
               type="primary"
               size="large"
-              className="bg-gradient-to-r from-yellow-600 to-red-600 border-none hover:from-yellow-700 hover:to-red-700 h-20 px-12 text-xl shadow-2xl shadow-yellow-600/30"
+              className="bg-gradient-to-r from-yellow-600 to-red-600 border-none hover:from-yellow-700 hover:to-red-700 h-12 sm:h-16 lg:h-20 px-6 sm:px-8 lg:px-12 text-base sm:text-lg lg:text-xl shadow-2xl shadow-yellow-600/30"
               icon={<PlayCircleOutlined />}
               onClick={goToDashboard}
             >
@@ -470,7 +586,7 @@ const LandingPage: React.FC = () => {
             </Button>
             <Button
               size="large"
-              className="border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-black h-20 px-12 text-xl backdrop-blur-sm bg-black/20"
+              className="border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-black h-12 sm:h-16 lg:h-20 px-6 sm:px-8 lg:px-12 text-base sm:text-lg lg:text-xl backdrop-blur-sm bg-black/20"
               icon={<EyeOutlined />}
             >
               ASSISTIR GAMEPLAY
@@ -479,16 +595,16 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="py-16 px-6 bg-black/80 relative z-10 border-t border-yellow-600/30">
+      {/* Footer - Mobile Optimized */}
+      <footer className="py-12 sm:py-16 px-4 sm:px-6 bg-black/80 relative z-10 border-t border-yellow-600/30">
         <div className="max-w-7xl mx-auto">
-          <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex items-center space-x-3 mb-6 md:mb-0">
-              <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center border-2 border-yellow-500">
-                <BugOutlined className="text-black" />
+          <div className="flex flex-col md:flex-row justify-between items-center space-y-6 md:space-y-0">
+            <div className="flex items-center space-x-2 sm:space-x-3">
+              <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center border-2 border-yellow-500">
+                <GiDragonHead className="text-base sm:text-lg text-black" />
               </div>
               <div>
-                <span className="text-xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+                <span className="text-lg sm:text-xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
                   MONSTER ARENA
                 </span>
                 <div className="text-xs text-gray-400">SHADOW EDITION</div>
@@ -496,8 +612,9 @@ const LandingPage: React.FC = () => {
             </div>
 
             <div className="text-center md:text-right">
-              <div className="text-gray-400 text-sm mb-2">
-                © 2024 Monster Arena. Todos os direitos reservados.
+              <div className="text-gray-400 text-xs sm:text-sm mb-2">
+                © {new Date().getFullYear()} Monster Arena. Todos os direitos
+                reservados.
               </div>
               <div className="text-xs text-gray-500">
                 "O coração dos monstros nunca mente" - Mestre Ancestral

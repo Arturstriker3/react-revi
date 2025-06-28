@@ -131,8 +131,8 @@ const MonsterCardSwiper: React.FC = () => {
   const arcAngle = 90; // ângulo total do leque em graus (mais aberto)
 
   return (
-    <div className="flex justify-center items-center min-h-[500px]">
-      <div className="relative w-[300px] h-[420px]">
+    <div className="flex justify-center items-center min-h-[400px] sm:min-h-[500px] px-4">
+      <div className="relative w-[280px] h-[380px] sm:w-[300px] sm:h-[420px]">
         {/* Leque de cartas (sempre atrás) */}
         <div className="absolute inset-0" style={{ zIndex: 1 }}>
           {monsters
@@ -152,6 +152,10 @@ const MonsterCardSwiper: React.FC = () => {
               const rel = relIndex - center;
               const angle = (rel / maxFan) * arcAngle; // de -arcAngle/2 a +arcAngle/2
               const rad = (angle * Math.PI) / 180;
+              const arcRadiusMobile = 150; // raio menor para mobile
+              const arcRadiusDesktop = 200; // raio original para desktop
+              const arcRadius =
+                window.innerWidth < 640 ? arcRadiusMobile : arcRadiusDesktop;
               const offsetX = Math.sin(rad) * arcRadius;
               const offsetY = (1 - Math.cos(rad)) * arcRadius * 0.9;
               const rotate = angle;
@@ -183,13 +187,14 @@ const MonsterCardSwiper: React.FC = () => {
           }}
         >
           {/* Setas minimalistas para indicar swipe */}
-          <div className="absolute left-2 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
+          <div className="absolute left-1 sm:left-2 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
             <svg
-              width="18"
-              height="18"
+              width="16"
+              height="16"
               viewBox="0 0 18 18"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              className="sm:w-[18px] sm:h-[18px]"
             >
               <path
                 d="M12 3L6 9L12 15"
@@ -201,13 +206,14 @@ const MonsterCardSwiper: React.FC = () => {
               />
             </svg>
           </div>
-          <div className="absolute right-2 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
+          <div className="absolute right-1 sm:right-2 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
             <svg
-              width="18"
-              height="18"
+              width="16"
+              height="16"
               viewBox="0 0 18 18"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
+              className="sm:w-[18px] sm:h-[18px]"
             >
               <path
                 d="M6 3L12 9L6 15"
@@ -223,8 +229,8 @@ const MonsterCardSwiper: React.FC = () => {
             className={`absolute w-full h-full transition-all duration-200 ${
               isEntering
                 ? (lastDirection === "right"
-                    ? "-translate-x-8"
-                    : "translate-x-8") + " opacity-0"
+                    ? "-translate-x-6 sm:-translate-x-8"
+                    : "translate-x-6 sm:translate-x-8") + " opacity-0"
                 : "translate-x-0 opacity-100"
             }`}
           >

@@ -145,6 +145,87 @@
   background: #6b7280;
 }
 
+/* Mobile-specific optimizations */
+@media (max-width: 640px) {
+  /* Improve touch targets */
+  .ant-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Better text readability on mobile */
+  .text-shadow-mobile {
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  }
+
+  /* Optimize card swiper for mobile */
+  .mobile-card-container {
+    touch-action: pan-y pinch-zoom;
+  }
+
+  /* Improve header sticky behavior on mobile */
+  .sticky-header-mobile {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    backdrop-filter: blur(8px);
+    background: rgba(0, 0, 0, 0.8);
+    border-bottom: 1px solid rgba(234, 179, 8, 0.3);
+    transition: all 0.3s ease;
+  }
+
+  /* Better spacing for mobile sections */
+  .mobile-section-padding {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Optimize button groups for mobile */
+  .mobile-button-group {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  /* Improve grid layouts for mobile */
+  .mobile-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .mobile-grid-1 {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Smooth scrolling for anchor links */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent horizontal scroll on mobile */
+body {
+  overflow-x: hidden;
+}
+
+/* Better focus states for accessibility */
+.ant-btn:focus,
+.ant-drawer-content:focus {
+  outline: 2px solid #fbbf24;
+  outline-offset: 2px;
+}
+
+/* Optimize animations for mobile */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;
