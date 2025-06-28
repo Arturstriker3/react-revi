@@ -280,13 +280,16 @@ const LandingPage: React.FC = () => {
             >
               Iniciar Batalha das Sombras
             </Button>
-            <Button
-              size="large"
-              className="border-2 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black h-12 sm:h-16 px-6 sm:px-10 text-base sm:text-lg backdrop-blur-sm bg-black/20"
-              icon={<EyeOutlined />}
+            <a
+              href="https://www.youtube.com/watch?v=BBJa32lCaaY"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center border-2 border-yellow-400 text-yellow-400 hover:bg-yellow-400 hover:text-black h-12 sm:h-16 px-6 sm:px-10 text-base sm:text-lg backdrop-blur-sm bg-black/20 rounded-lg transition-colors duration-200 font-medium"
+              style={{ textDecoration: "none" }}
             >
+              <EyeOutlined className="mr-2" />
               Assistir Trailer Épico
-            </Button>
+            </a>
           </div>
 
           {/* Mystical Stats - Responsive Grid */}
@@ -322,9 +325,13 @@ const LandingPage: React.FC = () => {
                 className="text-center p-4 sm:p-6 rounded-xl bg-black/40 backdrop-blur-sm border border-gray-700/50 hover:border-yellow-500/50 transition-all duration-300"
               >
                 <div
-                  className={`text-2xl sm:text-4xl text-${stat.color}-400 mb-2 sm:mb-3`}
+                  className={`flex justify-center items-center w-full mb-2 sm:mb-3`}
                 >
-                  {stat.icon}
+                  <span
+                    className={`text-2xl sm:text-4xl text-${stat.color}-400 flex items-center justify-center`}
+                  >
+                    {stat.icon}
+                  </span>
                 </div>
                 <div className="text-xl sm:text-3xl font-bold text-white mb-1">
                   {stat.value}
@@ -584,13 +591,16 @@ const LandingPage: React.FC = () => {
             >
               DESPERTAR O PODER
             </Button>
-            <Button
-              size="large"
-              className="border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-black h-12 sm:h-16 lg:h-20 px-6 sm:px-8 lg:px-12 text-base sm:text-lg lg:text-xl backdrop-blur-sm bg-black/20"
-              icon={<EyeOutlined />}
+            <a
+              href="https://www.youtube.com/watch?v=BBJa32lCaaY"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-black h-12 sm:h-16 lg:h-20 px-6 sm:px-8 lg:px-12 text-base sm:text-lg lg:text-xl backdrop-blur-sm bg-black/20 rounded-lg transition-colors duration-200 font-medium"
+              style={{ textDecoration: "none" }}
             >
+              <EyeOutlined className="mr-2" />
               ASSISTIR GAMEPLAY
-            </Button>
+            </a>
           </div>
         </div>
       </section>
