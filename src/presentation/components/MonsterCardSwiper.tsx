@@ -98,26 +98,42 @@ const monsters: Monster[] = [
   },
 ];
 
+// Adiciona o CSS da animação no topo do arquivo (pode ser movido para um arquivo de estilos depois)
+const fingerAnimationStyle = `
+@keyframes swipe-finger {
+  0% { transform: translateX(0); opacity: 0.7; }
+  20% { opacity: 1; }
+  50% { transform: translateX(48px); opacity: 1; }
+  80% { opacity: 1; }
+  100% { transform: translateX(0); opacity: 0.7; }
+}
+`;
+
 const MonsterCardSwiper: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(1);
+  const [isEntering, setIsEntering] = useState(false);
+  const [lastDirection, setLastDirection] = useState<"left" | "right">("right");
   // Referência para o efeito sonoro
   const shuffleSoundRef = useRef<HTMLAudioElement | null>(
     typeof Audio !== "undefined"
       ? (() => {
           const audio = new Audio(shuffleSoundUrl);
-          audio.volume = 0.3;
+          audio.volume = 0.15;
           return audio;
         })()
       : null
   );
 
-  const handleSwipe = () => {
+  const handleSwipe = (dir?: "left" | "right") => {
     // Toca o som de shuffle
     if (shuffleSoundRef.current) {
       shuffleSoundRef.current.currentTime = 0;
       shuffleSoundRef.current.play();
     }
+    if (dir) setLastDirection(dir);
+    setIsEntering(true);
     setCurrentIndex((prev) => (prev + 1) % monsters.length);
+    setTimeout(() => setIsEntering(false), 200);
   };
 
   // Parâmetros do leque para efeito de arco curvado
@@ -177,16 +193,63 @@ const MonsterCardSwiper: React.FC = () => {
             transition: "transform 0.3s",
           }}
         >
-          <TinderCard
-            key={monsters[currentIndex].id + "-" + currentIndex}
-            preventSwipe={["up", "down"]}
-            className="absolute w-full h-full"
-            onSwipe={handleSwipe}
-            swipeRequirementType="position"
-            swipeThreshold={10}
+          {/* Setas minimalistas para indicar swipe */}
+          <div className="absolute left-2 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M12 3L6 9L12 15"
+                stroke="#888"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.5"
+              />
+            </svg>
+          </div>
+          <div className="absolute right-2 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
+            <svg
+              width="18"
+              height="18"
+              viewBox="0 0 18 18"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M6 3L12 9L6 15"
+                stroke="#888"
+                strokeWidth="2.2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                opacity="0.5"
+              />
+            </svg>
+          </div>
+          <div
+            className={`absolute w-full h-full transition-all duration-200 ${
+              isEntering
+                ? (lastDirection === "right"
+                    ? "-translate-x-8"
+                    : "translate-x-8") + " opacity-0"
+                : "translate-x-0 opacity-100"
+            }`}
           >
-            <MonsterCard monster={monsters[currentIndex]} />
-          </TinderCard>
+            <TinderCard
+              key={monsters[currentIndex].id + "-" + currentIndex}
+              preventSwipe={["up", "down"]}
+              className="absolute w-full h-full"
+              onSwipe={(dir) => handleSwipe(dir as "left" | "right")}
+              swipeRequirementType="position"
+              swipeThreshold={10}
+            >
+              <MonsterCard monster={monsters[currentIndex]} />
+            </TinderCard>
+          </div>
         </div>
       </div>
     </div>
