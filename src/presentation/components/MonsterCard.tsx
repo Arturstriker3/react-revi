@@ -71,7 +71,7 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
   return (
     <div
       className={`
-      relative w-full max-w-[280px] aspect-[2/3] group
+      relative w-full max-w-[180px] sm:max-w-[280px] aspect-[2/3] group
       bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-200
       border-2 sm:border-4 ${holoEffect.border} rounded-lg
       shadow-xl transform transition-all duration-300

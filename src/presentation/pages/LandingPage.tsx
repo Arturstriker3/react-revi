@@ -21,6 +21,7 @@ import { Monster } from "../../domain/entities/Monster";
 import MonsterCard from "../components/MonsterCard";
 import MonsterCardSwiper from "../components/MonsterCardSwiper";
 import { GiDragonHead, GiHamburgerMenu } from "react-icons/gi";
+import FloatingActionButton from "../components/FloatingActionButton";
 
 const duelMonsters: Monster[] = [
   {
@@ -138,8 +139,14 @@ const LandingPage: React.FC = () => {
       >
         <nav className="flex justify-between items-center max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4">
           <div className="flex items-center space-x-2 sm:space-x-3">
-            <div className="w-8 h-8 sm:w-12 sm:h-12 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center border-2 border-yellow-500 shadow-lg shadow-yellow-500/50">
-              <GiDragonHead className="text-lg sm:text-2xl text-black" />
+            <div
+              className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center border-2 border-yellow-500 shadow-lg shadow-yellow-500/50 cursor-pointer"
+              aria-label="Voltar ao topo"
+              onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+              tabIndex={0}
+              role="button"
+            >
+              <GiDragonHead className="text-2xl text-black" />
             </div>
             <div>
               <h1 className="text-lg sm:text-2xl font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
@@ -195,8 +202,8 @@ const LandingPage: React.FC = () => {
         title={
           <div className="flex items-center justify-between w-full">
             <div className="flex items-center space-x-3">
-              <div className="w-8 h-8 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center border-2 border-yellow-500">
-                <GiDragonHead className="text-lg text-black" />
+              <div className="w-10 h-10 bg-gradient-to-r from-yellow-400 to-yellow-600 rounded-lg flex items-center justify-center border-2 border-yellow-500 shadow-lg shadow-yellow-500/30 cursor-pointer">
+                <GiDragonHead className="text-2xl text-black" />
               </div>
               <span className="text-lg font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
                 MONSTER ARENA
@@ -205,10 +212,10 @@ const LandingPage: React.FC = () => {
             <button
               aria-label="Fechar menu"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 shadow-lg shadow-yellow-500/30 hover:from-yellow-500 hover:to-yellow-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 ml-4"
+              className="flex items-center justify-center w-10 h-10 rounded-full bg-gradient-to-r from-yellow-400 to-yellow-600 border-2 border-yellow-500 shadow-lg shadow-yellow-500/30 hover:from-yellow-500 hover:to-yellow-700 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-yellow-400 ml-4"
               style={{ border: "none" }}
             >
-              <CloseOutlined className="text-black text-xl" />
+              <CloseOutlined className="text-2xl text-black" />
             </button>
           </div>
         }
@@ -271,15 +278,6 @@ const LandingPage: React.FC = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 sm:gap-6 justify-center mb-12 sm:mb-16 px-4">
-            <Button
-              type="primary"
-              size="large"
-              className="bg-gradient-to-r from-purple-600 to-purple-800 border-none hover:from-purple-700 hover:to-purple-900 h-12 sm:h-16 px-6 sm:px-10 text-base sm:text-lg shadow-lg shadow-purple-600/30"
-              icon={<ThunderboltOutlined />}
-              onClick={startDuel}
-            >
-              Iniciar Batalha das Sombras
-            </Button>
             <a
               href="https://www.youtube.com/watch?v=BBJa32lCaaY"
               target="_blank"
@@ -591,16 +589,6 @@ const LandingPage: React.FC = () => {
             >
               DESPERTAR O PODER
             </Button>
-            <a
-              href="https://www.youtube.com/watch?v=BBJa32lCaaY"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center justify-center border-2 border-purple-400 text-purple-400 hover:bg-purple-400 hover:text-black h-12 sm:h-16 lg:h-20 px-6 sm:px-8 lg:px-12 text-base sm:text-lg lg:text-xl backdrop-blur-sm bg-black/20 rounded-lg transition-colors duration-200 font-medium"
-              style={{ textDecoration: "none" }}
-            >
-              <EyeOutlined className="mr-2" />
-              ASSISTIR GAMEPLAY
-            </a>
           </div>
         </div>
       </section>
@@ -633,6 +621,8 @@ const LandingPage: React.FC = () => {
           </div>
         </div>
       </footer>
+
+      <FloatingActionButton />
     </div>
   );
 };

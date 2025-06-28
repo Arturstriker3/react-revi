@@ -131,8 +131,8 @@ const MonsterCardSwiper: React.FC = () => {
   const arcAngle = 90; // ângulo total do leque em graus (mais aberto)
 
   return (
-    <div className="flex justify-center items-center min-h-[400px] sm:min-h-[500px] px-4">
-      <div className="relative w-[280px] h-[380px] sm:w-[300px] sm:h-[420px]">
+    <div className="flex justify-center items-center min-h-[300px] sm:min-h-[500px] px-2 sm:px-4">
+      <div className="relative w-[180px] h-[240px] sm:w-[300px] sm:h-[420px]">
         {/* Leque de cartas (sempre atrás) */}
         <div className="absolute inset-0" style={{ zIndex: 1 }}>
           {monsters
@@ -152,7 +152,7 @@ const MonsterCardSwiper: React.FC = () => {
               const rel = relIndex - center;
               const angle = (rel / maxFan) * arcAngle; // de -arcAngle/2 a +arcAngle/2
               const rad = (angle * Math.PI) / 180;
-              const arcRadiusMobile = 150; // raio menor para mobile
+              const arcRadiusMobile = 90; // raio menor para mobile
               const arcRadiusDesktop = 200; // raio original para desktop
               const arcRadius =
                 window.innerWidth < 640 ? arcRadiusMobile : arcRadiusDesktop;
