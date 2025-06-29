@@ -29,10 +29,17 @@ const DashboardLayout: React.FC = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 640);
 
   useEffect(() => {
     setMobileOpen(false);
   }, [location.pathname]);
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth >= 640);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   // Gera menuItems dinamicamente das rotas filhas de /dashboard
   const dashboardRoute = routes.find((r) => r.path === "/dashboard");
@@ -180,10 +187,8 @@ const DashboardLayout: React.FC = () => {
       </aside>
       {/* Conteúdo principal */}
       <div
-        className={`flex-1 flex flex-col transition-all duration-200 min-h-screen
-          sm:ml-[${sidebarDesktopWidth}px]
-          ml-0
-        `}
+        className="flex-1 flex flex-col transition-all duration-200 min-h-screen"
+        style={{ marginLeft: isDesktop ? (collapsed ? 80 : 250) : 0 }}
       >
         <Layout style={{ background: "transparent" }}>
           <Header className="sticky top-0 z-40 bg-white px-6 py-0 flex items-center justify-between shadow">
@@ -225,14 +230,16 @@ const DashboardLayout: React.FC = () => {
           </Header>
           <Content
             style={{
-              margin: "24px",
-              padding: "24px",
+              margin: 0,
+              padding: 0,
               background: "#fff",
               borderRadius: "8px",
               minHeight: "calc(100vh - 112px)",
             }}
           >
-            <Outlet />
+            <div className="w-full px-4 py-2">
+              <Outlet />
+            </div>
           </Content>
         </Layout>
       </div>

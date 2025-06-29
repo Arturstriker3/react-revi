@@ -87,7 +87,7 @@ const BattleCardVs: React.FC<BattleCardVsProps> = ({ card1, card2 }) => {
           {isCard1Weaker && <BurnedOverlay />}
         </div>
         {/* VS mobile */}
-        <div className="block sm:hidden flex-1 flex items-center justify-center mt-2 mb-2">
+        <div className="sm:hidden flex-1 flex items-center justify-center mt-2 mb-2">
           <span className="block text-3xl font-extrabold text-yellow-400 rotate-[-20deg] drop-shadow-lg select-none">
             VS
           </span>
