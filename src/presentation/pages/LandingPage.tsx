@@ -28,11 +28,16 @@ const STORAGE_KEY = "monster_arena_initial_deck_seeded";
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
-  const { monsters, createMonster } = useMonsterStore();
+  const { monsters, createMonster, fetchMonsters } = useMonsterStore();
   const [duelAnimation, setDuelAnimation] = useState(false);
   const [mysticalEffect, setMysticalEffect] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  // Fetch monsters when component mounts
+  useEffect(() => {
+    fetchMonsters();
+  }, [fetchMonsters]);
 
   // Verifica e gera o deck inicial
   useEffect(() => {

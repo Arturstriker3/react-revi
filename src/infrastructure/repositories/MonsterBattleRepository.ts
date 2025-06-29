@@ -2,14 +2,27 @@ import { MonsterBattle } from "../../domain/entities/MonsterBattle";
 import { IMonsterBattleRepository } from "../../domain/repositories/IMonsterBattleRepository";
 import { v4 as uuidv4 } from "uuid";
 
-export class MonsterBattleRepository implements IMonsterBattleRepository {
-  // Armazena as batalhas em memória (simula um banco de dados)
-  private battles: MonsterBattle[] = [];
+const STORAGE_KEY = "monster_battles";
 
+function loadBattles(): MonsterBattle[] {
+  const data = localStorage.getItem(STORAGE_KEY);
+  return data
+    ? JSON.parse(data, (key, value) => {
+        if (key === "created_at" || key === "updated_at")
+          return new Date(value);
+        return value;
+      })
+    : [];
+}
+
+function saveBattles(battles: MonsterBattle[]) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(battles));
+}
+
+export class MonsterBattleRepository implements IMonsterBattleRepository {
   async create(
     battle: Omit<MonsterBattle, "id" | "created_at" | "updated_at">
   ): Promise<MonsterBattle> {
-    // Cria uma nova batalha com ID e timestamps
     const newBattle: MonsterBattle = {
       ...battle,
       id: uuidv4(),
@@ -17,25 +30,24 @@ export class MonsterBattleRepository implements IMonsterBattleRepository {
       updated_at: new Date(),
     };
 
-    // Adiciona a batalha ao array de batalhas
-    this.battles.push(newBattle);
+    const battles = loadBattles();
+    battles.push(newBattle);
+    saveBattles(battles);
     return newBattle;
   }
 
   async findById(id: string): Promise<MonsterBattle | null> {
-    // Busca uma batalha pelo ID
-    const battle = this.battles.find((b) => b.id === id);
-    return battle || null;
+    const battles = loadBattles();
+    return battles.find((b) => b.id === id) || null;
   }
 
   async findAll(): Promise<MonsterBattle[]> {
-    // Retorna todas as batalhas
-    return [...this.battles];
+    return loadBattles();
   }
 
   async findByMonsterId(monsterId: string): Promise<MonsterBattle[]> {
-    // Busca todas as batalhas onde o monstro participou (como monster1 ou monster2)
-    return this.battles.filter(
+    const battles = loadBattles();
+    return battles.filter(
       (battle) =>
         battle.monster1Id === monsterId || battle.monster2Id === monsterId
     );
@@ -43,35 +55,34 @@ export class MonsterBattleRepository implements IMonsterBattleRepository {
 
   async update(
     id: string,
-    battleData: Partial<MonsterBattle>
+    battleData: Partial<Omit<MonsterBattle, "id" | "created_at" | "updated_at">>
   ): Promise<MonsterBattle> {
-    // Encontra o índice da batalha no array
-    const battleIndex = this.battles.findIndex((b) => b.id === id);
+    const battles = loadBattles();
+    const battleIndex = battles.findIndex((b) => b.id === id);
 
     if (battleIndex === -1) {
       throw new Error("Batalha não encontrada");
     }
 
-    // Atualiza os dados da batalha
-    const updatedBattle: MonsterBattle = {
-      ...this.battles[battleIndex],
+    battles[battleIndex] = {
+      ...battles[battleIndex],
       ...battleData,
       updated_at: new Date(),
     };
 
-    // Substitui a batalha antiga pela atualizada
-    this.battles[battleIndex] = updatedBattle;
-    return updatedBattle;
+    saveBattles(battles);
+    return battles[battleIndex];
   }
 
   async delete(id: string): Promise<void> {
-    // Remove a batalha do array
-    const battleIndex = this.battles.findIndex((b) => b.id === id);
+    let battles = loadBattles();
+    const initialLength = battles.length;
+    battles = battles.filter((b) => b.id !== id);
 
-    if (battleIndex === -1) {
+    if (battles.length === initialLength) {
       throw new Error("Batalha não encontrada");
     }
 
-    this.battles.splice(battleIndex, 1);
+    saveBattles(battles);
   }
 }
