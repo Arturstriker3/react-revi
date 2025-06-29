@@ -121,7 +121,7 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
   return (
     <div
       className={`
-        relative w-full max-w-[180px] sm:max-w-[280px] aspect-[2/3] group
+        relative w-full max-w-[220px] sm:max-w-[320px] aspect-[2/3] group
         bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-200
         border-2 sm:border-4 ${effects.border} rounded-lg
         shadow-xl transition-shadow duration-300
@@ -176,10 +176,10 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
       {/* Conteúdo da carta */}
       <div className="relative h-full flex flex-col p-2 sm:p-4 z-10 select-none">
         {/* Nome com efeito de raridade */}
-        <div className="text-center mb-2 sm:mb-3 select-none">
+        <div className="text-center mb-2 sm:mb-3 select-none px-2">
           <h3
             className={`
-              text-sm sm:text-lg font-bold truncate select-none
+              text-base sm:text-xl font-bold truncate select-none
               ${effects.rarityColor}
             `}
           >
@@ -242,53 +242,45 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
         {/* Stats com aprimoramento de raridade */}
         <div
           className={`
-          rounded-lg p-2 sm:p-3 border transition-all duration-300
+          rounded-lg p-2 sm:p-4 border transition-all duration-300
           ${effects.rarityGradient} border-opacity-50
         `}
         >
-          <div className="grid grid-cols-2 gap-1 sm:gap-2 text-xs sm:text-sm">
+          <div className="grid grid-cols-2 gap-2 sm:gap-3 text-sm sm:text-base">
             {/* Ataque */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <GiSwordsPower className="w-3 h-3 sm:w-4 sm:h-4 text-red-600 mr-1" />
-                <span className="text-gray-700 font-medium text-xs">ATK</span>
+                <GiSwordsPower className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 mr-1.5" />
+                <span className="text-gray-700 font-medium">ATK</span>
               </div>
-              <span className="font-bold text-red-700 text-sm sm:text-base">
-                {monster.attack}
-              </span>
+              <span className="font-bold text-red-700">{monster.attack}</span>
             </div>
 
             {/* Defesa */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <GiShield className="w-3 h-3 sm:w-4 sm:h-4 text-blue-600 mr-1" />
-                <span className="text-gray-700 font-medium text-xs">DEF</span>
+                <GiShield className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 mr-1.5" />
+                <span className="text-gray-700 font-medium">DEF</span>
               </div>
-              <span className="font-bold text-blue-700 text-sm sm:text-base">
-                {monster.defense}
-              </span>
+              <span className="font-bold text-blue-700">{monster.defense}</span>
             </div>
 
             {/* Velocidade */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <GiRun className="w-3 h-3 sm:w-4 sm:h-4 text-green-600 mr-1" />
-                <span className="text-gray-700 font-medium text-xs">SPD</span>
+                <GiRun className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 mr-1.5" />
+                <span className="text-gray-700 font-medium">SPD</span>
               </div>
-              <span className="font-bold text-green-700 text-sm sm:text-base">
-                {monster.speed}
-              </span>
+              <span className="font-bold text-green-700">{monster.speed}</span>
             </div>
 
             {/* HP */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
-                <GiHeartPlus className="w-3 h-3 sm:w-4 sm:h-4 text-pink-600 mr-1" />
-                <span className="text-gray-700 font-medium text-xs">HP</span>
+                <GiHeartPlus className="w-4 h-4 sm:w-5 sm:h-5 text-pink-600 mr-1.5" />
+                <span className="text-gray-700 font-medium">HP</span>
               </div>
-              <span className="font-bold text-pink-700 text-sm sm:text-base">
-                {monster.hp}
-              </span>
+              <span className="font-bold text-pink-700">{monster.hp}</span>
             </div>
           </div>
         </div>

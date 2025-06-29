@@ -7,7 +7,7 @@ import BattleCardVs from "../components/BattleCardVs";
 import { CheckCircleFilled } from "@ant-design/icons";
 
 const Battles: React.FC = () => {
-  const { monsters, loading, error, fetchMonsters } = useMonsterStore();
+  const { monsters, error, fetchMonsters } = useMonsterStore();
   const [selectedMonsters, setSelectedMonsters] = useState<Monster[]>([]);
   const [isBattleModalOpen, setIsBattleModalOpen] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
@@ -46,12 +46,13 @@ const Battles: React.FC = () => {
   return (
     <div className="p-4">
       {contextHolder}
-      <div className="flex flex-col items-center mb-8">
+      {/* Botão de batalha */}
+      <div className="flex justify-center mb-6">
         <Button
           type="primary"
           onClick={handleBattleClick}
           disabled={selectedMonsters.length !== 2}
-          className="bg-gradient-to-r from-yellow-600 to-red-600 border-none hover:from-yellow-700 hover:to-red-700 h-12 px-8 text-lg flex items-center justify-center gap-2"
+          className="bg-gradient-to-r from-yellow-600 to-red-600 border-none hover:from-yellow-700 hover:to-red-700 h-12 px-8 text-base sm:text-lg"
         >
           {selectedMonsters.length === 2
             ? "Iniciar Batalha"
@@ -61,36 +62,29 @@ const Battles: React.FC = () => {
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6 max-w-7xl mx-auto">
+      {/* Grid de cartas */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-8 max-w-7xl mx-auto">
         {monsters.map((monster) => {
           const isSelected = selectedMonsters.find((m) => m.id === monster.id);
           return (
-            <div
-              key={monster.id}
-              className="relative cursor-pointer group"
-              onClick={() => handleMonsterClick(monster)}
-            >
+            <div key={monster.id} className="flex justify-center">
               <div
-                className={`
-                  transform transition-all duration-200 ease-in-out
-                  ${isSelected ? "scale-[0.98]" : "hover:scale-105"}
-                  ${
-                    isSelected
-                      ? "ring-2 ring-green-500 ring-offset-2 rounded-lg"
-                      : ""
-                  }
-                `}
+                className="w-[220px] sm:w-[280px] relative cursor-pointer"
+                onClick={() => handleMonsterClick(monster)}
               >
-                <div className="relative">
-                  <MonsterCard monster={monster} />
-                  {isSelected && (
-                    <div className="absolute -top-3 -right-3 z-10">
-                      <div className="bg-green-500 rounded-full p-1 shadow-lg">
-                        <CheckCircleFilled className="text-white text-xl" />
+                <MonsterCard monster={monster} />
+                {isSelected && (
+                  <div
+                    className="absolute top-0 left-0 right-0 bottom-0 rounded-lg border-[4px] sm:border-[6px] border-green-500 pointer-events-none"
+                    style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
+                  >
+                    <div className="absolute -top-3 -right-3 sm:-top-5 sm:-right-5 z-10">
+                      <div className="bg-green-500 rounded-full p-1 sm:p-2 shadow-lg">
+                        <CheckCircleFilled className="text-white text-xl sm:text-3xl" />
                       </div>
                     </div>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
             </div>
           );
@@ -98,16 +92,25 @@ const Battles: React.FC = () => {
       </div>
 
       <Modal
-        title="Batalha de Monstros"
+        title={
+          <div className="text-lg font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
+            Batalha de Monstros
+          </div>
+        }
         open={isBattleModalOpen}
         onCancel={handleCloseBattleModal}
         footer={[
-          <Button key="close" onClick={handleCloseBattleModal}>
+          <Button
+            key="close"
+            onClick={handleCloseBattleModal}
+            className="bg-gradient-to-r from-gray-700 to-gray-900 text-white border-none hover:from-gray-800 hover:to-gray-950"
+          >
             Fechar
           </Button>,
         ]}
         width={800}
         centered
+        className="battle-modal"
       >
         {selectedMonsters.length === 2 && (
           <BattleCardVs
