@@ -1,11 +1,13 @@
 export interface Monster {
-  id: number;
+  id: string;
   name: string;
   attack: number;
   defense: number;
   speed: number;
   hp: number;
   image_url?: string | null;
+  created_at: Date;
+  updated_at: Date;
 }
 
 export function getCardPower(monster: Monster): number {
