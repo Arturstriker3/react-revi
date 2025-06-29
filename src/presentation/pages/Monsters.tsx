@@ -5,7 +5,6 @@ import { Monster, getCardRarity } from "../../domain/entities/Monster";
 import MonsterModal from "../components/MonsterModal";
 import MobileMonsterCard from "../components/MonsterMobileCard";
 import ConfirmationModal from "../components/ConfirmationModal";
-import { FiPlus } from "react-icons/fi";
 import { useOutletContext } from "react-router-dom";
 
 const initialForm: Omit<Monster, "id" | "created_at" | "updated_at"> = {
@@ -207,7 +206,6 @@ const Monsters: React.FC = () => {
           <Button
             type="primary"
             onClick={openCreateModal}
-            icon={<FiPlus />}
             className="hidden sm:flex"
           >
             Adicionar Monstro
@@ -245,7 +243,7 @@ const Monsters: React.FC = () => {
             className="fixed bottom-4 right-4 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-blue-500 shadow-lg hover:bg-blue-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 sm:hidden"
             style={{ border: "none" }}
           >
-            <FiPlus className="text-white text-3xl" />
+            Adicionar
           </button>
         )}
 

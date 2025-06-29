@@ -1,6 +1,7 @@
 import React from "react";
 import { Modal, Form, Input, InputNumber, Button } from "antd";
 import { MonsterDTO } from "../../application/dtos/MonsterDTO";
+import { MONSTER_STAT_LIMITS } from "../../domain/entities/Monster";
 
 interface MonsterModalProps {
   open: boolean;
@@ -122,7 +123,8 @@ const MonsterModal: React.FC<MonsterModalProps> = ({
               required: true,
               type: "number",
               min: 0,
-              message: "Digite apenas números inteiros para o ataque",
+              max: MONSTER_STAT_LIMITS.MAX_ATTACK,
+              message: `O ataque deve estar entre 0 e ${MONSTER_STAT_LIMITS.MAX_ATTACK}`,
             },
           ]}
         >
@@ -131,6 +133,8 @@ const MonsterModal: React.FC<MonsterModalProps> = ({
             controls={false}
             stringMode={false}
             onKeyPress={onlyAllowNumbers}
+            min={0}
+            max={MONSTER_STAT_LIMITS.MAX_ATTACK}
           />
         </Form.Item>
         <Form.Item
@@ -141,7 +145,8 @@ const MonsterModal: React.FC<MonsterModalProps> = ({
               required: true,
               type: "number",
               min: 0,
-              message: "Digite apenas números inteiros para a defesa",
+              max: MONSTER_STAT_LIMITS.MAX_DEFENSE,
+              message: `A defesa deve estar entre 0 e ${MONSTER_STAT_LIMITS.MAX_DEFENSE}`,
             },
           ]}
         >
@@ -150,6 +155,8 @@ const MonsterModal: React.FC<MonsterModalProps> = ({
             controls={false}
             stringMode={false}
             onKeyPress={onlyAllowNumbers}
+            min={0}
+            max={MONSTER_STAT_LIMITS.MAX_DEFENSE}
           />
         </Form.Item>
         <Form.Item
@@ -160,7 +167,8 @@ const MonsterModal: React.FC<MonsterModalProps> = ({
               required: true,
               type: "number",
               min: 0,
-              message: "Digite apenas números inteiros para a velocidade",
+              max: MONSTER_STAT_LIMITS.MAX_SPEED,
+              message: `A velocidade deve estar entre 0 e ${MONSTER_STAT_LIMITS.MAX_SPEED}`,
             },
           ]}
         >
@@ -169,6 +177,8 @@ const MonsterModal: React.FC<MonsterModalProps> = ({
             controls={false}
             stringMode={false}
             onKeyPress={onlyAllowNumbers}
+            min={0}
+            max={MONSTER_STAT_LIMITS.MAX_SPEED}
           />
         </Form.Item>
         <Form.Item
@@ -179,7 +189,8 @@ const MonsterModal: React.FC<MonsterModalProps> = ({
               required: true,
               type: "number",
               min: 0,
-              message: "Digite apenas números inteiros para o HP",
+              max: MONSTER_STAT_LIMITS.MAX_HP,
+              message: `O HP deve estar entre 0 e ${MONSTER_STAT_LIMITS.MAX_HP}`,
             },
           ]}
         >
@@ -188,6 +199,8 @@ const MonsterModal: React.FC<MonsterModalProps> = ({
             controls={false}
             stringMode={false}
             onKeyPress={onlyAllowNumbers}
+            min={0}
+            max={MONSTER_STAT_LIMITS.MAX_HP}
           />
         </Form.Item>
         <Form.Item name="image_url" label="URL da Imagem">

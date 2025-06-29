@@ -1,5 +1,5 @@
 import { IMonsterRepository } from "../../domain/repositories/IMonsterRepository";
-import { Monster } from "../../domain/entities/Monster";
+import { Monster, validateMonsterStats } from "../../domain/entities/Monster";
 import { MonsterDTO } from "../dtos/MonsterDTO";
 
 export class CreateMonsterUseCase {
@@ -8,6 +8,16 @@ export class CreateMonsterUseCase {
   async execute(
     data: Omit<MonsterDTO, "id" | "created_at" | "updated_at">
   ): Promise<Monster> {
+    // Validate monster stats
+    const validationErrors = validateMonsterStats(data);
+    if (validationErrors.length > 0) {
+      throw new Error(
+        `Invalid monster stats: ${validationErrors
+          .map((error) => error.message)
+          .join(", ")}`
+      );
+    }
+
     return this.repository.create(data);
   }
 }

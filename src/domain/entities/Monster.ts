@@ -18,6 +18,58 @@ export const MONSTER_STAT_LIMITS = {
   MAX_HP: 1000,
 } as const;
 
+export interface ValidationError {
+  field: string;
+  message: string;
+}
+
+export function validateMonsterStats(
+  monster: Partial<Monster>
+): ValidationError[] {
+  const errors: ValidationError[] = [];
+
+  if (monster.attack !== undefined) {
+    if (monster.attack < 0 || monster.attack > MONSTER_STAT_LIMITS.MAX_ATTACK) {
+      errors.push({
+        field: "attack",
+        message: `Attack must be between 0 and ${MONSTER_STAT_LIMITS.MAX_ATTACK}`,
+      });
+    }
+  }
+
+  if (monster.defense !== undefined) {
+    if (
+      monster.defense < 0 ||
+      monster.defense > MONSTER_STAT_LIMITS.MAX_DEFENSE
+    ) {
+      errors.push({
+        field: "defense",
+        message: `Defense must be between 0 and ${MONSTER_STAT_LIMITS.MAX_DEFENSE}`,
+      });
+    }
+  }
+
+  if (monster.speed !== undefined) {
+    if (monster.speed < 0 || monster.speed > MONSTER_STAT_LIMITS.MAX_SPEED) {
+      errors.push({
+        field: "speed",
+        message: `Speed must be between 0 and ${MONSTER_STAT_LIMITS.MAX_SPEED}`,
+      });
+    }
+  }
+
+  if (monster.hp !== undefined) {
+    if (monster.hp < 0 || monster.hp > MONSTER_STAT_LIMITS.MAX_HP) {
+      errors.push({
+        field: "hp",
+        message: `HP must be between 0 and ${MONSTER_STAT_LIMITS.MAX_HP}`,
+      });
+    }
+  }
+
+  return errors;
+}
+
 export function getCardPower(monster: Monster): number {
   return Math.floor(
     monster.attack * 0.5 +
