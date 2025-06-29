@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from "react";
-import { Button, Modal, message } from "antd";
+import { Button, message } from "antd";
 import { useMonsterStore } from "../stores/monsterStore";
 import { Monster } from "../../domain/entities/Monster";
 import MonsterCard from "../components/MonsterCard";
-import BattleCardVs from "../components/BattleCardVs";
 import { CheckCircleFilled } from "@ant-design/icons";
+import BattleSimulation from "../components/BattleSimulation";
 
 const Battles: React.FC = () => {
   const { monsters, error, fetchMonsters } = useMonsterStore();
   const [selectedMonsters, setSelectedMonsters] = useState<Monster[]>([]);
-  const [isBattleModalOpen, setIsBattleModalOpen] = useState(false);
+  const [showBattleSimulation, setShowBattleSimulation] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
 
   useEffect(() => {
@@ -32,14 +32,14 @@ const Battles: React.FC = () => {
 
   const handleBattleClick = () => {
     if (selectedMonsters.length === 2) {
-      setIsBattleModalOpen(true);
+      setShowBattleSimulation(true);
     } else {
       messageApi.warning("Selecione 2 monstros para iniciar a batalha!");
     }
   };
 
-  const handleCloseBattleModal = () => {
-    setIsBattleModalOpen(false);
+  const handleCloseBattle = () => {
+    setShowBattleSimulation(false);
     setSelectedMonsters([]);
   };
 
@@ -91,34 +91,14 @@ const Battles: React.FC = () => {
         })}
       </div>
 
-      <Modal
-        title={
-          <div className="text-lg font-bold bg-gradient-to-r from-yellow-400 to-yellow-600 bg-clip-text text-transparent">
-            Batalha de Monstros
-          </div>
-        }
-        open={isBattleModalOpen}
-        onCancel={handleCloseBattleModal}
-        footer={[
-          <Button
-            key="close"
-            onClick={handleCloseBattleModal}
-            className="bg-gradient-to-r from-gray-700 to-gray-900 text-white border-none hover:from-gray-800 hover:to-gray-950"
-          >
-            Fechar
-          </Button>,
-        ]}
-        width={800}
-        centered
-        className="battle-modal"
-      >
-        {selectedMonsters.length === 2 && (
-          <BattleCardVs
-            card1={selectedMonsters[0]}
-            card2={selectedMonsters[1]}
-          />
-        )}
-      </Modal>
+      {/* Battle Simulation */}
+      {showBattleSimulation && selectedMonsters.length === 2 && (
+        <BattleSimulation
+          monster1={selectedMonsters[0]}
+          monster2={selectedMonsters[1]}
+          onClose={handleCloseBattle}
+        />
+      )}
     </div>
   );
 };
