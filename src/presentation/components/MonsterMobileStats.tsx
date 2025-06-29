@@ -13,63 +13,95 @@ const MonsterMobileStats: React.FC<MonsterMobileStatsProps> = ({
   monster,
   className = "",
 }) => {
-  // Função para normalizar os valores para uma escala de 0-100
-  const normalizeValue = (value: number) =>
-    Math.min((value / MONSTER_STAT_LIMITS.MAX_STAT) * 100, 100);
-
-  const stats = [
-    {
-      name: "Ataque",
-      value: monster.attack,
-      icon: <GiSwordsPower className="text-red-600 text-xl" />,
-      color: "#f5222d",
-      maxValue: MONSTER_STAT_LIMITS.MAX_ATTACK,
-    },
-    {
-      name: "Defesa",
-      value: monster.defense,
-      icon: <GiShield className="text-blue-600 text-xl" />,
-      color: "#1890ff",
-      maxValue: MONSTER_STAT_LIMITS.MAX_DEFENSE,
-    },
-    {
-      name: "Velocidade",
-      value: monster.speed,
-      icon: <GiRun className="text-green-600 text-xl" />,
-      color: "#52c41a",
-      maxValue: MONSTER_STAT_LIMITS.MAX_SPEED,
-    },
-    {
-      name: "HP",
-      value: monster.hp,
-      icon: <GiHeartPlus className="text-pink-600 text-xl" />,
-      color: "#eb2f96",
-      maxValue: MONSTER_STAT_LIMITS.MAX_HP,
-    },
-  ];
-
   return (
-    <Card className={`shadow-sm ${className}`} bodyStyle={{ padding: "12px" }}>
-      <div className="space-y-3">
-        {stats.map((stat) => (
-          <div key={stat.name} className="flex items-center gap-3">
-            <div className="flex items-center gap-2 min-w-[100px]">
-              {stat.icon}
-              <span className="text-sm font-medium text-gray-700">
-                {stat.name}
-              </span>
+    <Card
+      className={`shadow-sm ${className}`}
+      styles={{ body: { padding: "12px" } }}
+    >
+      <div className="space-y-2">
+        <div>
+          <div className="flex items-center justify-between mb-0.5">
+            <div className="flex items-center">
+              <GiSwordsPower className="w-4 h-4 text-red-500 mr-1.5" />
+              <span className="text-gray-600 text-sm">ATK</span>
             </div>
-            <div className="flex-1">
-              <Progress
-                percent={normalizeValue(stat.value)}
-                format={() => stat.value}
-                strokeColor={stat.color}
-                size="small"
-                showInfo={true}
-              />
-            </div>
+            <span className="font-medium text-red-600 text-sm">
+              {monster.attack}
+            </span>
           </div>
-        ))}
+          <Progress
+            percent={Math.min(
+              (monster.attack / MONSTER_STAT_LIMITS.MAX_ATTACK) * 100,
+              100
+            )}
+            size="small"
+            strokeColor="#ef4444"
+            showInfo={false}
+          />
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-0.5">
+            <div className="flex items-center">
+              <GiShield className="w-4 h-4 text-blue-500 mr-1.5" />
+              <span className="text-gray-600 text-sm">DEF</span>
+            </div>
+            <span className="font-medium text-blue-600 text-sm">
+              {monster.defense}
+            </span>
+          </div>
+          <Progress
+            percent={Math.min(
+              (monster.defense / MONSTER_STAT_LIMITS.MAX_DEFENSE) * 100,
+              100
+            )}
+            size="small"
+            strokeColor="#3b82f6"
+            showInfo={false}
+          />
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-0.5">
+            <div className="flex items-center">
+              <GiRun className="w-4 h-4 text-green-500 mr-1.5" />
+              <span className="text-gray-600 text-sm">SPD</span>
+            </div>
+            <span className="font-medium text-green-600 text-sm">
+              {monster.speed}
+            </span>
+          </div>
+          <Progress
+            percent={Math.min(
+              (monster.speed / MONSTER_STAT_LIMITS.MAX_SPEED) * 100,
+              100
+            )}
+            size="small"
+            strokeColor="#22c55e"
+            showInfo={false}
+          />
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-0.5">
+            <div className="flex items-center">
+              <GiHeartPlus className="w-4 h-4 text-pink-500 mr-1.5" />
+              <span className="text-gray-600 text-sm">HP</span>
+            </div>
+            <span className="font-medium text-pink-600 text-sm">
+              {monster.hp}
+            </span>
+          </div>
+          <Progress
+            percent={Math.min(
+              (monster.hp / MONSTER_STAT_LIMITS.MAX_HP) * 100,
+              100
+            )}
+            size="small"
+            strokeColor="#ec4899"
+            showInfo={false}
+          />
+        </div>
       </div>
     </Card>
   );

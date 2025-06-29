@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { Monster } from "../../domain/entities/Monster";
-import MonsterCard from "./MonsterCard";
+import MonsterMobileCard from "./MonsterMobileCard";
 import { Progress, Button } from "antd";
-import { CrownOutlined } from "@ant-design/icons";
+import { CrownOutlined, ThunderboltOutlined } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useBattleStore } from "../stores/battleStore";
-import BattleMobileSimulation from "./BattleMobileSimulation";
 
-interface BattleSimulationProps {
+interface BattleMobileSimulationProps {
   monster1: Monster;
   monster2: Monster;
   onClose?: () => void;
@@ -23,7 +22,6 @@ interface BattleStep {
 // Overlay de derrota: dois cortes diagonais vermelhos em X e filtro sépia
 const BurnedOverlay: React.FC = () => (
   <div className="absolute inset-0 z-20 pointer-events-none">
-    {/* Corte diagonal vermelho 1 */}
     <svg
       width="100%"
       height="100%"
@@ -64,7 +62,7 @@ const BurnedOverlay: React.FC = () => (
   </div>
 );
 
-const BattleSimulation: React.FC<BattleSimulationProps> = ({
+const BattleMobileSimulation: React.FC<BattleMobileSimulationProps> = ({
   monster1,
   monster2,
   onClose,
@@ -76,19 +74,6 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
   const [monster2HP, setMonster2HP] = useState(monster2.hp);
   const [winner, setWinner] = useState<"monster1" | "monster2" | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
-
-  // Usando o hook useMediaQuery para detectar telas menores
-  const isMobile = window.matchMedia("(max-width: 768px)").matches;
-
-  if (isMobile) {
-    return (
-      <BattleMobileSimulation
-        monster1={monster1}
-        monster2={monster2}
-        onClose={onClose}
-      />
-    );
-  }
 
   // Processa o resultado da batalha em steps para animação
   const processBattleResult = async () => {
@@ -191,21 +176,20 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
     setIsSimulating(true);
   };
 
-  // Renderização para desktop (mantendo o código existente)
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
-      <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 overflow-hidden">
-        <div className="p-4">
+      <div className="bg-white w-full h-full flex flex-col">
+        <div className="flex-1 flex flex-col justify-center">
           {/* Battle Arena */}
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-col items-center gap-4 p-4">
             {/* Monster 1 */}
-            <div className="w-1/3">
+            <div className="w-full">
               <motion.div
                 animate={{
-                  x:
+                  y:
                     battleSteps[currentStep]?.type === "attack" &&
                     battleSteps[currentStep]?.attacker === "monster1"
-                      ? 20
+                      ? 10
                       : 0,
                 }}
                 transition={{ type: "spring", stiffness: 300, damping: 10 }}
@@ -217,37 +201,40 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
                 className="relative"
               >
                 <div className="relative">
-                  <MonsterCard monster={monster1} />
+                  <MonsterMobileCard monster={monster1} />
                   {winner === "monster1" && (
-                    <div className="absolute top-4 right-4 z-30">
+                    <div className="absolute top-2 right-2 z-30">
                       <CrownOutlined
-                        style={{ fontSize: 32, color: "#FFD700" }}
+                        style={{ fontSize: 24, color: "#FFD700" }}
                       />
                     </div>
                   )}
                   {winner === "monster2" && <BurnedOverlay />}
                 </div>
-                <div className="mt-4">
+                <div className="mt-2">
                   <Progress
                     percent={(monster1HP / monster1.hp) * 100}
                     status="active"
                     strokeColor={{ from: "#108ee9", to: "#87d068" }}
                     format={() => `${monster1HP}/${monster1.hp}`}
+                    size="small"
                   />
                 </div>
               </motion.div>
             </div>
 
             {/* VS and Battle Log */}
-            <div className="flex-1 flex flex-col items-center justify-center">
-              <div className="text-4xl font-bold text-yellow-500 mb-4">VS</div>
+            <div className="w-full">
+              <div className="text-2xl font-bold text-yellow-500 text-center mb-2">
+                VS
+              </div>
               <AnimatePresence mode="wait">
                 <motion.div
                   key={currentStep}
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}
-                  className="bg-gray-100 rounded-lg p-4 text-center min-w-[200px]"
+                  className="bg-gray-100 rounded-lg p-3 text-center text-sm"
                 >
                   {battleSteps[currentStep]?.message || "Pronto para batalhar!"}
                 </motion.div>
@@ -255,13 +242,13 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
             </div>
 
             {/* Monster 2 */}
-            <div className="w-1/3">
+            <div className="w-full">
               <motion.div
                 animate={{
-                  x:
+                  y:
                     battleSteps[currentStep]?.type === "attack" &&
                     battleSteps[currentStep]?.attacker === "monster2"
-                      ? -20
+                      ? -10
                       : 0,
                 }}
                 transition={{ type: "spring", stiffness: 300, damping: 10 }}
@@ -273,22 +260,23 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
                 className="relative"
               >
                 <div className="relative">
-                  <MonsterCard monster={monster2} />
+                  <MonsterMobileCard monster={monster2} />
                   {winner === "monster2" && (
-                    <div className="absolute top-4 right-4 z-30">
+                    <div className="absolute top-2 right-2 z-30">
                       <CrownOutlined
-                        style={{ fontSize: 32, color: "#FFD700" }}
+                        style={{ fontSize: 24, color: "#FFD700" }}
                       />
                     </div>
                   )}
                   {winner === "monster1" && <BurnedOverlay />}
                 </div>
-                <div className="mt-4">
+                <div className="mt-2">
                   <Progress
                     percent={(monster2HP / monster2.hp) * 100}
                     status="active"
                     strokeColor={{ from: "#108ee9", to: "#87d068" }}
                     format={() => `${monster2HP}/${monster2.hp}`}
+                    size="small"
                   />
                 </div>
               </motion.div>
@@ -296,11 +284,11 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
           </div>
 
           {/* Controls */}
-          <div className="flex justify-center gap-4 mt-8">
+          <div className="flex justify-center gap-3 mt-4">
             {!isSimulating && (
               <Button
                 type="primary"
-                size="large"
+                size="middle"
                 onClick={startSimulation}
                 loading={loading}
                 className="bg-gradient-to-r from-yellow-500 to-yellow-600"
@@ -309,7 +297,7 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
               </Button>
             )}
             {onClose && (
-              <Button size="large" onClick={onClose}>
+              <Button size="middle" onClick={onClose}>
                 Fechar
               </Button>
             )}
@@ -320,4 +308,4 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
   );
 };
 
-export default BattleSimulation;
+export default BattleMobileSimulation;

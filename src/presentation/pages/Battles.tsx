@@ -3,6 +3,7 @@ import { Button, message } from "antd";
 import { useMonsterStore } from "../stores/monsterStore";
 import { Monster } from "../../domain/entities/Monster";
 import MonsterCard from "../components/MonsterCard";
+import MonsterMobileCard from "../components/MonsterMobileCard";
 import { CheckCircleFilled } from "@ant-design/icons";
 import BattleSimulation from "../components/BattleSimulation";
 
@@ -11,6 +12,7 @@ const Battles: React.FC = () => {
   const [selectedMonsters, setSelectedMonsters] = useState<Monster[]>([]);
   const [showBattleSimulation, setShowBattleSimulation] = useState(false);
   const [messageApi, contextHolder] = message.useMessage();
+  const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
   useEffect(() => {
     fetchMonsters();
@@ -69,18 +71,47 @@ const Battles: React.FC = () => {
           return (
             <div key={monster.id} className="flex justify-center">
               <div
-                className="w-[220px] sm:w-[280px] relative cursor-pointer"
+                className={`${
+                  isMobile ? "w-full" : "w-[220px] sm:w-[280px]"
+                } relative cursor-pointer`}
                 onClick={() => handleMonsterClick(monster)}
               >
-                <MonsterCard monster={monster} />
+                {isMobile ? (
+                  <MonsterMobileCard monster={monster} />
+                ) : (
+                  <MonsterCard monster={monster} />
+                )}
                 {isSelected && (
                   <div
-                    className="absolute top-0 left-0 right-0 bottom-0 rounded-lg border-[4px] sm:border-[6px] border-green-500 pointer-events-none"
+                    className={`
+                      absolute top-0 left-0 right-0 bottom-0 rounded-lg 
+                      ${isMobile ? "border-2" : "border-[4px] sm:border-[6px]"}
+                      border-green-500 pointer-events-none
+                    `}
                     style={{ backgroundColor: "rgba(255, 255, 255, 0.1)" }}
                   >
-                    <div className="absolute -top-3 -right-3 sm:-top-5 sm:-right-5 z-10">
-                      <div className="bg-green-500 rounded-full p-1 sm:p-2 shadow-lg">
-                        <CheckCircleFilled className="text-white text-xl sm:text-3xl" />
+                    <div
+                      className={`
+                        absolute z-10
+                        ${
+                          isMobile
+                            ? "-top-2 -right-2"
+                            : "-top-3 -right-3 sm:-top-5 sm:-right-5"
+                        }
+                      `}
+                    >
+                      <div
+                        className={`
+                          bg-green-500 rounded-full shadow-lg
+                          ${isMobile ? "p-0.5" : "p-1 sm:p-2"}
+                        `}
+                      >
+                        <CheckCircleFilled
+                          className={`
+                            text-white
+                            ${isMobile ? "text-lg" : "text-xl sm:text-3xl"}
+                          `}
+                        />
                       </div>
                     </div>
                   </div>

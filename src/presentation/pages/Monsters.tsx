@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Button, Table, message, Space } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 import { useMonsterStore } from "../stores/monsterStore";
 import { Monster, getCardRarity } from "../../domain/entities/Monster";
 import MonsterModal from "../components/MonsterModal";
-import MobileMonsterCard from "../components/MonsterMobileCard";
+import MonsterMobileCardEdit from "../components/MonsterMobileCardEdit";
 import ConfirmationModal from "../components/ConfirmationModal";
 import { useOutletContext } from "react-router-dom";
 
@@ -215,7 +216,7 @@ const Monsters: React.FC = () => {
         {isMobile ? (
           <div className="space-y-4">
             {monsters.map((monster) => (
-              <MobileMonsterCard
+              <MonsterMobileCardEdit
                 key={monster.id}
                 monster={monster}
                 onEdit={openEditModal}
@@ -243,7 +244,7 @@ const Monsters: React.FC = () => {
             className="fixed bottom-4 right-4 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-blue-500 shadow-lg hover:bg-blue-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 sm:hidden"
             style={{ border: "none" }}
           >
-            Adicionar
+            <PlusOutlined className="text-white text-xl" />
           </button>
         )}
 
