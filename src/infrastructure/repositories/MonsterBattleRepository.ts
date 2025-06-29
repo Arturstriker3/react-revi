@@ -85,4 +85,8 @@ export class MonsterBattleRepository implements IMonsterBattleRepository {
 
     saveBattles(battles);
   }
+
+  async clear(): Promise<void> {
+    localStorage.removeItem(STORAGE_KEY);
+  }
 }

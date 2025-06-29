@@ -75,4 +75,8 @@ export class MonsterRepository implements IMonsterRepository {
 
     saveMonsters(monsters);
   }
+
+  async clear(): Promise<void> {
+    localStorage.removeItem(STORAGE_KEY);
+  }
 }

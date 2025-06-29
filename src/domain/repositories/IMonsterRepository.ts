@@ -11,4 +11,5 @@ export interface IMonsterRepository {
     monster: Partial<Omit<Monster, "id" | "created_at" | "updated_at">>
   ): Promise<Monster>;
   delete(id: string): Promise<void>;
+  clear(): Promise<void>;
 }

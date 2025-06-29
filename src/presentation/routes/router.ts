@@ -36,7 +36,7 @@ export const routes: AppRoute[] = [
       {
         path: "battles",
         element: React.createElement(Battles),
-        title: "Batalhas",
+        title: "Batalhar",
       },
     ] as AppRoute[],
   },

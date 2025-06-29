@@ -9,4 +9,5 @@ export interface IMonsterBattleRepository {
   findByMonsterId(monsterId: string): Promise<MonsterBattle[]>;
   update(id: string, battle: Partial<MonsterBattle>): Promise<MonsterBattle>;
   delete(id: string): Promise<void>;
+  clear(): Promise<void>;
 }

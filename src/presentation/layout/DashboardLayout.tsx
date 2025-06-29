@@ -1,15 +1,18 @@
 import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
-import { Layout, Menu, Avatar, Dropdown, Space } from "antd";
+import { Layout, Menu, Avatar, Dropdown, Space, Modal } from "antd";
 import {
   HomeOutlined,
   UserOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import { useState, useEffect } from "react";
 import { routes } from "../routes/router";
+import { GiDragonHead, GiSwordsPower } from "react-icons/gi";
+import { useAppStore } from "../stores/appStore";
 
 const { Header, Content } = Layout;
 
@@ -26,9 +29,11 @@ const SIDEBAR_COLLAPSED = 80;
 const DashboardLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [clearDataModalOpen, setClearDataModalOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const [isDesktop, setIsDesktop] = useState(window.innerWidth >= 640);
+  const clearAppData = useAppStore((state) => state.clearAppData);
 
   useEffect(() => {
     setMobileOpen(false);
@@ -48,9 +53,9 @@ const DashboardLayout: React.FC = () => {
       key: `/dashboard/${child.path}`,
       icon:
         (child as any).title === "Monstros" ? (
-          <UserOutlined />
-        ) : (child as any).title === "Batalhas" ? (
-          <HomeOutlined />
+          <GiDragonHead className="text-xl" />
+        ) : (child as any).title === "Batalhar" ? (
+          <GiSwordsPower className="text-xl" />
         ) : null,
       label: collapsed ? undefined : (child as any).title,
     }));
@@ -81,12 +86,14 @@ const DashboardLayout: React.FC = () => {
     return [selectedKey];
   };
 
-  // Calcula largura do sidebar no desktop
-  const sidebarDesktopWidth = collapsed ? SIDEBAR_COLLAPSED : SIDEBAR_WIDTH;
-
   // Pega o título da página atual diretamente do menuItems
   const currentMenu = menuItems.find((item) => item.key === location.pathname);
   const currentTitle = currentMenu?.label || "";
+
+  const handleClearData = () => {
+    clearAppData();
+    setClearDataModalOpen(false);
+  };
 
   return (
     <div className="min-h-screen flex bg-[#f5f6f7]">
@@ -132,17 +139,25 @@ const DashboardLayout: React.FC = () => {
             style={{ marginTop: 16 }}
           />
         </div>
-        <button
-          className="flex items-center gap-3 text-red-500 hover:text-red-600 transition-colors w-full py-2 px-6 mb-6 mt-auto text-base font-normal outline-none border-none bg-transparent text-left"
-          style={{ fontSize: "16px", lineHeight: "22px" }}
-          onClick={() => {
-            navigate("/");
-            setMobileOpen(false);
-          }}
-        >
-          <LogoutOutlined className="text-lg" />
-          <span>Sair</span>
-        </button>
+        <div className="flex flex-col mt-auto mb-6">
+          <button
+            className="flex items-center gap-3 text-red-500 hover:text-red-600 transition-colors w-full py-2 px-6 text-base font-normal outline-none border-none bg-transparent text-left"
+            onClick={() => setClearDataModalOpen(true)}
+          >
+            <DeleteOutlined className="text-lg" />
+            <span>Limpar Dados</span>
+          </button>
+          <button
+            className="flex items-center gap-3 text-red-500 hover:text-red-600 transition-colors w-full py-2 px-6 text-base font-normal outline-none border-none bg-transparent text-left"
+            onClick={() => {
+              navigate("/");
+              setMobileOpen(false);
+            }}
+          >
+            <LogoutOutlined className="text-lg" />
+            <span>Sair</span>
+          </button>
+        </div>
       </aside>
       {/* Sidebar desktop (fixo, colapsável) */}
       <aside
@@ -171,16 +186,22 @@ const DashboardLayout: React.FC = () => {
             style={{ marginTop: 16 }}
           />
         </div>
-        <button
-          className="flex items-center gap-3 text-red-500 hover:text-red-600 transition-colors w-full py-2 px-6 mb-6 mt-auto text-base font-normal outline-none border-none bg-transparent text-left"
-          style={{ fontSize: "16px", lineHeight: "22px" }}
-          onClick={() => {
-            navigate("/");
-          }}
-        >
-          <LogoutOutlined className="text-lg" />
-          {!collapsed && <span>Sair</span>}
-        </button>
+        <div className="flex flex-col mt-auto mb-6">
+          <button
+            className="flex items-center gap-3 text-red-500 hover:text-red-600 transition-colors w-full py-2 px-6 text-base font-normal outline-none border-none bg-transparent text-left"
+            onClick={() => setClearDataModalOpen(true)}
+          >
+            <DeleteOutlined className="text-lg" />
+            {!collapsed && <span>Limpar Dados</span>}
+          </button>
+          <button
+            className="flex items-center gap-3 text-red-500 hover:text-red-600 transition-colors w-full py-2 px-6 text-base font-normal outline-none border-none bg-transparent text-left"
+            onClick={() => navigate("/")}
+          >
+            <LogoutOutlined className="text-lg" />
+            {!collapsed && <span>Sair</span>}
+          </button>
+        </div>
       </aside>
       {/* Conteúdo principal */}
       <div
@@ -240,6 +261,25 @@ const DashboardLayout: React.FC = () => {
           </Content>
         </Layout>
       </div>
+
+      {/* Modal de Confirmação */}
+      <Modal
+        title="Limpar Dados"
+        open={clearDataModalOpen}
+        onOk={handleClearData}
+        onCancel={() => setClearDataModalOpen(false)}
+        okText="Sim, limpar"
+        cancelText="Cancelar"
+        okButtonProps={{
+          className: "bg-red-500 hover:bg-red-600",
+          danger: true,
+        }}
+      >
+        <p>
+          Tem certeza que deseja limpar todos os dados do aplicativo? Esta ação
+          não pode ser desfeita.
+        </p>
+      </Modal>
     </div>
   );
 };
