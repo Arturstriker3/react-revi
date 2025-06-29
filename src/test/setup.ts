@@ -7,8 +7,13 @@ const localStorageMock = {
   setItem: vi.fn(),
   removeItem: vi.fn(),
   clear: vi.fn(),
+  key: vi.fn(),
+  length: 0,
 };
-global.localStorage = localStorageMock;
+
+Object.defineProperty(window, "localStorage", {
+  value: localStorageMock,
+});
 
 // Mock do matchMedia para testes
 Object.defineProperty(window, "matchMedia", {
@@ -25,9 +30,26 @@ Object.defineProperty(window, "matchMedia", {
   })),
 });
 
+// Mock IntersectionObserver
+class IntersectionObserverMock {
+  observe = vi.fn();
+  disconnect = vi.fn();
+  unobserve = vi.fn();
+}
+
+Object.defineProperty(window, "IntersectionObserver", {
+  writable: true,
+  configurable: true,
+  value: IntersectionObserverMock,
+});
+
 // Mock do ResizeObserver
-global.ResizeObserver = vi.fn().mockImplementation(() => ({
-  observe: vi.fn(),
-  unobserve: vi.fn(),
-  disconnect: vi.fn(),
-}));
+Object.defineProperty(window, "ResizeObserver", {
+  writable: true,
+  configurable: true,
+  value: vi.fn().mockImplementation(() => ({
+    observe: vi.fn(),
+    unobserve: vi.fn(),
+    disconnect: vi.fn(),
+  })),
+});

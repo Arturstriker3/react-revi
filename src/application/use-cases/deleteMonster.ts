@@ -1,9 +1,10 @@
 import { IMonsterRepository } from "../../domain/repositories/IMonsterRepository";
 
-export class DeleteMonsterUseCase {
+export class DeleteMonster {
   constructor(private repository: IMonsterRepository) {}
 
-  async execute(id: string): Promise<boolean> {
-    return this.repository.delete(id);
+  execute(id: string): boolean {
+    const deleted = this.repository.delete(id);
+    return !!deleted;
   }
 }

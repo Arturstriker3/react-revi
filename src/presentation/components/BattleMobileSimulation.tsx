@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Monster } from "../../domain/entities/Monster";
 import MonsterMobileCard from "./MonsterMobileCard";
 import { Progress, Button } from "antd";
-import { CrownOutlined, ThunderboltOutlined } from "@ant-design/icons";
+import { CrownOutlined } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
 import { useBattleStore } from "../stores/battleStore";
 

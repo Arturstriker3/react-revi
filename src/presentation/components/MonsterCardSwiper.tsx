@@ -7,9 +7,11 @@ import { useMonsterStore } from "../stores/monsterStore";
 
 const MonsterCardSwiper: React.FC = () => {
   const { monsters } = useMonsterStore();
-  const [currentIndex, setCurrentIndex] = useState(0); // Começar do primeiro monstro
-  const [isEntering, setIsEntering] = useState(false);
-  const [lastDirection, setLastDirection] = useState<"left" | "right">("right");
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [direction, setDirection] = useState<"left" | "right" | null>(null);
+  const [isAnimating, setIsAnimating] = useState(false);
+
+  const swipeConfidenceThreshold = 10000;
 
   // Referência para o efeito sonoro
   const shuffleSoundRef = useRef<HTMLAudioElement | null>(
@@ -37,10 +39,10 @@ const MonsterCardSwiper: React.FC = () => {
       shuffleSoundRef.current.currentTime = 0;
       shuffleSoundRef.current.play();
     }
-    if (dir) setLastDirection(dir);
-    setIsEntering(true);
+    if (dir) setDirection(dir);
+    setIsAnimating(true);
     setCurrentIndex((prev) => (prev + 1) % monsters.length);
-    setTimeout(() => setIsEntering(false), 200);
+    setTimeout(() => setIsAnimating(false), 200);
   };
 
   // Garante que o currentIndex é válido
@@ -49,7 +51,6 @@ const MonsterCardSwiper: React.FC = () => {
 
   // Parâmetros do leque para efeito de arco curvado
   const maxFan = monsters.length - 1;
-  const arcRadius = 200; // raio do arco (mais largo)
   const arcAngle = 90; // ângulo total do leque em graus (mais aberto)
 
   return (
@@ -149,8 +150,8 @@ const MonsterCardSwiper: React.FC = () => {
           </div>
           <div
             className={`absolute w-full h-full transition-all duration-200 ${
-              isEntering
-                ? (lastDirection === "right"
+              isAnimating
+                ? (direction === "right"
                     ? "-translate-x-6 sm:-translate-x-8"
                     : "translate-x-6 sm:translate-x-8") + " opacity-0"
                 : "translate-x-0 opacity-100"
@@ -162,7 +163,7 @@ const MonsterCardSwiper: React.FC = () => {
               className="absolute w-full h-full"
               onSwipe={(dir) => handleSwipe(dir as "left" | "right")}
               swipeRequirementType="position"
-              swipeThreshold={10}
+              swipeThreshold={swipeConfidenceThreshold}
             >
               <MonsterCard monster={currentMonster} />
             </TinderCard>
