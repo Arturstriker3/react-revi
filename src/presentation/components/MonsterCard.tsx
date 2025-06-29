@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import {
   Monster,
-  getCardPower,
   getCardRarity,
+  getStarsFromRarity,
 } from "../../domain/entities/Monster";
 import { getMonsterImageUrl } from "../lib/monsterImage";
 import {
@@ -18,22 +18,82 @@ interface MonsterCardProps {
   monster: Monster;
 }
 
-// Interface para definir a raridade e efeitos visuais da carta
-interface CardRarity {
-  rarity: "common" | "rare" | "ultra" | "secret";
-  effects: {
-    shadow: string;
-    border: string;
-    glow: string;
-    metallic: string;
-    rainbow: string;
-    glitter: string;
-    rarityColor: string;
-    rarityGradient: string;
+const getRarityEffects = (rarity: ReturnType<typeof getCardRarity>) => {
+  const effects = {
+    legendary: {
+      shadow: "shadow-amber-500/60",
+      border: "border-amber-400",
+      glow: "hover:shadow-amber-500/80",
+      metallic: "from-amber-400 via-yellow-300 to-amber-500",
+      rainbow: "from-amber-400 via-yellow-300 to-red-500",
+      glitter: "animate-pulse",
+      rarityColor: "text-amber-600",
+      rarityGradient:
+        "bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500",
+      animation: "animate-legendary",
+    },
+    mythical: {
+      shadow: "shadow-purple-500/50",
+      border: "border-purple-400",
+      glow: "hover:shadow-purple-500/70",
+      metallic: "from-purple-400 via-fuchsia-300 to-purple-500",
+      rainbow: "from-purple-400 via-fuchsia-300 to-pink-500",
+      glitter: "animate-pulse",
+      rarityColor: "text-purple-600",
+      rarityGradient:
+        "bg-gradient-to-r from-purple-400 via-fuchsia-300 to-purple-500",
+      animation: "animate-mythical",
+    },
+    epic: {
+      shadow: "shadow-pink-500/40",
+      border: "border-pink-400",
+      glow: "hover:shadow-pink-500/60",
+      metallic: "from-pink-400 via-rose-300 to-pink-500",
+      rainbow: "from-pink-400 via-rose-300 to-red-500",
+      glitter: "animate-pulse",
+      rarityColor: "text-pink-600",
+      rarityGradient: "bg-gradient-to-r from-pink-400 via-rose-300 to-pink-500",
+      animation: "animate-epic",
+    },
+    rare: {
+      shadow: "shadow-blue-500/30",
+      border: "border-blue-400",
+      glow: "hover:shadow-blue-500/50",
+      metallic: "from-blue-400 via-cyan-300 to-blue-500",
+      rainbow: "from-blue-400 via-cyan-300 to-green-500",
+      glitter: "animate-pulse",
+      rarityColor: "text-blue-600",
+      rarityGradient: "bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500",
+      animation: "animate-rare",
+    },
+    uncommon: {
+      shadow: "shadow-gray-500/20",
+      border: "border-gray-400",
+      glow: "hover:shadow-gray-500/30",
+      metallic: "from-gray-400 via-slate-300 to-gray-500",
+      rainbow: "from-gray-400 via-slate-300 to-gray-500",
+      glitter: "",
+      rarityColor: "text-gray-600",
+      rarityGradient:
+        "bg-gradient-to-r from-gray-400 via-slate-300 to-gray-500",
+      animation: "",
+    },
+    common: {
+      shadow: "shadow-gray-400/10",
+      border: "border-gray-300",
+      glow: "hover:shadow-gray-400/20",
+      metallic: "from-gray-300 via-slate-200 to-gray-300",
+      rainbow: "from-gray-300 via-slate-200 to-gray-300",
+      glitter: "",
+      rarityColor: "text-gray-500",
+      rarityGradient:
+        "bg-gradient-to-r from-gray-300 via-slate-200 to-gray-300",
+      animation: "",
+    },
   };
-  level: number;
-  totalStats: number;
-}
+
+  return effects[rarity];
+};
 
 const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
   const [isHovered, setIsHovered] = useState(false);
@@ -41,119 +101,14 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
     Array<{ id: number; x: number; y: number; delay: number }>
   >([]);
 
-  // Calcula a raridade da carta baseada na soma total dos stats com pesos específicos
-  const calculateCardRarity = (): CardRarity => {
-    const weightedStats = getCardPower(monster);
-    const rarity = getCardRarity(monster);
-    const level = Math.floor(weightedStats / 45) + 1; // Ajustado para os pesos
-    const effects = getRarityEffects(rarity, monster.name);
-    return {
-      rarity,
-      effects,
-      level,
-      totalStats: weightedStats,
-    };
-  };
+  const rarity = getCardRarity(monster);
+  const effects = getRarityEffects(rarity);
+  const stars = getStarsFromRarity(rarity);
 
-  // Define os efeitos visuais baseados na raridade e tipo de monstro
-  const getRarityEffects = (rarity: string, monsterName: string) => {
-    const name = monsterName.toLowerCase();
-
-    // Efeitos base para cada raridade
-    const baseEffects = {
-      secret: {
-        shadow: "shadow-yellow-500/40",
-        border: "border-yellow-400",
-        glow: "hover:shadow-yellow-500/60",
-        metallic: "from-yellow-400 via-amber-300 to-yellow-500",
-        rainbow: "from-yellow-400 via-orange-400 to-red-500",
-        glitter: "animate-pulse",
-        rarityColor: "text-yellow-600",
-        rarityGradient:
-          "bg-gradient-to-r from-yellow-400 via-amber-300 to-yellow-500",
-      },
-      ultra: {
-        shadow: "shadow-purple-500/40",
-        border: "border-purple-400",
-        glow: "hover:shadow-purple-500/60",
-        metallic: "from-purple-400 via-pink-300 to-purple-500",
-        rainbow: "from-purple-400 via-pink-400 to-red-500",
-        glitter: "animate-pulse",
-        rarityColor: "text-purple-600",
-        rarityGradient:
-          "bg-gradient-to-r from-purple-400 via-pink-300 to-purple-500",
-      },
-      rare: {
-        shadow: "shadow-blue-500/30",
-        border: "border-blue-400",
-        glow: "hover:shadow-blue-500/50",
-        metallic: "from-blue-400 via-cyan-300 to-blue-500",
-        rainbow: "from-blue-400 via-cyan-400 to-green-500",
-        glitter: "animate-pulse",
-        rarityColor: "text-blue-600",
-        rarityGradient:
-          "bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500",
-      },
-      common: {
-        shadow: "shadow-gray-500/20",
-        border: "border-gray-400",
-        glow: "hover:shadow-gray-500/30",
-        metallic: "from-gray-400 via-slate-300 to-gray-500",
-        rainbow: "from-gray-400 via-slate-300 to-gray-500",
-        glitter: "",
-        rarityColor: "text-gray-600",
-        rarityGradient:
-          "bg-gradient-to-r from-gray-400 via-slate-300 to-gray-500",
-      },
-    };
-
-    // Efeitos especiais para tipos específicos de monstros
-    if (name.includes("dragão") || name.includes("dragon")) {
-      return {
-        ...baseEffects[rarity as keyof typeof baseEffects],
-        shadow: "shadow-red-500/40",
-        border: "border-red-400",
-        glow: "hover:shadow-red-500/60",
-        metallic: "from-red-400 via-orange-300 to-red-500",
-        rainbow: "from-red-400 via-orange-400 to-yellow-500",
-      };
-    }
-
-    if (
-      name.includes("lobo") ||
-      name.includes("wolf") ||
-      name.includes("sombrio")
-    ) {
-      return {
-        ...baseEffects[rarity as keyof typeof baseEffects],
-        shadow: "shadow-purple-500/40",
-        border: "border-purple-400",
-        glow: "hover:shadow-purple-500/60",
-        metallic: "from-purple-400 via-indigo-300 to-purple-500",
-        rainbow: "from-purple-400 via-indigo-400 to-blue-500",
-      };
-    }
-
-    if (name.includes("cristal") || name.includes("golem")) {
-      return {
-        ...baseEffects[rarity as keyof typeof baseEffects],
-        shadow: "shadow-cyan-500/40",
-        border: "border-cyan-400",
-        glow: "hover:shadow-cyan-500/60",
-        metallic: "from-cyan-400 via-blue-300 to-cyan-500",
-        rainbow: "from-cyan-400 via-blue-400 to-purple-500",
-      };
-    }
-
-    return baseEffects[rarity as keyof typeof baseEffects];
-  };
-
-  const cardRarity = calculateCardRarity();
-
-  // Gera partículas de glitter para cartas raras
+  // Gera partículas de glitter para cartas raras ou superiores
   useEffect(() => {
-    if (cardRarity.rarity !== "common") {
-      const particles = Array.from({ length: 8 }, (_, i) => ({
+    if (rarity !== "common" && rarity !== "uncommon") {
+      const particles = Array.from({ length: 12 }, (_, i) => ({
         id: i,
         x: Math.random() * 100,
         y: Math.random() * 100,
@@ -161,17 +116,18 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
       }));
       setGlitterParticles(particles);
     }
-  }, [monster, cardRarity.rarity]);
+  }, [rarity]);
 
   return (
     <div
       className={`
         relative w-full max-w-[180px] sm:max-w-[280px] aspect-[2/3] group
         bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-200
-        border-2 sm:border-4 ${cardRarity.effects.border} rounded-lg
+        border-2 sm:border-4 ${effects.border} rounded-lg
         shadow-xl transform transition-all duration-300
-        hover:scale-105 hover:shadow-2xl ${cardRarity.effects.glow}
+        hover:scale-105 hover:shadow-2xl ${effects.glow}
         cursor-pointer select-none outline-none focus:outline-none
+        ${effects.animation}
       `}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
@@ -181,9 +137,7 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
       <div
         className={`
           absolute inset-0 rounded-lg opacity-0 group-hover:opacity-20
-          bg-gradient-to-r ${
-            cardRarity.effects.rainbow
-          } transition-opacity duration-300
+          bg-gradient-to-r ${effects.rainbow} transition-opacity duration-300
           card-metallic-effect pointer-events-none
           ${isHovered ? "card-rainbow-effect" : ""}
         `}
@@ -193,20 +147,20 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
       <div
         className={`
           absolute inset-0 rounded-lg opacity-0 group-hover:opacity-30
-          bg-gradient-to-br ${cardRarity.effects.metallic} transition-opacity duration-300
+          bg-gradient-to-br ${effects.metallic} transition-opacity duration-300
           card-metallic-effect pointer-events-none
         `}
       />
 
       {/* Efeito glitter para cartas raras */}
-      {cardRarity.rarity !== "common" && (
+      {rarity !== "common" && rarity !== "uncommon" && (
         <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
           {glitterParticles.map((particle) => (
             <div
               key={particle.id}
               className={`
                 absolute w-1 h-1 bg-white rounded-full opacity-60
-                card-glitter-effect ${cardRarity.effects.glitter}
+                ${effects.glitter}
               `}
               style={{
                 left: `${particle.x}%`,
@@ -226,12 +180,7 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
           <h3
             className={`
               text-sm sm:text-lg font-bold truncate select-none
-              ${
-                cardRarity.rarity !== "common"
-                  ? cardRarity.effects.rarityColor
-                  : "text-gray-800"
-              }
-              transition-colors duration-300
+              ${effects.rarityColor}
             `}
           >
             {monster.name}
@@ -239,25 +188,32 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
         </div>
 
         {/* Estrelas de nível sempre douradas */}
-        <div className="flex justify-center mb-2 sm:mb-3">
-          {Array.from({ length: Math.min(cardRarity.level, 8) }).map((_, i) => (
-            <FaStar
-              key={i}
-              className={`
-                w-3 h-3 sm:w-4 sm:h-4 mx-0.5 transition-all duration-300
-                text-yellow-400
-                ${cardRarity.rarity !== "common" ? "animate-pulse" : ""}
-              `}
-            />
-          ))}
+        <div className="flex flex-col items-center gap-1 mb-2">
+          <div className="flex justify-center">
+            {Array.from({ length: stars }).map((_, i) => (
+              <FaStar
+                key={i}
+                className={`
+                  w-3 h-3 sm:w-4 sm:h-4 mx-0.5 transition-all duration-300
+                  ${effects.rarityColor}
+                  ${rarity !== "common" ? effects.glitter : ""}
+                `}
+              />
+            ))}
+          </div>
+          <span
+            className={`text-xs sm:text-sm font-medium ${effects.rarityColor}`}
+          >
+            {rarity.charAt(0).toUpperCase() + rarity.slice(1)}
+          </span>
         </div>
 
         {/* Imagem do monstro com efeitos aprimorados */}
-        <div className="flex-1 relative mb-3 sm:mb-4 bg-gradient-to-br from-slate-700 to-slate-900 rounded-lg border-2 border-amber-300 overflow-hidden">
+        <div className="relative flex-1 mb-2 sm:mb-3 overflow-hidden rounded-lg">
           <img
             src={getMonsterImageUrl(monster)}
             alt={monster.name}
-            className="w-full h-full object-cover rounded-lg transition-transform duration-300 group-hover:scale-110"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110"
             onError={(e) => {
               const target = e.target as HTMLImageElement;
               target.style.display = "none";
@@ -266,22 +222,17 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
           />
 
           {/* Indicador de raridade aprimorado */}
-          {cardRarity.rarity !== "common" && (
+          {rarity !== "common" && (
             <div className="absolute top-1 sm:top-2 right-1 sm:right-2">
               <div
                 className={`
-                  w-2 h-2 sm:w-3 sm:h-3 rounded-full animate-pulse
-                  ${cardRarity.effects.rarityGradient}
-                  shadow-lg
+                  w-2 h-2 sm:w-3 sm:h-3 rounded-full ${effects.glitter} ${effects.rarityGradient}
                 `}
               />
               <GiSparkles
                 className={`
                   absolute -top-1 -right-1 w-1 h-1 sm:w-2 sm:h-2
-                  ${cardRarity.rarity === "secret" ? "text-yellow-400" : ""}
-                  ${cardRarity.rarity === "ultra" ? "text-purple-400" : ""}
-                  ${cardRarity.rarity === "rare" ? "text-blue-400" : ""}
-                  animate-ping
+                  ${effects.rarityColor} animate-ping
                 `}
               />
             </div>
@@ -292,11 +243,7 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
         <div
           className={`
           rounded-lg p-2 sm:p-3 border transition-all duration-300
-          ${
-            cardRarity.rarity !== "common"
-              ? `bg-gradient-to-r ${cardRarity.effects.rarityGradient} border-amber-400`
-              : "bg-gradient-to-r from-gray-200 to-gray-300 border-gray-400"
-          }
+          ${effects.rarityGradient} border-opacity-50
         `}
         >
           <div className="grid grid-cols-2 gap-1 sm:gap-2 text-xs sm:text-sm">

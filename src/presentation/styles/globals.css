@@ -309,3 +309,109 @@ body {
     @apply bg-background text-foreground;
   }
 }
+
+/* Efeitos metálicos e holográficos */
+.card-metallic-effect {
+  mask-image: linear-gradient(
+    45deg,
+    transparent 0%,
+    rgba(0, 0, 0, 1) 50%,
+    transparent 100%
+  );
+}
+
+.card-rainbow-effect {
+  animation: rainbow-shift 3s linear infinite;
+}
+
+/* Animações para diferentes raridades */
+@keyframes rainbow-shift {
+  0% {
+    filter: hue-rotate(0deg);
+  }
+  100% {
+    filter: hue-rotate(360deg);
+  }
+}
+
+@keyframes legendary-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(245, 158, 11, 0.6),
+      0 0 30px rgba(245, 158, 11, 0.4), 0 0 45px rgba(245, 158, 11, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(245, 158, 11, 0.8),
+      0 0 40px rgba(245, 158, 11, 0.6), 0 0 60px rgba(245, 158, 11, 0.4);
+  }
+}
+
+@keyframes mythical-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(168, 85, 247, 0.6),
+      0 0 30px rgba(168, 85, 247, 0.4), 0 0 45px rgba(168, 85, 247, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(168, 85, 247, 0.8),
+      0 0 40px rgba(168, 85, 247, 0.6), 0 0 60px rgba(168, 85, 247, 0.4);
+  }
+}
+
+@keyframes epic-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(236, 72, 153, 0.6),
+      0 0 30px rgba(236, 72, 153, 0.4), 0 0 45px rgba(236, 72, 153, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(236, 72, 153, 0.8),
+      0 0 40px rgba(236, 72, 153, 0.6), 0 0 60px rgba(236, 72, 153, 0.4);
+  }
+}
+
+@keyframes rare-pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 15px rgba(59, 130, 246, 0.6),
+      0 0 30px rgba(59, 130, 246, 0.4), 0 0 45px rgba(59, 130, 246, 0.2);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.8),
+      0 0 40px rgba(59, 130, 246, 0.6), 0 0 60px rgba(59, 130, 246, 0.4);
+  }
+}
+
+.animate-legendary {
+  animation: legendary-pulse 2s ease-in-out infinite;
+}
+
+.animate-mythical {
+  animation: mythical-pulse 2s ease-in-out infinite;
+}
+
+.animate-epic {
+  animation: epic-pulse 2s ease-in-out infinite;
+}
+
+.animate-rare {
+  animation: rare-pulse 2s ease-in-out infinite;
+}
+
+/* Efeito de glitter */
+.card-glitter-effect {
+  animation: glitter 2s ease-in-out infinite;
+  transform-origin: center;
+}
+
+@keyframes glitter {
+  0%,
+  100% {
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.5);
+  }
+}

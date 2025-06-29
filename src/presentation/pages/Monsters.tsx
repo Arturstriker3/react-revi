@@ -1,25 +1,20 @@
 import React, { useEffect, useState } from "react";
-import {
-  Button,
-  Table,
-  Modal,
-  Form,
-  Input,
-  InputNumber,
-  Space,
-  Popconfirm,
-  message,
-} from "antd";
+import { Button, Table, message, Space } from "antd";
 import { useMonsterStore } from "../stores/monsterStore";
-import { MonsterDTO } from "../../application/dtos/MonsterDTO";
+import { Monster } from "../../domain/entities/Monster";
+import MonsterModal from "../components/MonsterModal";
+import MobileMonsterCard from "../components/MonsterMobileCard";
+import ConfirmationModal from "../components/ConfirmationModal";
+import { FiPlus } from "react-icons/fi";
+import { useOutletContext } from "react-router-dom";
 
-const initialForm: Omit<MonsterDTO, "id" | "created_at" | "updated_at"> = {
+const initialForm: Omit<Monster, "id" | "created_at" | "updated_at"> = {
   name: "",
   attack: 0,
   defense: 0,
   speed: 0,
   hp: 0,
-  image_url: "",
+  image_url: null,
 };
 
 const Monsters: React.FC = () => {
@@ -33,54 +28,71 @@ const Monsters: React.FC = () => {
     deleteMonster,
   } = useMonsterStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [editingMonster, setEditingMonster] = useState<MonsterDTO | null>(null);
-  const [form] = Form.useForm();
+  const [editingMonster, setEditingMonster] = useState<Monster | null>(null);
+  const { mobileOpen } = useOutletContext() as { mobileOpen: boolean };
+  const [messageApi, contextHolder] = message.useMessage();
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 640);
+  const [monsterToDelete, setMonsterToDelete] = useState<Monster | null>(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth < 640);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   useEffect(() => {
     fetchMonsters();
   }, [fetchMonsters]);
 
   useEffect(() => {
-    if (error) message.error(error);
-  }, [error]);
+    if (error) messageApi.error(error);
+  }, [error, messageApi]);
 
   const openCreateModal = () => {
     setEditingMonster(null);
-    form.setFieldsValue(initialForm);
     setIsModalOpen(true);
   };
 
-  const openEditModal = (monster: MonsterDTO) => {
+  const openEditModal = (monster: Monster) => {
     setEditingMonster(monster);
-    form.setFieldsValue(monster);
     setIsModalOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    await deleteMonster(id);
-    message.success("Monstro excluído");
+  const handleDelete = (monster: Monster) => {
+    setMonsterToDelete(monster);
   };
 
-  const handleOk = async () => {
+  const confirmDelete = async () => {
+    if (monsterToDelete) {
+      try {
+        await deleteMonster(monsterToDelete.id);
+        messageApi.success("Monstro excluído com sucesso!");
+        setMonsterToDelete(null);
+      } catch (error) {
+        messageApi.error("Erro ao excluir o monstro. Tente novamente.");
+      }
+    }
+  };
+
+  const handleOk = async (
+    values: Omit<Monster, "id" | "created_at" | "updated_at">
+  ) => {
     try {
-      const values = await form.validateFields();
       if (editingMonster) {
         await updateMonster(editingMonster.id, values);
-        message.success("Monstro atualizado");
+        messageApi.success("Monstro atualizado");
       } else {
         await createMonster(values);
-        message.success("Monstro criado");
+        messageApi.success("Monstro criado");
       }
       setIsModalOpen(false);
-      form.resetFields();
     } catch (e) {
-      // Erro de validação, não faz nada
+      messageApi.error("Por favor, corrija os erros do formulário.");
     }
   };
 
   const handleCancel = () => {
     setIsModalOpen(false);
-    form.resetFields();
   };
 
   const columns = [
@@ -93,7 +105,7 @@ const Monsters: React.FC = () => {
       title: "Imagem",
       dataIndex: "image_url",
       key: "image_url",
-      render: (url: string) =>
+      render: (url: string | null) =>
         url ? (
           <img
             src={url}
@@ -107,126 +119,90 @@ const Monsters: React.FC = () => {
     {
       title: "Ações",
       key: "actions",
-      render: (_: any, record: MonsterDTO) => (
+      render: (_: any, record: Monster) => (
         <Space>
           <Button type="link" onClick={() => openEditModal(record)}>
             Editar
           </Button>
-          <Popconfirm
-            title="Excluir este monstro?"
-            onConfirm={() => handleDelete(record.id)}
-            okText="Sim"
-            cancelText="Não"
-          >
-            <Button type="link" danger>
-              Excluir
-            </Button>
-          </Popconfirm>
+          <Button type="link" danger onClick={() => handleDelete(record)}>
+            Excluir
+          </Button>
         </Space>
       ),
     },
   ];
 
   return (
-    <div>
-      <Button
-        type="primary"
-        onClick={openCreateModal}
-        style={{ marginBottom: 16 }}
-      >
-        Adicionar Monstro
-      </Button>
-      <Table
-        dataSource={monsters}
-        columns={columns}
-        rowKey="id"
-        loading={loading}
-        pagination={{ pageSize: 10 }}
-      />
-      <Modal
-        title={editingMonster ? "Editar Monstro" : "Adicionar Monstro"}
-        open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
-        okText={editingMonster ? "Atualizar" : "Criar"}
-        destroyOnClose
-      >
-        <Form form={form} layout="vertical" initialValues={initialForm}>
-          <Form.Item
-            name="name"
-            label="Nome"
-            rules={[{ required: true, message: "Digite o nome" }]}
+    <>
+      {contextHolder}
+      <div className="flex flex-col h-full">
+        <div className="flex justify-between items-center mb-4 px-4 sm:px-0">
+          <Button
+            type="primary"
+            onClick={openCreateModal}
+            icon={<FiPlus />}
+            className="hidden sm:flex"
           >
-            {" "}
-            <Input />{" "}
-          </Form.Item>
-          <Form.Item
-            name="attack"
-            label="Ataque"
-            rules={[
-              {
-                required: true,
-                type: "number",
-                min: 0,
-                message: "Digite o ataque",
-              },
-            ]}
+            Adicionar Monstro
+          </Button>
+        </div>
+
+        {isMobile ? (
+          <div className="space-y-4">
+            {monsters.map((monster) => (
+              <MobileMonsterCard
+                key={monster.id}
+                monster={monster}
+                onEdit={openEditModal}
+                onDelete={handleDelete}
+              />
+            ))}
+          </div>
+        ) : (
+          <Table
+            dataSource={monsters}
+            columns={columns}
+            loading={loading}
+            rowKey="id"
+            pagination={{
+              pageSize: 10,
+              position: ["bottomCenter"],
+            }}
+          />
+        )}
+
+        {!mobileOpen && (
+          <button
+            aria-label="Adicionar Monstro"
+            onClick={openCreateModal}
+            className="fixed bottom-4 right-4 z-50 flex items-center justify-center w-14 h-14 rounded-full bg-blue-500 shadow-lg hover:bg-blue-600 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 sm:hidden"
+            style={{ border: "none" }}
           >
-            {" "}
-            <InputNumber style={{ width: "100%" }} />{" "}
-          </Form.Item>
-          <Form.Item
-            name="defense"
-            label="Defesa"
-            rules={[
-              {
-                required: true,
-                type: "number",
-                min: 0,
-                message: "Digite a defesa",
-              },
-            ]}
-          >
-            {" "}
-            <InputNumber style={{ width: "100%" }} />{" "}
-          </Form.Item>
-          <Form.Item
-            name="speed"
-            label="Velocidade"
-            rules={[
-              {
-                required: true,
-                type: "number",
-                min: 0,
-                message: "Digite a velocidade",
-              },
-            ]}
-          >
-            {" "}
-            <InputNumber style={{ width: "100%" }} />{" "}
-          </Form.Item>
-          <Form.Item
-            name="hp"
-            label="HP"
-            rules={[
-              {
-                required: true,
-                type: "number",
-                min: 0,
-                message: "Digite o HP",
-              },
-            ]}
-          >
-            {" "}
-            <InputNumber style={{ width: "100%" }} />{" "}
-          </Form.Item>
-          <Form.Item name="image_url" label="URL da Imagem">
-            {" "}
-            <Input />{" "}
-          </Form.Item>
-        </Form>
-      </Modal>
-    </div>
+            <FiPlus className="text-white text-3xl" />
+          </button>
+        )}
+
+        <MonsterModal
+          open={isModalOpen}
+          onOk={handleOk}
+          onCancel={handleCancel}
+          initialValues={editingMonster || initialForm}
+          editingMonster={editingMonster}
+          loading={loading}
+        />
+
+        <ConfirmationModal
+          open={!!monsterToDelete}
+          title="Excluir Monstro"
+          description={`Tem certeza que deseja excluir o monstro "${monsterToDelete?.name}"?`}
+          confirmText="Sim, excluir"
+          cancelText="Não"
+          onConfirm={confirmDelete}
+          onCancel={() => setMonsterToDelete(null)}
+          type="danger"
+        />
+      </div>
+    </>
   );
 };
 
