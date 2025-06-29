@@ -73,15 +73,6 @@ A aplicação estará disponível em:
 
 - Local: http://localhost:80
 
-## 🎮 Funcionalidades
-
-- Criação e gerenciamento de monstros
-- Sistema de batalhas interativo
-- Interface responsiva para mobile e desktop
-- Animações fluidas
-- Efeitos sonoros
-- Sistema de pontuação
-
 ## 🏗️ Estrutura do Projeto
 
 ```
