@@ -20,11 +20,11 @@ function saveMonsters(monsters: Monster[]) {
 }
 
 export class MonsterRepository implements IMonsterRepository {
-  async getAll(): Promise<Monster[]> {
+  async findAll(): Promise<Monster[]> {
     return loadMonsters();
   }
 
-  async getById(id: string): Promise<Monster | null> {
+  async findById(id: string): Promise<Monster | null> {
     const monsters = loadMonsters();
     return monsters.find((m) => m.id === id) || null;
   }
@@ -47,10 +47,14 @@ export class MonsterRepository implements IMonsterRepository {
   async update(
     id: string,
     monster: Partial<Omit<Monster, "id" | "created_at" | "updated_at">>
-  ): Promise<Monster | null> {
+  ): Promise<Monster> {
     const monsters = loadMonsters();
     const idx = monsters.findIndex((m) => m.id === id);
-    if (idx === -1) return null;
+
+    if (idx === -1) {
+      throw new Error("Monstro não encontrado");
+    }
+
     monsters[idx] = {
       ...monsters[idx],
       ...monster,
@@ -60,11 +64,15 @@ export class MonsterRepository implements IMonsterRepository {
     return monsters[idx];
   }
 
-  async delete(id: string): Promise<boolean> {
+  async delete(id: string): Promise<void> {
     let monsters = loadMonsters();
     const initialLength = monsters.length;
     monsters = monsters.filter((m) => m.id !== id);
+
+    if (monsters.length === initialLength) {
+      throw new Error("Monstro não encontrado");
+    }
+
     saveMonsters(monsters);
-    return monsters.length < initialLength;
   }
 }

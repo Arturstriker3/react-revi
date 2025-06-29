@@ -5,6 +5,6 @@ export class GetAllMonstersUseCase {
   constructor(private repository: IMonsterRepository) {}
 
   async execute(): Promise<Monster[]> {
-    return this.repository.getAll();
+    return this.repository.findAll();
   }
 }

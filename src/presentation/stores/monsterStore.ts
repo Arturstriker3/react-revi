@@ -27,7 +27,7 @@ export const useMonsterStore = create<MonsterStore>((set, get) => ({
   fetchMonsters: async () => {
     set({ loading: true, error: null });
     try {
-      const monsters = await repository.getAll();
+      const monsters = await repository.findAll();
       set({ monsters });
     } catch (error: any) {
       set({ error: error.message });
