@@ -16,3 +16,13 @@ export function getCardPower(monster: Monster): number {
     monster.hp * 1.0
   );
 }
+
+export function getCardRarity(
+  monster: Monster
+): "common" | "rare" | "ultra" | "secret" {
+  const weightedStats = getCardPower(monster);
+  if (weightedStats >= 315) return "secret";
+  if (weightedStats >= 270) return "ultra";
+  if (weightedStats >= 225) return "rare";
+  return "common";
+}
