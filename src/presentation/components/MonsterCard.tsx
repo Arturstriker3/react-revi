@@ -124,8 +124,8 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
         relative w-full max-w-[180px] sm:max-w-[280px] aspect-[2/3] group
         bg-gradient-to-br from-amber-100 via-yellow-50 to-amber-200
         border-2 sm:border-4 ${effects.border} rounded-lg
-        shadow-xl transform transition-all duration-300
-        hover:scale-105 hover:shadow-2xl ${effects.glow}
+        shadow-xl transition-shadow duration-300
+        hover:shadow-2xl ${effects.glow}
         cursor-pointer select-none outline-none focus:outline-none
         ${effects.animation}
       `}

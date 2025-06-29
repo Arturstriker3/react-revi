@@ -15,21 +15,48 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { Monster } from "../../domain/entities/Monster";
+import { Monster, generateInitialDeck } from "../../domain/entities/Monster";
 import MonsterCardSwiper from "../components/MonsterCardSwiper";
 import { GiDragonHead, GiHamburgerMenu } from "react-icons/gi";
 import FloatingActionButton from "../components/FloatingActionButton";
 import AOS from "aos";
 import { motion } from "framer-motion";
 import BattleCardVs from "../components/BattleCardVs";
+import { useMonsterStore } from "../stores/monsterStore";
+
+const STORAGE_KEY = "monster_arena_initial_deck_seeded";
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
-  // const [selectedCard, setSelectedCard] = useState<Monster | null>(null);
+  const { monsters, createMonster } = useMonsterStore();
   const [duelAnimation, setDuelAnimation] = useState(false);
   const [mysticalEffect, setMysticalEffect] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+
+  // Verifica e gera o deck inicial
+  useEffect(() => {
+    const checkAndGenerateInitialDeck = async () => {
+      const hasSeeded = localStorage.getItem(STORAGE_KEY);
+
+      if (!hasSeeded && monsters.length === 0) {
+        const initialDeck = generateInitialDeck();
+
+        // Cria cada monstro sequencialmente
+        for (const monster of initialDeck) {
+          try {
+            await createMonster(monster);
+          } catch (error) {
+            console.error("Erro ao criar monstro inicial:", error);
+          }
+        }
+
+        localStorage.setItem(STORAGE_KEY, "true");
+      }
+    };
+
+    checkAndGenerateInitialDeck();
+  }, [createMonster, monsters.length]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -398,24 +425,32 @@ const LandingPage: React.FC = () => {
           {/* Exemplo de duelo entre duas cartas */}
           <div className="flex justify-center items-center py-8">
             <BattleCardVs
-              card1={{
-                id: 1,
-                name: "Fênix Rubra",
-                attack: 80,
-                defense: 55,
-                speed: 100,
-                hp: 95,
-                image_url: null,
-              }}
-              card2={{
-                id: 2,
-                name: "Lobo Sombrio",
-                attack: 60,
-                defense: 70,
-                speed: 80,
-                hp: 90,
-                image_url: null,
-              }}
+              card1={
+                monsters[0] || {
+                  id: "placeholder1",
+                  name: "Carregando...",
+                  attack: 0,
+                  defense: 0,
+                  speed: 0,
+                  hp: 0,
+                  image_url: null,
+                  created_at: new Date(),
+                  updated_at: new Date(),
+                }
+              }
+              card2={
+                monsters[1] || {
+                  id: "placeholder2",
+                  name: "Carregando...",
+                  attack: 0,
+                  defense: 0,
+                  speed: 0,
+                  hp: 0,
+                  image_url: null,
+                  created_at: new Date(),
+                  updated_at: new Date(),
+                }
+              }
             />
           </div>
         </div>
