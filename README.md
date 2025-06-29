@@ -1,174 +1,101 @@
-# React App - Clean Architecture
+# Monster Battle App
 
-A React application built with TypeScript, Ant Design, Zustand, Vite, and React Router following Clean Architecture principles.
+Uma aplicação React para batalhas de monstros com uma interface moderna e interativa.
 
-## Architecture
+## 🚀 Tecnologias
 
-The project follows a layered architecture pattern:
+- React
+- TypeScript
+- Vite
+- Ant Design
+- Framer Motion
+- Zustand
+- TailwindCSS
+- Docker
 
-- **Domain Layer**: Entities, Value Objects, Repository Interfaces
-- **Application Layer**: Use Cases, DTOs, Presenters
-- **Infrastructure Layer**: Repository implementations (LocalStorage)
-- **Presentation Layer**: React components, Zustand stores
+## 📋 Pré-requisitos
 
-## Tech Stack
+Para rodar localmente você precisa ter instalado:
 
-- **React 18** with TypeScript
-- **Vite** for build tooling
-- **Ant Design** for UI components
-- **React Router** for navigation
-- **Zustand** for state management
-- **LocalStorage** for data persistence
-- **Vitest** for testing
-- **pnpm** for package management
+- Node.js (v18 ou superior)
+- pnpm
+- Docker (opcional)
 
-## Prerequisites
+## 🛠️ Instalação e Execução Local
 
-- Node.js 18+
-- pnpm 8+ (recommended for faster installs)
-
-### Installing pnpm
-
-If you don't have pnpm installed:
+1. Clone o repositório:
 
 ```bash
-# Using npm
-npm install -g pnpm
-
-# Using corepack (Node.js 16.13+)
-corepack enable
-corepack prepare pnpm@latest --activate
+git clone [url-do-repositorio]
+cd react-app
 ```
 
-## Getting Started
-
-### Installation
-
-1. Install dependencies:
+2. Instale as dependências:
 
 ```bash
 pnpm install
 ```
 
-2. Start the development server:
+3. Execute o projeto em modo desenvolvimento:
 
 ```bash
 pnpm dev
 ```
 
-3. Open your browser and navigate to `http://localhost:5173`
+4. Para build de produção:
 
-### Available Scripts
+```bash
+pnpm build
+pnpm preview
+```
 
-- `pnpm dev` - Start development server
-- `pnpm build` - Build for production
-- `pnpm preview` - Preview production build
-- `pnpm lint` - Run ESLint
-- `pnpm test` - Run tests in watch mode
-- `pnpm test:ui` - Run tests with UI
-- `pnpm test:run` - Run tests once
-- `pnpm test:coverage` - Run tests with coverage report
-- `pnpm clean` - Clean node_modules and cache
-- `pnpm reinstall` - Clean and reinstall dependencies
+## 🐳 Executando com Docker
 
-## Project Structure
+1. Build da imagem:
+
+```bash
+docker-compose build
+```
+
+2. Iniciar o container:
+
+```bash
+docker-compose up -d
+```
+
+3. Para parar o container:
+
+```bash
+docker-compose down
+```
+
+A aplicação estará disponível em:
+
+- Local: http://localhost:80
+
+## 🎮 Funcionalidades
+
+- Criação e gerenciamento de monstros
+- Sistema de batalhas interativo
+- Interface responsiva para mobile e desktop
+- Animações fluidas
+- Efeitos sonoros
+- Sistema de pontuação
+
+## 🏗️ Estrutura do Projeto
 
 ```
 src/
-├── domain/                 # Domain Layer
-│   ├── entities/          # Business entities
-│   └── repositories/      # Repository interfaces
-├── application/           # Application Layer
-│   ├── dtos/             # Data Transfer Objects
-│   └── use-cases/        # Business use cases
-├── infrastructure/        # Infrastructure Layer
-│   └── repositories/     # Repository implementations
-└── presentation/         # Presentation Layer
-    ├── components/       # React components
-    ├── pages/           # Page components
-    ├── stores/          # Zustand stores
-    └── styles/          # Global styles
-└── test/                # Test files
-    ├── setup.ts         # Test setup
-    ├── utils/           # Test utilities
-    └── examples/        # Example tests
+├── application/     # Casos de uso e DTOs
+├── domain/         # Entidades e interfaces
+├── infrastructure/ # Implementações concretas
+└── presentation/   # Componentes React e UI
+    ├── components/
+    ├── pages/
+    ├── stores/
+    └── styles/
 ```
 
-## Features
+## 📝 Licença
 
-- ✅ Task management (Create, Read, Update, Delete)
-- ✅ Local storage persistence
-- ✅ Clean Architecture implementation
-- ✅ TypeScript with strict mode
-- ✅ Responsive design with Ant Design
-- ✅ Navigation with React Router
-- ✅ State management with Zustand
-- ✅ Dashboard with statistics
-- ✅ Component examples
-- ✅ Testing setup with Vitest
-- ✅ Fast package management with pnpm
-
-## Pages
-
-- **Home**: Welcome page with project overview
-- **Task Manager**: CRUD operations for tasks
-- **Dashboard**: Project statistics and recent activity
-- **Components**: Ant Design component examples
-
-## Testing
-
-The project includes a complete testing setup with:
-
-- **Vitest** as the test runner
-- **React Testing Library** for component testing
-- **jsdom** for DOM simulation
-- **Coverage reporting** with v8
-- **Custom test utilities** with providers
-
-### Running Tests
-
-```bash
-# Run tests in watch mode
-pnpm test
-
-# Run tests with UI
-pnpm test:ui
-
-# Run tests once
-pnpm test:run
-
-# Run tests with coverage
-pnpm test:coverage
-```
-
-### Test Structure
-
-- `src/test/setup.ts` - Global test setup
-- `src/test/utils/test-utils.tsx` - Custom render with providers
-- `src/test/examples/` - Example tests for components and use cases
-
-## Why pnpm?
-
-- **Faster**: Up to 2x faster than npm and yarn
-- **Disk space efficient**: Uses hard links and symlinks
-- **Strict**: Prevents phantom dependencies
-- **Monorepo support**: Built-in workspace support
-- **Security**: Better dependency resolution
-
-## Architecture Benefits
-
-- **Separation of Concerns**: Each layer has a specific responsibility
-- **Testability**: Business logic is isolated and easily testable
-- **Maintainability**: Clear boundaries between layers
-- **Scalability**: Easy to add new features or change implementations
-- **Dependency Inversion**: High-level modules don't depend on low-level modules
-
-## Ant Design Components Used
-
-- Layout (Header, Sider, Content)
-- Navigation (Menu)
-- Data Display (Card, List, Table, Statistic, Progress)
-- Form Controls (Input, Button, Select, DatePicker, Checkbox)
-- Feedback (Message, Alert, Modal, Spin)
-- Typography (Title, Text)
-- And many more...
+Este projeto está sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
