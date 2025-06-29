@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Monster } from "../../domain/entities/Monster";
+import { Monster, getCardPower } from "../../domain/entities/Monster";
 import { getMonsterImageUrl } from "../lib/monsterImage";
 import {
   GiSwordsPower,
@@ -39,13 +39,8 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
 
   // Calcula a raridade da carta baseada na soma total dos stats com pesos específicos
   const calculateCardRarity = (): CardRarity => {
-    // Aplica pesos específicos para cada stat: ATK/DEF (0.9), SPD (0.8), HP (1.0)
-    const weightedStats =
-      monster.attack * 0.5 +
-      monster.defense * 0.5 +
-      monster.speed * 0.9 +
-      monster.hp * 1.0;
-
+    // Usa a função utilitária centralizada para calcular o poder do monstro
+    const weightedStats = getCardPower(monster);
     // Define a raridade baseada no total de stats ponderados
     const rarity = (() => {
       if (weightedStats >= 315) return "secret"; // 350 * 0.9 (média dos pesos)
@@ -53,10 +48,8 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
       if (weightedStats >= 225) return "rare"; // 250 * 0.9
       return "common";
     })();
-
     const level = Math.floor(weightedStats / 45) + 1; // Ajustado para os pesos
     const effects = getRarityEffects(rarity, monster.name);
-
     return {
       rarity,
       effects,

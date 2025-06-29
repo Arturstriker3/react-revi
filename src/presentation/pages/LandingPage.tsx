@@ -21,6 +21,7 @@ import { GiDragonHead, GiHamburgerMenu } from "react-icons/gi";
 import FloatingActionButton from "../components/FloatingActionButton";
 import AOS from "aos";
 import { motion } from "framer-motion";
+import BattleCardVs from "../components/BattleCardVs";
 
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
@@ -394,100 +395,28 @@ const LandingPage: React.FC = () => {
             </p>
           </div>
 
-          <div className="bg-gradient-to-br from-black/60 to-purple-900/60 rounded-3xl p-4 sm:p-8 backdrop-blur-sm border-2 border-yellow-600/30 shadow-2xl">
-            <div className="flex flex-col lg:flex-row justify-between items-center mb-8 sm:mb-12 space-y-8 lg:space-y-0">
-              {/* Player 1 */}
-              <div className="text-center order-1 lg:order-1">
-                <div className="w-20 h-20 sm:w-32 sm:h-32 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center mb-4 mx-auto border-4 border-blue-400 shadow-lg shadow-blue-500/50">
-                  <GiDragonHead className="text-2xl sm:text-4xl text-white" />
-                </div>
-                <h4 className="text-lg sm:text-xl font-bold text-blue-400 mb-2">
-                  GUERREIRO
-                </h4>
-                <div className="text-sm text-gray-300">HP: 100</div>
-                <div className="text-xs text-gray-400">Monstros: 3</div>
-              </div>
-
-              {/* VS Section */}
-              <div className="text-center order-2 lg:order-2">
-                <div
-                  className={`text-4xl sm:text-6xl lg:text-8xl mb-4 ${
-                    duelAnimation
-                      ? "animate-pulse text-red-500"
-                      : "text-yellow-400"
-                  }`}
-                >
-                  ⚡
-                </div>
-                <Button
-                  type="primary"
-                  size="large"
-                  className="bg-gradient-to-r from-red-600 to-purple-600 border-none hover:from-red-700 hover:to-purple-700 px-4 sm:px-8 py-2 sm:py-3 text-sm sm:text-lg shadow-lg shadow-red-600/30"
-                  onClick={startDuel}
-                  loading={duelAnimation}
-                  icon={<ThunderboltOutlined />}
-                >
-                  {duelAnimation
-                    ? "BATALHA EM ANDAMENTO!"
-                    : "INICIAR BATALHA DAS SOMBRAS"}
-                </Button>
-                <div className="mt-4 text-xs sm:text-sm text-gray-400">
-                  "O coração dos monstros guiará sua vitória"
-                </div>
-              </div>
-
-              {/* Player 2 */}
-              <div className="text-center order-3 lg:order-3">
-                <div className="w-20 h-20 sm:w-32 sm:h-32 bg-gradient-to-br from-purple-600 to-purple-800 rounded-full flex items-center justify-center mb-4 mx-auto border-4 border-purple-400 shadow-lg shadow-purple-500/50">
-                  <CrownOutlined className="text-2xl sm:text-4xl text-white" />
-                </div>
-                <h4 className="text-lg sm:text-xl font-bold text-purple-400 mb-2">
-                  SOMBRA
-                </h4>
-                <div className="text-sm text-gray-300">HP: 100</div>
-                <div className="text-xs text-gray-400">Monstros: 3</div>
-              </div>
-            </div>
-
-            {/* Game Features - Responsive Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
-              <div className="bg-black/40 rounded-xl p-3 sm:p-4 border border-gray-700/50">
-                <ScissorOutlined className="text-2xl sm:text-3xl text-red-400 mb-2 sm:mb-3" />
-                <h5 className="font-bold mb-1 sm:mb-2 text-white text-sm sm:text-base">
-                  Invocações Épicas
-                </h5>
-                <p className="text-xs sm:text-sm text-gray-300">
-                  Invoque monstros lendários
-                </p>
-              </div>
-              <div className="bg-black/40 rounded-xl p-3 sm:p-4 border border-gray-700/50">
-                <FireOutlined className="text-2xl sm:text-3xl text-yellow-400 mb-2 sm:mb-3" />
-                <h5 className="font-bold mb-1 sm:mb-2 text-white text-sm sm:text-base">
-                  Poderes Ancestrais
-                </h5>
-                <p className="text-xs sm:text-sm text-gray-300">
-                  Domine habilidades poderosas
-                </p>
-              </div>
-              <div className="bg-black/40 rounded-xl p-3 sm:p-4 border border-gray-700/50">
-                <SafetyOutlined className="text-2xl sm:text-3xl text-blue-400 mb-2 sm:mb-3" />
-                <h5 className="font-bold mb-1 sm:mb-2 text-white text-sm sm:text-base">
-                  Defesas Místicas
-                </h5>
-                <p className="text-xs sm:text-sm text-gray-300">
-                  Proteja-se com barreiras mágicas
-                </p>
-              </div>
-              <div className="bg-black/40 rounded-xl p-3 sm:p-4 border border-gray-700/50">
-                <TrophyOutlined className="text-2xl sm:text-3xl text-purple-400 mb-2 sm:mb-3" />
-                <h5 className="font-bold mb-1 sm:mb-2 text-white text-sm sm:text-base">
-                  Vitória Suprema
-                </h5>
-                <p className="text-xs sm:text-sm text-gray-300">
-                  Torne-se o Mestre dos Monstros
-                </p>
-              </div>
-            </div>
+          {/* Exemplo de duelo entre duas cartas */}
+          <div className="flex justify-center items-center py-8">
+            <BattleCardVs
+              card1={{
+                id: 1,
+                name: "Fênix Rubra",
+                attack: 80,
+                defense: 55,
+                speed: 100,
+                hp: 95,
+                image_url: null,
+              }}
+              card2={{
+                id: 2,
+                name: "Lobo Sombrio",
+                attack: 60,
+                defense: 70,
+                speed: 80,
+                hp: 90,
+                image_url: null,
+              }}
+            />
           </div>
         </div>
       </section>
