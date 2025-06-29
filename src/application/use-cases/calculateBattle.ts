@@ -58,29 +58,58 @@ export class CalculateBattleUseCase {
         1, // Dano mínimo é 1
         firstAttacker.attack - secondAttacker.defense // Dano base: ataque - defesa
       );
-      currentHp2 -= damage1;
-      rounds.push({
-        attacker: firstAttacker.id,
-        defender: secondAttacker.id,
-        damage: damage1,
-        remainingHp: Math.max(0, currentHp2), // Garante que HP não fique negativo
-      });
 
-      // Verifica se a batalha terminou após o primeiro ataque
-      if (currentHp2 <= 0) break;
+      // Aplica o dano e garante que o HP não fique negativo
+      if (firstAttacker === fighter1) {
+        currentHp2 = Math.max(0, currentHp2 - damage1);
+        rounds.push({
+          attacker: fighter1.id,
+          defender: fighter2.id,
+          damage: damage1,
+          remainingHp: currentHp2,
+        });
+        // Se o segundo lutador foi derrotado, encerra a batalha
+        if (currentHp2 <= 0) break;
+      } else {
+        currentHp1 = Math.max(0, currentHp1 - damage1);
+        rounds.push({
+          attacker: fighter2.id,
+          defender: fighter1.id,
+          damage: damage1,
+          remainingHp: currentHp1,
+        });
+        // Se o primeiro lutador foi derrotado, encerra a batalha
+        if (currentHp1 <= 0) break;
+      }
 
       // Ataque do segundo lutador
       const damage2 = Math.max(
         1,
         secondAttacker.attack - firstAttacker.defense
       );
-      currentHp1 -= damage2;
-      rounds.push({
-        attacker: secondAttacker.id,
-        defender: firstAttacker.id,
-        damage: damage2,
-        remainingHp: Math.max(0, currentHp1),
-      });
+
+      // Aplica o dano e garante que o HP não fique negativo
+      if (secondAttacker === fighter1) {
+        currentHp2 = Math.max(0, currentHp2 - damage2);
+        rounds.push({
+          attacker: fighter1.id,
+          defender: fighter2.id,
+          damage: damage2,
+          remainingHp: currentHp2,
+        });
+        // Se o segundo lutador foi derrotado, encerra a batalha
+        if (currentHp2 <= 0) break;
+      } else {
+        currentHp1 = Math.max(0, currentHp1 - damage2);
+        rounds.push({
+          attacker: fighter2.id,
+          defender: fighter1.id,
+          damage: damage2,
+          remainingHp: currentHp1,
+        });
+        // Se o primeiro lutador foi derrotado, encerra a batalha
+        if (currentHp1 <= 0) break;
+      }
     }
 
     // Cria o objeto de batalha com o resultado

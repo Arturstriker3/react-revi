@@ -4,6 +4,7 @@ import MonsterCard from "./MonsterCard";
 import { Progress, Button } from "antd";
 import { CrownOutlined, ThunderboltOutlined } from "@ant-design/icons";
 import { motion, AnimatePresence } from "framer-motion";
+import { useBattleStore } from "../stores/battleStore";
 
 interface BattleSimulationProps {
   monster1: Monster;
@@ -67,6 +68,7 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
   monster2,
   onClose,
 }) => {
+  const { calculateBattle, createBattle, loading } = useBattleStore();
   const [currentStep, setCurrentStep] = useState(0);
   const [battleSteps, setBattleSteps] = useState<BattleStep[]>([]);
   const [monster1HP, setMonster1HP] = useState(monster1.hp);
@@ -74,76 +76,72 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
   const [winner, setWinner] = useState<"monster1" | "monster2" | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
 
-  // Calculate battle steps
-  useEffect(() => {
-    const steps: BattleStep[] = [];
+  // Processa o resultado da batalha em steps para animação
+  const processBattleResult = async () => {
+    try {
+      const result = await calculateBattle(monster1.id, monster2.id);
+      const steps: BattleStep[] = [];
 
-    // Determine who goes first based on speed
-    const firstAttacker: "monster1" | "monster2" =
-      monster1.speed >= monster2.speed ? "monster1" : "monster2";
-    steps.push({
-      type: "speed",
-      attacker: firstAttacker,
-      message: `${
-        firstAttacker === "monster1" ? monster1.name : monster2.name
-      } moves first due to higher speed!`,
-    });
-
-    let currentMonster1HP = monster1.hp;
-    let currentMonster2HP = monster2.hp;
-    let currentAttacker = firstAttacker;
-
-    while (currentMonster1HP > 0 && currentMonster2HP > 0) {
-      const attackingMonster =
-        currentAttacker === "monster1" ? monster1 : monster2;
-      const defendingMonster =
-        currentAttacker === "monster1" ? monster2 : monster1;
-
-      // Calculate damage
-      const damage = Math.max(
-        Math.floor(
-          attackingMonster.attack * (Math.random() * 0.2 + 0.9) -
-            defendingMonster.defense * 0.5
-        ),
-        1
-      );
+      // Determina quem ataca primeiro baseado no primeiro round
+      const firstAttackerId = result.rounds[0].attacker;
+      const firstAttacker =
+        firstAttackerId === monster1.id ? "monster1" : "monster2";
 
       steps.push({
-        type: "attack",
-        attacker: currentAttacker,
-        message: `${attackingMonster.name} attacks!`,
+        type: "speed",
+        attacker: firstAttacker,
+        message: `${
+          firstAttacker === "monster1" ? monster1.name : monster2.name
+        } começa por ser mais rápido!`,
       });
 
-      steps.push({
-        type: "damage",
-        attacker: currentAttacker,
-        damage,
-        message: `${defendingMonster.name} takes ${damage} damage!`,
-      });
+      // Processa cada round em steps de ataque e dano
+      for (const round of result.rounds) {
+        const isMonster1Attacking = round.attacker === monster1.id;
+        const attacker = isMonster1Attacking ? "monster1" : "monster2";
+        const attackerName = isMonster1Attacking
+          ? monster1.name
+          : monster2.name;
+        const defenderName = isMonster1Attacking
+          ? monster2.name
+          : monster1.name;
 
-      if (currentAttacker === "monster1") {
-        currentMonster2HP -= damage;
-      } else {
-        currentMonster1HP -= damage;
+        steps.push({
+          type: "attack",
+          attacker,
+          message: `${attackerName} ataca!`,
+        } as BattleStep);
+
+        steps.push({
+          type: "damage",
+          attacker,
+          damage: round.damage,
+          message: `${defenderName} recebe ${round.damage} de dano!`,
+        } as BattleStep);
       }
 
-      currentAttacker =
-        currentAttacker === "monster1" ? "monster2" : "monster1";
+      // Adiciona o step final com o vencedor
+      const battleWinner =
+        result.battle.winnerId === monster1.id ? "monster1" : "monster2";
+      steps.push({
+        type: "end",
+        attacker: battleWinner,
+        message: `${
+          battleWinner === "monster1" ? monster1.name : monster2.name
+        } vence a batalha!`,
+      });
+
+      setBattleSteps(steps);
+
+      // Salva a batalha no repositório
+      await createBattle(monster1.id, monster2.id);
+
+      return steps;
+    } catch (error) {
+      console.error("Error calculating battle:", error);
+      return [];
     }
-
-    // Add end step
-    const battleWinner: "monster1" | "monster2" =
-      currentMonster1HP > 0 ? "monster1" : "monster2";
-    steps.push({
-      type: "end",
-      attacker: battleWinner,
-      message: `${
-        battleWinner === "monster1" ? monster1.name : monster2.name
-      } wins the battle!`,
-    });
-
-    setBattleSteps(steps);
-  }, [monster1, monster2]);
+  };
 
   // Auto-advance battle steps
   useEffect(() => {
@@ -170,22 +168,23 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
     }
   }, [currentStep, isSimulating, battleSteps]);
 
-  const startSimulation = () => {
+  const startSimulation = async () => {
     setCurrentStep(0);
     setMonster1HP(monster1.hp);
     setMonster2HP(monster2.hp);
     setWinner(null);
+    await processBattleResult();
     setIsSimulating(true);
   };
 
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-xl shadow-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto">
+      <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-hidden">
         <div className="p-6">
           {/* Battle Arena */}
-          <div className="flex flex-col sm:flex-row items-center justify-between gap-8 mb-8">
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-8 mb-8 min-h-[400px]">
             {/* Monster 1 */}
-            <div className="relative">
+            <div className="relative w-full sm:w-1/3 min-w-[250px]">
               <motion.div
                 animate={{
                   x:
@@ -200,16 +199,21 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
                     ? { filter: "sepia(0.7) brightness(0.85)" }
                     : {}
                 }
+                className="relative"
               >
-                <MonsterCard monster={monster1} />
-                {winner === "monster1" && (
-                  <div className="absolute top-2 right-2 z-30">
-                    <CrownOutlined style={{ fontSize: 32, color: "#FFD700" }} />
-                  </div>
-                )}
-                {winner === "monster2" && <BurnedOverlay />}
+                <div className="w-full aspect-[3/4] relative">
+                  <MonsterCard monster={monster1} />
+                  {winner === "monster1" && (
+                    <div className="absolute top-2 right-2 z-30">
+                      <CrownOutlined
+                        style={{ fontSize: 32, color: "#FFD700" }}
+                      />
+                    </div>
+                  )}
+                  {winner === "monster2" && <BurnedOverlay />}
+                </div>
               </motion.div>
-              <div className="mt-4">
+              <div className="mt-4 px-2">
                 <Progress
                   percent={(monster1HP / monster1.hp) * 100}
                   status="active"
@@ -220,7 +224,7 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
             </div>
 
             {/* VS and Battle Log */}
-            <div className="flex flex-col items-center">
+            <div className="flex flex-col items-center w-full sm:w-1/3 min-w-[200px]">
               <div className="text-3xl font-bold text-yellow-500 mb-4">VS</div>
               <AnimatePresence mode="wait">
                 <motion.div
@@ -228,15 +232,15 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
                   initial={{ opacity: 0, y: 20 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -20 }}
-                  className="bg-gray-100 rounded-lg p-4 text-center min-w-[200px]"
+                  className="bg-gray-100 rounded-lg p-4 text-center w-full"
                 >
-                  {battleSteps[currentStep]?.message || "Ready to battle!"}
+                  {battleSteps[currentStep]?.message || "Pronto para batalhar!"}
                 </motion.div>
               </AnimatePresence>
             </div>
 
             {/* Monster 2 */}
-            <div className="relative">
+            <div className="relative w-full sm:w-1/3 min-w-[250px]">
               <motion.div
                 animate={{
                   x:
@@ -251,16 +255,21 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
                     ? { filter: "sepia(0.7) brightness(0.85)" }
                     : {}
                 }
+                className="relative"
               >
-                <MonsterCard monster={monster2} />
-                {winner === "monster2" && (
-                  <div className="absolute top-2 right-2 z-30">
-                    <CrownOutlined style={{ fontSize: 32, color: "#FFD700" }} />
-                  </div>
-                )}
-                {winner === "monster1" && <BurnedOverlay />}
+                <div className="w-full aspect-[3/4] relative">
+                  <MonsterCard monster={monster2} />
+                  {winner === "monster2" && (
+                    <div className="absolute top-2 right-2 z-30">
+                      <CrownOutlined
+                        style={{ fontSize: 32, color: "#FFD700" }}
+                      />
+                    </div>
+                  )}
+                  {winner === "monster1" && <BurnedOverlay />}
+                </div>
               </motion.div>
-              <div className="mt-4">
+              <div className="mt-4 px-2">
                 <Progress
                   percent={(monster2HP / monster2.hp) * 100}
                   status="active"
@@ -272,21 +281,21 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
           </div>
 
           {/* Controls */}
-          <div className="flex justify-center gap-4">
+          <div className="flex justify-center gap-4 mt-6">
             {!isSimulating && (
               <Button
                 type="primary"
                 size="large"
-                icon={<ThunderboltOutlined />}
                 onClick={startSimulation}
+                loading={loading}
                 className="bg-gradient-to-r from-yellow-500 to-yellow-600"
               >
-                {currentStep === 0 ? "Start Battle" : "Replay Battle"}
+                {currentStep === 0 ? "Batalhar" : "Replay"}
               </Button>
             )}
             {onClose && (
               <Button size="large" onClick={onClose}>
-                Close
+                Fechar
               </Button>
             )}
           </div>
