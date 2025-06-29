@@ -1,18 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Monster,
   getCardRarity,
   getStarsFromRarity,
 } from "../../domain/entities/Monster";
-import {
-  GiSwordsPower,
-  GiShield,
-  GiRun,
-  GiHeartPlus,
-  GiSparkles,
-} from "react-icons/gi";
+import { GiSwordsPower, GiShield, GiRun, GiHeartPlus } from "react-icons/gi";
 import { FaStar } from "react-icons/fa";
-import { Button, Space } from "antd";
+import { Button, Progress } from "antd";
+import { MdExpandMore } from "react-icons/md";
 
 interface MonsterMobileCardProps {
   monster: Monster;
@@ -33,6 +28,7 @@ const getRarityEffects = (rarity: ReturnType<typeof getCardRarity>) => {
       rarityGradient:
         "bg-gradient-to-r from-amber-400 via-yellow-300 to-amber-500",
       animation: "animate-legendary",
+      btnBg: "bg-amber-50 hover:bg-amber-100",
     },
     mythical: {
       shadow: "shadow-purple-500/50",
@@ -45,6 +41,7 @@ const getRarityEffects = (rarity: ReturnType<typeof getCardRarity>) => {
       rarityGradient:
         "bg-gradient-to-r from-purple-400 via-fuchsia-300 to-purple-500",
       animation: "animate-mythical",
+      btnBg: "bg-purple-50 hover:bg-purple-100",
     },
     epic: {
       shadow: "shadow-pink-500/40",
@@ -56,6 +53,7 @@ const getRarityEffects = (rarity: ReturnType<typeof getCardRarity>) => {
       rarityColor: "text-pink-600",
       rarityGradient: "bg-gradient-to-r from-pink-400 via-rose-300 to-pink-500",
       animation: "animate-epic",
+      btnBg: "bg-pink-50 hover:bg-pink-100",
     },
     rare: {
       shadow: "shadow-blue-500/30",
@@ -67,6 +65,7 @@ const getRarityEffects = (rarity: ReturnType<typeof getCardRarity>) => {
       rarityColor: "text-blue-600",
       rarityGradient: "bg-gradient-to-r from-blue-400 via-cyan-300 to-blue-500",
       animation: "animate-rare",
+      btnBg: "bg-blue-50 hover:bg-blue-100",
     },
     uncommon: {
       shadow: "shadow-gray-500/20",
@@ -79,6 +78,7 @@ const getRarityEffects = (rarity: ReturnType<typeof getCardRarity>) => {
       rarityGradient:
         "bg-gradient-to-r from-gray-400 via-slate-300 to-gray-500",
       animation: "",
+      btnBg: "bg-gray-50 hover:bg-gray-100",
     },
     common: {
       shadow: "shadow-gray-400/10",
@@ -91,6 +91,7 @@ const getRarityEffects = (rarity: ReturnType<typeof getCardRarity>) => {
       rarityGradient:
         "bg-gradient-to-r from-gray-300 via-slate-200 to-gray-300",
       animation: "",
+      btnBg: "bg-gray-50 hover:bg-gray-100",
     },
   };
 
@@ -102,133 +103,162 @@ const MonsterMobileCard: React.FC<MonsterMobileCardProps> = ({
   onEdit,
   onDelete,
 }) => {
+  const [isExpanded, setIsExpanded] = useState(false);
   const rarity = getCardRarity(monster);
   const effects = getRarityEffects(rarity);
   const stars = getStarsFromRarity(rarity);
 
+  // Máximo para cada stat
+  const maxStat = 1000;
+
   return (
     <div
       className={`
-        relative w-full bg-white rounded-lg overflow-hidden
-        border-2 ${effects.border}
-        shadow-lg transform transition-all duration-300
-        hover:scale-102 ${effects.glow}
-        cursor-pointer select-none
+        w-full rounded-lg overflow-hidden bg-white
+        shadow-md transition-all duration-300 ease-in-out
+        ${effects.glow}
         ${effects.animation}
       `}
     >
-      {/* Camada holográfica */}
+      {/* Cabeçalho com nome */}
+      <div
+        className="flex items-center justify-between p-2.5 cursor-pointer"
+        onClick={() => setIsExpanded(!isExpanded)}
+      >
+        <div className="flex items-center space-x-2">
+          <h3 className={`font-semibold ${effects.rarityColor}`}>
+            {monster.name}
+          </h3>
+          <div className="flex">
+            {Array.from({ length: stars }).map((_, i) => (
+              <FaStar
+                key={i}
+                className={`
+                  w-3.5 h-3.5
+                  ${effects.rarityColor}
+                  ${rarity !== "common" ? effects.glitter : ""}
+                `}
+              />
+            ))}
+          </div>
+        </div>
+        <MdExpandMore
+          className={`
+            w-5 h-5 ${effects.rarityColor}
+            transition-transform duration-300
+            ${isExpanded ? "rotate-180" : "rotate-0"}
+          `}
+        />
+      </div>
+
+      {/* Conteúdo expandido */}
       <div
         className={`
-          absolute inset-0 opacity-0 group-hover:opacity-20
-          bg-gradient-to-r ${effects.rainbow} transition-opacity duration-300
-          card-metallic-effect pointer-events-none
-        `}
-      />
-
-      {/* Camada metálica */}
-      <div
-        className={`
-          absolute inset-0 opacity-0 group-hover:opacity-30
-          bg-gradient-to-br ${effects.metallic} transition-opacity duration-300
-          card-metallic-effect pointer-events-none
-        `}
-      />
-
-      <div className="flex items-center p-3">
-        {/* Imagem do monstro */}
-        <div className="relative w-16 h-16 mr-4">
-          <img
-            src={monster.image_url || ""}
-            alt={monster.name}
-            className="w-full h-full object-cover rounded-lg"
-          />
-          {/* Indicador de raridade */}
-          {rarity !== "common" && (
-            <div className="absolute -top-1 -right-1">
-              <div
-                className={`w-3 h-3 rounded-full ${effects.glitter} ${effects.rarityGradient}`}
-              />
-              <GiSparkles
-                className={`absolute -top-1 -right-1 w-2 h-2 ${effects.rarityColor} animate-ping`}
-              />
+        overflow-hidden transition-all duration-300 ease-in-out
+        ${isExpanded ? "max-h-96 opacity-100" : "max-h-0 opacity-0"}
+      `}
+      >
+        {/* Stats */}
+        <div className="px-3 pt-0 pb-2 space-y-2">
+          <div>
+            <div className="flex items-center justify-between mb-0.5">
+              <div className="flex items-center">
+                <GiSwordsPower className="w-4 h-4 text-red-500 mr-1.5" />
+                <span className="text-gray-600 text-sm">ATK</span>
+              </div>
+              <span className="font-medium text-red-600 text-sm">
+                {monster.attack}
+              </span>
             </div>
-          )}
+            <Progress
+              percent={Math.min((monster.attack / maxStat) * 100, 100)}
+              size="small"
+              strokeColor="#ef4444"
+              showInfo={false}
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-0.5">
+              <div className="flex items-center">
+                <GiShield className="w-4 h-4 text-blue-500 mr-1.5" />
+                <span className="text-gray-600 text-sm">DEF</span>
+              </div>
+              <span className="font-medium text-blue-600 text-sm">
+                {monster.defense}
+              </span>
+            </div>
+            <Progress
+              percent={Math.min((monster.defense / maxStat) * 100, 100)}
+              size="small"
+              strokeColor="#3b82f6"
+              showInfo={false}
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-0.5">
+              <div className="flex items-center">
+                <GiRun className="w-4 h-4 text-green-500 mr-1.5" />
+                <span className="text-gray-600 text-sm">SPD</span>
+              </div>
+              <span className="font-medium text-green-600 text-sm">
+                {monster.speed}
+              </span>
+            </div>
+            <Progress
+              percent={Math.min((monster.speed / maxStat) * 100, 100)}
+              size="small"
+              strokeColor="#22c55e"
+              showInfo={false}
+            />
+          </div>
+
+          <div>
+            <div className="flex items-center justify-between mb-0.5">
+              <div className="flex items-center">
+                <GiHeartPlus className="w-4 h-4 text-pink-500 mr-1.5" />
+                <span className="text-gray-600 text-sm">HP</span>
+              </div>
+              <span className="font-medium text-pink-600 text-sm">
+                {monster.hp}
+              </span>
+            </div>
+            <Progress
+              percent={Math.min((monster.hp / maxStat) * 100, 100)}
+              size="small"
+              strokeColor="#ec4899"
+              showInfo={false}
+            />
+          </div>
         </div>
 
-        {/* Informações do monstro */}
-        <div className="flex-1">
-          <div className="flex items-center justify-between mb-1">
-            <h3 className={`font-bold truncate ${effects.rarityColor}`}>
-              {monster.name}
-            </h3>
-            <div className="flex items-center">
-              {Array.from({ length: stars }).map((_, i) => (
-                <FaStar
-                  key={i}
-                  className={`
-                    w-3 h-3 mx-0.5
-                    ${effects.rarityColor}
-                    ${rarity !== "common" ? effects.glitter : ""}
-                  `}
-                />
-              ))}
-            </div>
-          </div>
-
-          {/* Stats */}
-          <div
-            className={`
-            grid grid-cols-2 gap-2 text-sm
-            p-2 rounded-lg
-            ${effects.rarityGradient} bg-opacity-10
-          `}
-          >
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <GiSwordsPower className="w-4 h-4 text-red-600 mr-1" />
-                <span className="text-gray-700">ATK</span>
-              </div>
-              <span className="font-bold text-red-700">{monster.attack}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <GiShield className="w-4 h-4 text-blue-600 mr-1" />
-                <span className="text-gray-700">DEF</span>
-              </div>
-              <span className="font-bold text-blue-700">{monster.defense}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <GiRun className="w-4 h-4 text-green-600 mr-1" />
-                <span className="text-gray-700">SPD</span>
-              </div>
-              <span className="font-bold text-green-700">{monster.speed}</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <GiHeartPlus className="w-4 h-4 text-pink-600 mr-1" />
-                <span className="text-gray-700">HP</span>
-              </div>
-              <span className="font-bold text-pink-700">{monster.hp}</span>
-            </div>
-          </div>
-
-          {/* Ações */}
-          <div className="mt-3 flex justify-end">
-            <Space>
-              {onEdit && (
-                <Button type="link" onClick={() => onEdit(monster)}>
-                  Editar
-                </Button>
-              )}
-              {onDelete && (
-                <Button type="link" danger onClick={() => onDelete(monster)}>
-                  Excluir
-                </Button>
-              )}
-            </Space>
-          </div>
+        {/* Ações */}
+        <div className="flex justify-between px-2 py-1.5 border-t border-gray-100">
+          {onEdit && (
+            <Button
+              type="text"
+              className={`${effects.rarityColor} ${effects.btnBg} rounded`}
+              onClick={(e) => {
+                e.stopPropagation();
+                onEdit(monster);
+              }}
+            >
+              Editar
+            </Button>
+          )}
+          {onDelete && (
+            <Button
+              type="text"
+              className="bg-red-50 hover:bg-red-100 text-red-500 rounded"
+              onClick={(e) => {
+                e.stopPropagation();
+                onDelete(monster);
+              }}
+            >
+              Excluir
+            </Button>
+          )}
         </div>
       </div>
     </div>

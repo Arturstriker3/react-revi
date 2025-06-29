@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Button, Table, message, Space } from "antd";
 import { useMonsterStore } from "../stores/monsterStore";
-import { Monster } from "../../domain/entities/Monster";
+import { Monster, getCardRarity } from "../../domain/entities/Monster";
 import MonsterModal from "../components/MonsterModal";
 import MobileMonsterCard from "../components/MonsterMobileCard";
 import ConfirmationModal from "../components/ConfirmationModal";
@@ -15,6 +15,49 @@ const initialForm: Omit<Monster, "id" | "created_at" | "updated_at"> = {
   speed: 0,
   hp: 0,
   image_url: null,
+};
+
+const getRarityEffects = (rarity: ReturnType<typeof getCardRarity>) => {
+  const effects = {
+    legendary: {
+      btnBg: "bg-amber-50 hover:bg-amber-100",
+      textColor: "text-amber-600",
+    },
+    mythical: {
+      btnBg: "bg-purple-50 hover:bg-purple-100",
+      textColor: "text-purple-600",
+    },
+    epic: {
+      btnBg: "bg-pink-50 hover:bg-pink-100",
+      textColor: "text-pink-600",
+    },
+    rare: {
+      btnBg: "bg-blue-50 hover:bg-blue-100",
+      textColor: "text-blue-600",
+    },
+    uncommon: {
+      btnBg: "bg-gray-50 hover:bg-gray-100",
+      textColor: "text-gray-600",
+    },
+    common: {
+      btnBg: "bg-gray-50 hover:bg-gray-100",
+      textColor: "text-gray-500",
+    },
+  };
+
+  return effects[rarity];
+};
+
+// Função para formatar data
+const formatDate = (dateString: string) => {
+  const date = new Date(dateString);
+  return new Intl.DateTimeFormat("pt-BR", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
 };
 
 const Monsters: React.FC = () => {
@@ -117,18 +160,42 @@ const Monsters: React.FC = () => {
         ),
     },
     {
+      title: "Criado em",
+      dataIndex: "created_at",
+      key: "created_at",
+      render: (date: string) => formatDate(date),
+    },
+    {
+      title: "Atualizado em",
+      dataIndex: "updated_at",
+      key: "updated_at",
+      render: (date: string) => formatDate(date),
+    },
+    {
       title: "Ações",
       key: "actions",
-      render: (_: any, record: Monster) => (
-        <Space>
-          <Button type="link" onClick={() => openEditModal(record)}>
-            Editar
-          </Button>
-          <Button type="link" danger onClick={() => handleDelete(record)}>
-            Excluir
-          </Button>
-        </Space>
-      ),
+      render: (_: any, record: Monster) => {
+        const rarity = getCardRarity(record);
+        const effects = getRarityEffects(rarity);
+        return (
+          <Space>
+            <Button
+              type="text"
+              className={`${effects.btnBg} ${effects.textColor} rounded`}
+              onClick={() => openEditModal(record)}
+            >
+              Editar
+            </Button>
+            <Button
+              type="text"
+              className="bg-red-50 hover:bg-red-100 text-red-500 rounded"
+              onClick={() => handleDelete(record)}
+            >
+              Excluir
+            </Button>
+          </Space>
+        );
+      },
     },
   ];
 
