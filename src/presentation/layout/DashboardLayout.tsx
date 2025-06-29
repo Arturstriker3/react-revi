@@ -2,7 +2,6 @@ import React from "react";
 import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Layout, Menu, Avatar, Dropdown, Space, Modal } from "antd";
 import {
-  HomeOutlined,
   UserOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
@@ -22,9 +21,6 @@ interface MenuItem {
   label: string;
   children?: MenuItem[];
 }
-
-const SIDEBAR_WIDTH = 250;
-const SIDEBAR_COLLAPSED = 80;
 
 const DashboardLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState(false);
