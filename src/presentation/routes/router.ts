@@ -1,7 +1,6 @@
 import { RouteObject } from "react-router-dom";
 import React from "react";
 import LandingPage from "../pages/LandingPage";
-import Dashboard from "../pages/Dashboard";
 import Monsters from "../pages/Monsters";
 import Battles from "../pages/Battles";
 import DashboardLayout from "../layout/DashboardLayout";
@@ -26,8 +25,8 @@ export const routes: AppRoute[] = [
     children: [
       {
         path: "",
-        element: React.createElement(Dashboard),
-        title: "Dashboard",
+        element: React.createElement(Monsters),
+        title: "Monstros",
       },
       {
         path: "monsters",

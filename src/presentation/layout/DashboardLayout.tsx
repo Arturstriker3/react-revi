@@ -3,7 +3,6 @@ import { Outlet, useLocation, useNavigate } from "react-router-dom";
 import { Layout, Menu, Avatar, Dropdown, Space } from "antd";
 import {
   HomeOutlined,
-  DashboardOutlined,
   UserOutlined,
   LogoutOutlined,
   MenuFoldOutlined,
@@ -43,20 +42,18 @@ const DashboardLayout: React.FC = () => {
 
   // Gera menuItems dinamicamente das rotas filhas de /dashboard
   const dashboardRoute = routes.find((r) => r.path === "/dashboard");
-  const menuItems: MenuItem[] = (dashboardRoute?.children || []).map(
-    (child) => ({
-      key: child.path === "" ? "/dashboard" : `/dashboard/${child.path}`,
+  const menuItems: MenuItem[] = (dashboardRoute?.children || [])
+    .filter((child) => child.path !== "") // Remove a rota vazia
+    .map((child) => ({
+      key: `/dashboard/${child.path}`,
       icon:
-        (child as any).title === "Dashboard" ? (
-          <DashboardOutlined />
-        ) : (child as any).title === "Monstros" ? (
+        (child as any).title === "Monstros" ? (
           <UserOutlined />
         ) : (child as any).title === "Batalhas" ? (
           <HomeOutlined />
         ) : null,
       label: collapsed ? undefined : (child as any).title,
-    })
-  );
+    }));
 
   const handleMenuClick = ({ key }: { key: string }) => {
     navigate(key);

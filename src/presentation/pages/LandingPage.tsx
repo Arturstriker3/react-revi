@@ -5,8 +5,6 @@ import {
   TrophyOutlined,
   FireOutlined,
   ThunderboltOutlined,
-  SafetyOutlined,
-  ScissorOutlined,
   StarOutlined,
   EyeOutlined,
   CrownOutlined,
@@ -15,7 +13,7 @@ import {
   CloseOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { Monster, generateInitialDeck } from "../../domain/entities/Monster";
+import { generateInitialDeck } from "../../domain/entities/Monster";
 import MonsterCardSwiper from "../components/MonsterCardSwiper";
 import { GiDragonHead, GiHamburgerMenu } from "react-icons/gi";
 import FloatingActionButton from "../components/FloatingActionButton";
@@ -29,7 +27,6 @@ const STORAGE_KEY = "monster_arena_initial_deck_seeded";
 const LandingPage: React.FC = () => {
   const navigate = useNavigate();
   const { monsters, createMonster, fetchMonsters } = useMonsterStore();
-  const [duelAnimation, setDuelAnimation] = useState(false);
   const [mysticalEffect, setMysticalEffect] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -85,11 +82,6 @@ const LandingPage: React.FC = () => {
     AOS.init({ duration: 900, once: true, offset: 60 });
   }, []);
 
-  const startDuel = () => {
-    setDuelAnimation(true);
-    setTimeout(() => setDuelAnimation(false), 3000);
-  };
-
   const goToDashboard = () => {
     navigate("/dashboard");
   };
@@ -106,7 +98,6 @@ const LandingPage: React.FC = () => {
     { id: "cards", label: "Monstros" },
     { id: "duel", label: "Arena" },
     { id: "tournament", label: "Torneios" },
-    { id: "collection", label: "Coleção" },
   ];
 
   return (
@@ -353,7 +344,7 @@ const LandingPage: React.FC = () => {
               {
                 label: "Batalhas Diárias",
                 value: "50K+",
-                icon: <ScissorOutlined />,
+                icon: <FireOutlined />,
                 color: "red",
               },
               {

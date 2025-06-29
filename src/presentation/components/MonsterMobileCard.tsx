@@ -6,12 +6,7 @@ import {
 } from "../../domain/entities/Monster";
 import { getMonsterImageUrl } from "../lib/monsterImage";
 import { Card } from "antd";
-import {
-  ThunderboltOutlined,
-  SafetyCertificateOutlined,
-  RocketOutlined,
-  HeartOutlined,
-} from "@ant-design/icons";
+import { GiSwordsPower, GiShield, GiRun, GiHeartPlus } from "react-icons/gi";
 import { FaStar } from "react-icons/fa";
 
 interface MonsterMobileCardProps {
@@ -141,25 +136,25 @@ const MonsterMobileCard: React.FC<MonsterMobileCardProps> = ({ monster }) => {
           {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-x-2 gap-y-1">
             <div className="flex items-center gap-1 text-xs">
-              <ThunderboltOutlined className="text-red-500" />
+              <GiSwordsPower className="text-red-500" />
               <span className="text-gray-500">ATK</span>
               <span className="ml-auto font-medium">{monster.attack}</span>
             </div>
 
             <div className="flex items-center gap-1 text-xs">
-              <SafetyCertificateOutlined className="text-blue-500" />
+              <GiShield className="text-blue-500" />
               <span className="text-gray-500">DEF</span>
               <span className="ml-auto font-medium">{monster.defense}</span>
             </div>
 
             <div className="flex items-center gap-1 text-xs">
-              <RocketOutlined className="text-green-500" />
+              <GiRun className="text-green-500" />
               <span className="text-gray-500">SPD</span>
               <span className="ml-auto font-medium">{monster.speed}</span>
             </div>
 
             <div className="flex items-center gap-1 text-xs">
-              <HeartOutlined className="text-pink-500" />
+              <GiHeartPlus className="text-pink-500" />
               <span className="text-gray-500">HP</span>
               <span className="ml-auto font-medium">{monster.hp}</span>
             </div>
