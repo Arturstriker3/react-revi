@@ -8,7 +8,6 @@ export class CreateMonsterUseCase {
   async execute(
     data: Omit<MonsterDTO, "id" | "created_at" | "updated_at">
   ): Promise<Monster> {
-    // Validate monster stats
     const validationErrors = validateMonsterStats(data);
     if (validationErrors.length > 0) {
       throw new Error(

@@ -31,12 +31,10 @@ const LandingPage: React.FC = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  // Fetch monsters when component mounts
   useEffect(() => {
     fetchMonsters();
   }, [fetchMonsters]);
 
-  // Verifica e gera o deck inicial
   useEffect(() => {
     const checkAndGenerateInitialDeck = async () => {
       const hasSeeded = localStorage.getItem(STORAGE_KEY);
@@ -44,7 +42,6 @@ const LandingPage: React.FC = () => {
       if (!hasSeeded && monsters.length === 0) {
         const initialDeck = generateInitialDeck();
 
-        // Cria cada monstro sequencialmente
         for (const monster of initialDeck) {
           try {
             await createMonster(monster);
@@ -102,9 +99,7 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-black to-purple-900 text-white overflow-hidden relative">
-      {/* Parallax Background Layer */}
       <div className="fixed inset-0 w-full h-[350px] bg-gradient-to-b from-yellow-400/20 via-purple-900/10 to-transparent opacity-80 pointer-events-none z-0" />
-      {/* Parallax SVG Layer */}
       <div className="fixed left-1/2 -translate-x-1/2 top-0 w-[180px] h-[180px] opacity-20 z-0 pointer-events-none">
         <svg
           viewBox="0 0 100 100"
@@ -127,12 +122,10 @@ const LandingPage: React.FC = () => {
           />
         </svg>
       </div>
-      {/* Mystical Background Pattern (mantido para textura) */}
       <div className="fixed inset-0 opacity-10 pointer-events-none">
         <div className="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width=60 height=60 viewBox=0 0 60 60 xmlns=http://www.w3.org/2000/svg%3E%3Cg fill=none fillRule=evenodd%3E%3Cg fill=%23FFD700 fillOpacity=0.1%3E%3Cpath d=M30 30l15-15v30l-15-15zm0 0l-15 15h30l-15-15z/%3E%3C/g%3E%3C/g%3E%3C/svg%3E')] bg-repeat"></div>
       </div>
 
-      {/* Floating Mystical Elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div
           className={`absolute top-20 left-10 w-4 h-4 bg-yellow-400 rounded-full ${
@@ -143,7 +136,6 @@ const LandingPage: React.FC = () => {
         <div className="absolute bottom-40 left-1/4 w-3 h-3 bg-blue-400 rounded-full animate-pulse"></div>
         <div className="absolute top-1/3 right-1/3 w-2 h-2 bg-red-400 rounded-full animate-ping"></div>
 
-        {/* Egyptian Hieroglyph-like symbols */}
         <div className="absolute top-1/4 left-1/2 text-6xl text-yellow-400/20 animate-pulse">
           𓂀
         </div>
@@ -152,7 +144,6 @@ const LandingPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Sticky Header */}
       <header
         className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
           scrolled
@@ -181,7 +172,6 @@ const LandingPage: React.FC = () => {
             </div>
           </div>
 
-          {/* Navegação e botão alinhados à direita */}
           <div className="hidden md:flex flex-1 justify-end items-center space-x-6 lg:space-x-8">
             {menuItems.map((item) => (
               <a
@@ -206,7 +196,6 @@ const LandingPage: React.FC = () => {
             </Button>
           </div>
 
-          {/* Mobile Menu Button */}
           <div className="md:hidden">
             <button
               aria-label="Abrir menu"
@@ -219,7 +208,6 @@ const LandingPage: React.FC = () => {
         </nav>
       </header>
 
-      {/* Mobile Menu Drawer */}
       <Drawer
         closable={false}
         title={
@@ -277,7 +265,6 @@ const LandingPage: React.FC = () => {
         </div>
       </Drawer>
 
-      {/* Hero Section - Adjusted for mobile */}
       <section className="relative z-10 pt-32 sm:pt-40 pb-16 sm:py-24 px-4 sm:px-6">
         <div className="max-w-7xl mx-auto text-center">
           <div className="w-full flex justify-center mb-4 sm:mb-6">
@@ -326,7 +313,6 @@ const LandingPage: React.FC = () => {
             </a>
           </div>
 
-          {/* Mystical Stats - Responsive Grid */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 sm:gap-6 max-w-5xl mx-auto px-4">
             {[
               {
@@ -379,7 +365,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Card Showcase */}
       <section
         id="cards"
         className="py-16 sm:py-24 px-4 sm:px-6 relative z-10 bg-black/20"
@@ -402,7 +387,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Duel Arena - Mobile Optimized */}
       <section
         id="duel"
         className="py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-r from-purple-900/30 to-black/30 relative z-10"
@@ -418,7 +402,6 @@ const LandingPage: React.FC = () => {
             </p>
           </div>
 
-          {/* Exemplo de duelo entre duas cartas */}
           <div className="flex justify-center items-center py-8">
             <BattleCardVs
               card1={
@@ -452,7 +435,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Tournament Section - Mobile Optimized */}
       <section
         id="tournament"
         className="py-16 sm:py-24 px-4 sm:px-6 relative z-10"
@@ -541,7 +523,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* CTA Section - Mobile Optimized */}
       <section
         className="py-16 sm:py-24 px-4 sm:px-6 bg-gradient-to-r from-black via-purple-900/50 to-black relative z-10"
         data-aos="fade-up"
@@ -573,7 +554,6 @@ const LandingPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Footer - Mobile Optimized */}
       <footer
         className="py-12 sm:py-16 px-4 sm:px-6 bg-black/80 relative z-10 border-t border-yellow-600/30"
         data-aos="fade-up"

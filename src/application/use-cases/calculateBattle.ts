@@ -24,11 +24,9 @@ import { v4 as uuidv4 } from "uuid";
  */
 export class CalculateBattleUseCase {
   execute(monster1: Monster, monster2: Monster): BattleResult {
-    // Cria cópias para não modificar os objetos originais
     const fighter1 = { ...monster1 };
     const fighter2 = { ...monster2 };
 
-    // Define a ordem dos atacantes baseado na velocidade e ataque
     let firstAttacker: typeof fighter1;
     let secondAttacker: typeof fighter2;
 
@@ -43,23 +41,19 @@ export class CalculateBattleUseCase {
       secondAttacker = fighter1;
     }
 
-    // Inicializa contadores e estado da batalha
     const rounds: BattleRound[] = [];
     let turns = 0;
     let currentHp1 = fighter1.hp;
     let currentHp2 = fighter2.hp;
 
-    // Loop principal da batalha
     while (currentHp1 > 0 && currentHp2 > 0) {
       turns++;
 
-      // Ataque do primeiro lutador
       const damage1 = Math.max(
-        1, // Dano mínimo é 1
-        firstAttacker.attack - secondAttacker.defense // Dano base: ataque - defesa
+        1,
+        firstAttacker.attack - secondAttacker.defense
       );
 
-      // Aplica o dano e garante que o HP não fique negativo
       if (firstAttacker === fighter1) {
         currentHp2 = Math.max(0, currentHp2 - damage1);
         rounds.push({
@@ -68,7 +62,6 @@ export class CalculateBattleUseCase {
           damage: damage1,
           remainingHp: currentHp2,
         });
-        // Se o segundo lutador foi derrotado, encerra a batalha
         if (currentHp2 <= 0) break;
       } else {
         currentHp1 = Math.max(0, currentHp1 - damage1);
@@ -78,17 +71,15 @@ export class CalculateBattleUseCase {
           damage: damage1,
           remainingHp: currentHp1,
         });
-        // Se o primeiro lutador foi derrotado, encerra a batalha
         if (currentHp1 <= 0) break;
       }
 
-      // Ataque do segundo lutador
       const damage2 = Math.max(
         1,
         secondAttacker.attack - firstAttacker.defense
       );
 
-      // Aplica o dano e garante que o HP não fique negativo
+
       if (secondAttacker === fighter1) {
         currentHp2 = Math.max(0, currentHp2 - damage2);
         rounds.push({
@@ -97,7 +88,7 @@ export class CalculateBattleUseCase {
           damage: damage2,
           remainingHp: currentHp2,
         });
-        // Se o segundo lutador foi derrotado, encerra a batalha
+
         if (currentHp2 <= 0) break;
       } else {
         currentHp1 = Math.max(0, currentHp1 - damage2);
@@ -107,25 +98,24 @@ export class CalculateBattleUseCase {
           damage: damage2,
           remainingHp: currentHp1,
         });
-        // Se o primeiro lutador foi derrotado, encerra a batalha
+
         if (currentHp1 <= 0) break;
       }
     }
 
-    // Cria o objeto de batalha com o resultado
     const battle: MonsterBattle = {
       id: uuidv4(),
       monster1Id: fighter1.id,
       monster2Id: fighter2.id,
-      turns, // Número total de turnos que a batalha durou
-      winnerId: currentHp1 > 0 ? fighter1.id : fighter2.id, // ID do monstro vencedor
+      turns,
+      winnerId: currentHp1 > 0 ? fighter1.id : fighter2.id,
       created_at: new Date(),
       updated_at: new Date(),
     };
 
     return {
       battle,
-      rounds, // Histórico detalhado de cada round
+      rounds,
     };
   }
 }

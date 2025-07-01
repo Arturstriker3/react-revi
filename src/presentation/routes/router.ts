@@ -5,7 +5,6 @@ import Monsters from "../pages/Monsters";
 import Battles from "../pages/Battles";
 import DashboardLayout from "../layout/DashboardLayout";
 
-// Extende RouteObject e permite propriedades extras
 export type AppRoute = RouteObject & {
   title?: string;
   requiresAuth?: boolean;

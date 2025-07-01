@@ -13,7 +13,6 @@ const MonsterCardSwiper: React.FC = () => {
 
   const swipeConfidenceThreshold = 10000;
 
-  // Referência para o efeito sonoro
   const shuffleSoundRef = useRef<HTMLAudioElement | null>(
     typeof Audio !== "undefined"
       ? (() => {
@@ -24,7 +23,6 @@ const MonsterCardSwiper: React.FC = () => {
       : null
   );
 
-  // Se não houver monstros, não renderiza nada
   if (monsters.length === 0) {
     return (
       <div className="flex justify-center items-center min-h-[300px] sm:min-h-[500px] px-2 sm:px-4">
@@ -34,7 +32,6 @@ const MonsterCardSwiper: React.FC = () => {
   }
 
   const handleSwipe = (dir?: "left" | "right") => {
-    // Toca o som de shuffle
     if (shuffleSoundRef.current) {
       shuffleSoundRef.current.currentTime = 0;
       shuffleSoundRef.current.play();
@@ -45,24 +42,21 @@ const MonsterCardSwiper: React.FC = () => {
     setTimeout(() => setIsAnimating(false), 200);
   };
 
-  // Garante que o currentIndex é válido
   const safeCurrentIndex = currentIndex % monsters.length;
   const currentMonster = monsters[safeCurrentIndex];
 
-  // Parâmetros do leque para efeito de arco curvado
   const maxFan = monsters.length - 1;
-  const arcAngle = 90; // ângulo total do leque em graus (mais aberto)
+  const arcAngle = 90;
 
   return (
     <div className="flex justify-center items-center min-h-[300px] sm:min-h-[500px] px-2 sm:px-4">
       <div className="relative w-[180px] h-[240px] sm:w-[300px] sm:h-[420px]">
-        {/* Leque de cartas (sempre atrás) */}
         <div className="absolute inset-0" style={{ zIndex: 1 }}>
           {monsters
             .map((monster, i) => {
               const relIndex =
                 (i - safeCurrentIndex + monsters.length) % monsters.length;
-              if (relIndex === 0) return null; // topo será TinderCard
+              if (relIndex === 0) return null;
               return { monster, relIndex };
             })
             .filter(
@@ -100,7 +94,6 @@ const MonsterCardSwiper: React.FC = () => {
               );
             })}
         </div>
-        {/* Card do topo (interativo) - sempre acima do leque */}
         <div
           className="absolute inset-0"
           style={{

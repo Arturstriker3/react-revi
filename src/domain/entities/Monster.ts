@@ -115,7 +115,6 @@ export function getStarsFromRarity(rarity: MonsterRarity): number {
   }
 }
 
-// Nomes de monstros por tipo
 const monsterPrefixes = [
   "Dragão",
   "Golem",
@@ -152,7 +151,6 @@ const monsterSuffixes = [
   "Transcendental",
 ];
 
-// Função para gerar um nome aleatório de monstro
 function generateMonsterName(): string {
   const prefix =
     monsterPrefixes[Math.floor(Math.random() * monsterPrefixes.length)];
@@ -161,7 +159,6 @@ function generateMonsterName(): string {
   return `${prefix} ${suffix}`;
 }
 
-// Função para gerar stats baseados na raridade desejada
 function generateStatsForRarity(
   targetRarity: MonsterRarity
 ): Pick<Monster, "attack" | "defense" | "speed" | "hp"> {
@@ -178,8 +175,7 @@ function generateStatsForRarity(
   const targetPower =
     Math.floor(Math.random() * (range.max - range.min + 1)) + range.min;
 
-  // Base stats que somam aproximadamente o poder desejado
-  const baseTotal = targetPower * 2; // Multiplicador para dar margem de ajuste
+  const baseTotal = targetPower * 2;
   const stats = {
     attack: Math.floor(baseTotal * (0.2 + Math.random() * 0.1)),
     defense: Math.floor(baseTotal * (0.2 + Math.random() * 0.1)),
@@ -187,7 +183,6 @@ function generateStatsForRarity(
     hp: Math.floor(baseTotal * (0.2 + Math.random() * 0.1)),
   };
 
-  // Ajusta os stats para ficarem dentro dos limites
   const maxStat = MONSTER_STAT_LIMITS.MAX_STAT;
   stats.attack = Math.min(stats.attack, maxStat);
   stats.defense = Math.min(stats.defense, maxStat);
@@ -197,7 +192,6 @@ function generateStatsForRarity(
   return stats;
 }
 
-// Função para gerar um monstro com raridade específica
 export function generateMonster(
   targetRarity: MonsterRarity = "common"
 ): Omit<Monster, "id" | "created_at" | "updated_at"> {
@@ -210,14 +204,12 @@ export function generateMonster(
   };
 }
 
-// Função para gerar o deck inicial
 export function generateInitialDeck(): Omit<
   Monster,
   "id" | "created_at" | "updated_at"
 >[] {
   const deck: Omit<Monster, "id" | "created_at" | "updated_at">[] = [];
 
-  // Gera um monstro de cada raridade
   const rarities: MonsterRarity[] = [
     "legendary",
     "mythical",
@@ -229,7 +221,6 @@ export function generateInitialDeck(): Omit<
     deck.push(generateMonster(rarity));
   });
 
-  // Completa com monstros uncommon até ter 10 cartas
   while (deck.length < 10) {
     deck.push(generateMonster("uncommon"));
   }

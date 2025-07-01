@@ -41,10 +41,9 @@ const DashboardLayout: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Gera menuItems dinamicamente das rotas filhas de /dashboard
   const dashboardRoute = routes.find((r) => r.path === "/dashboard");
   const menuItems: MenuItem[] = (dashboardRoute?.children || [])
-    .filter((child) => child.path !== "") // Remove a rota vazia
+    .filter((child) => child.path !== "")
     .map((child) => ({
       key: `/dashboard/${child.path}`,
       icon:
@@ -82,7 +81,6 @@ const DashboardLayout: React.FC = () => {
     return [selectedKey];
   };
 
-  // Pega o título da página atual diretamente do menuItems
   const currentMenu = menuItems.find((item) => item.key === location.pathname);
   const currentTitle = currentMenu?.label || "";
 
@@ -93,14 +91,12 @@ const DashboardLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen flex bg-[#f5f6f7]">
-      {/* Overlay para mobile */}
       {mobileOpen && (
         <div
           className="fixed inset-0 z-40 bg-black bg-opacity-40 sm:hidden"
           onClick={() => setMobileOpen(false)}
         />
       )}
-      {/* Sidebar mobile (drawer) */}
       <aside
         className={`
           fixed top-0 left-0 h-screen z-50 bg-[#061529] flex flex-col transition-all duration-200
@@ -115,7 +111,6 @@ const DashboardLayout: React.FC = () => {
           <span className="block w-full text-center text-[22px] text-white font-bold tracking-wide whitespace-nowrap transition-all duration-200">
             Monster Arena
           </span>
-          {/* Botão fechar no mobile */}
           <button
             className="absolute right-4 top-1/2 -translate-y-1/2 flex items-center justify-center w-10 h-10 text-white bg-[#061529] rounded-full text-3xl"
             onClick={() => setMobileOpen(false)}
@@ -155,7 +150,6 @@ const DashboardLayout: React.FC = () => {
           </button>
         </div>
       </aside>
-      {/* Sidebar desktop (fixo, colapsável) */}
       <aside
         className={`
           hidden sm:flex flex-col fixed top-0 left-0 h-screen z-50 bg-[#061529] transition-all duration-200
@@ -199,7 +193,6 @@ const DashboardLayout: React.FC = () => {
           </button>
         </div>
       </aside>
-      {/* Conteúdo principal */}
       <div
         className="flex-1 flex flex-col transition-all duration-200 min-h-screen"
         style={{ marginLeft: isDesktop ? (collapsed ? 80 : 250) : 0 }}
@@ -207,7 +200,6 @@ const DashboardLayout: React.FC = () => {
         <Layout style={{ background: "transparent" }}>
           <Header className="sticky top-0 z-40 bg-white px-6 py-0 flex items-center justify-between shadow">
             <div className="flex items-center">
-              {/* Botão hambúrguer só no mobile */}
               <button
                 className="sm:hidden flex items-center justify-center w-10 h-10 text-[#061529] bg-white rounded-full mr-2"
                 onClick={() => setMobileOpen(true)}
@@ -215,7 +207,6 @@ const DashboardLayout: React.FC = () => {
               >
                 <MenuUnfoldOutlined className="text-2xl" />
               </button>
-              {/* Botão de colapso só no desktop */}
               <button
                 className="hidden sm:flex items-center justify-center w-10 h-10 text-[#061529] bg-white rounded-full mr-2"
                 onClick={() => setCollapsed(!collapsed)}
@@ -226,7 +217,6 @@ const DashboardLayout: React.FC = () => {
               </button>
               <span className="font-bold text-lg ml-2">{currentTitle}</span>
             </div>
-            {/* Usuário: dropdown só no desktop */}
             <div className="hidden sm:flex">
               <Dropdown
                 menu={{
@@ -258,7 +248,6 @@ const DashboardLayout: React.FC = () => {
         </Layout>
       </div>
 
-      {/* Modal de Confirmação */}
       <Modal
         title="Limpar Dados"
         open={clearDataModalOpen}

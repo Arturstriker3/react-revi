@@ -48,7 +48,6 @@ const Battles: React.FC = () => {
   return (
     <div className="p-4">
       {contextHolder}
-      {/* Botão de batalha */}
       <div className="flex justify-center mb-6">
         <Button
           type="primary"
@@ -64,7 +63,6 @@ const Battles: React.FC = () => {
         </Button>
       </div>
 
-      {/* Grid de cartas */}
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-8 max-w-7xl mx-auto">
         {monsters.map((monster) => {
           const isSelected = selectedMonsters.find((m) => m.id === monster.id);
@@ -122,7 +120,6 @@ const Battles: React.FC = () => {
         })}
       </div>
 
-      {/* Battle Simulation */}
       {showBattleSimulation && selectedMonsters.length === 2 && (
         <BattleSimulation
           monster1={selectedMonsters[0]}

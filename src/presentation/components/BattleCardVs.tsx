@@ -8,10 +8,8 @@ interface BattleCardVsProps {
   card2: Monster;
 }
 
-// Overlay de derrota: dois cortes diagonais vermelhos em X e filtro sépia
 const BurnedOverlay: React.FC = () => (
   <div className="absolute inset-0 z-20 pointer-events-none">
-    {/* Corte diagonal vermelho 1 */}
     <svg
       width="100%"
       height="100%"
@@ -62,10 +60,8 @@ const BattleCardVs: React.FC<BattleCardVsProps> = ({ card1, card2 }) => {
 
   return (
     <div className="w-full flex flex-col sm:flex-row items-center justify-center gap-0 sm:gap-8">
-      {/* Coluna esquerda (Card 1 e VS mobile) */}
       <div className="flex flex-col w-full sm:w-auto">
         <div className="self-start sm:self-auto relative">
-          {/* Coroa dourada para vencedor */}
           {isCard1Winner && (
             <span className="absolute top-2 right-2 z-30">
               <CrownOutlined
@@ -86,23 +82,19 @@ const BattleCardVs: React.FC<BattleCardVsProps> = ({ card1, card2 }) => {
           </div>
           {isCard1Weaker && <BurnedOverlay />}
         </div>
-        {/* VS mobile */}
         <div className="sm:hidden flex-1 flex items-center justify-center mt-2 mb-2">
           <span className="block text-3xl font-extrabold text-yellow-400 rotate-[-20deg] drop-shadow-lg select-none">
             VS
           </span>
         </div>
       </div>
-      {/* VS desktop */}
       <div className="hidden sm:flex flex-col items-center mx-2">
         <span className="text-2xl sm:text-4xl font-extrabold text-yellow-400 drop-shadow-lg select-none">
           VS
         </span>
       </div>
-      {/* Coluna direita (Card 2) */}
       <div className="flex flex-col w-full sm:w-auto justify-end items-end">
         <div className="self-end sm:self-auto relative mt-auto">
-          {/* Coroa dourada para vencedor */}
           {isCard2Winner && (
             <span className="absolute top-2 right-2 z-30">
               <CrownOutlined

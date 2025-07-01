@@ -118,7 +118,6 @@ const MonsterMobileCardEdit: React.FC<MonsterMobileCardEditProps> = ({
       `}
       styles={{ body: { padding: "12px" } }}
     >
-      {/* Cabeçalho com nome e botão de expandir */}
       <div
         className="flex items-center justify-between cursor-pointer"
         onClick={() => setIsExpanded(!isExpanded)}
@@ -149,7 +148,6 @@ const MonsterMobileCardEdit: React.FC<MonsterMobileCardEditProps> = ({
         />
       </div>
 
-      {/* Conteúdo expandido */}
       <div
         className={`
           overflow-hidden transition-all duration-300 ease-in-out
@@ -157,7 +155,6 @@ const MonsterMobileCardEdit: React.FC<MonsterMobileCardEditProps> = ({
         `}
       >
         <div className="flex items-center gap-3">
-          {/* Monster Image */}
           <div className="w-16 h-16 flex-shrink-0">
             <img
               src={getMonsterImageUrl({
@@ -170,7 +167,6 @@ const MonsterMobileCardEdit: React.FC<MonsterMobileCardEditProps> = ({
             />
           </div>
 
-          {/* Stats Grid */}
           <div className="flex-grow grid grid-cols-2 gap-x-2 gap-y-1">
             <div className="flex items-center gap-1 text-xs">
               <ThunderboltOutlined className="text-red-500" />
@@ -198,7 +194,6 @@ const MonsterMobileCardEdit: React.FC<MonsterMobileCardEditProps> = ({
           </div>
         </div>
 
-        {/* Ações */}
         <div className="flex justify-between mt-3 pt-2 border-t border-gray-100">
           {onEdit && (
             <Button

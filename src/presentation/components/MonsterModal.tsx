@@ -30,7 +30,6 @@ const MonsterModal: React.FC<MonsterModalProps> = ({
     }
   }, [open, initialValues, form]);
 
-  // Função para bloquear caracteres não numéricos
   const onlyAllowNumbers = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (!/\d/.test(e.key)) {
       e.preventDefault();
@@ -43,7 +42,7 @@ const MonsterModal: React.FC<MonsterModalProps> = ({
       onOk(values);
       form.resetFields();
     } catch (e) {
-      // Erro de validação, não faz nada
+      console.error(e);
     }
   };
 

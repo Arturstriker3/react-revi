@@ -48,7 +48,6 @@ const getRarityEffects = (rarity: ReturnType<typeof getCardRarity>) => {
   return effects[rarity];
 };
 
-// Função para formatar data
 const formatDate = (dateString: string) => {
   const date = new Date(dateString);
   return new Intl.DateTimeFormat("pt-BR", {

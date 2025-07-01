@@ -19,7 +19,6 @@ interface BattleStep {
   message: string;
 }
 
-// Overlay de derrota: dois cortes diagonais vermelhos em X e filtro sépia
 const BurnedOverlay: React.FC = () => (
   <div className="absolute inset-0 z-20 pointer-events-none">
     <svg
@@ -75,13 +74,11 @@ const BattleMobileSimulation: React.FC<BattleMobileSimulationProps> = ({
   const [winner, setWinner] = useState<"monster1" | "monster2" | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
 
-  // Processa o resultado da batalha em steps para animação
   const processBattleResult = async () => {
     try {
       const result = await calculateBattle(monster1.id, monster2.id);
       const steps: BattleStep[] = [];
 
-      // Determina quem ataca primeiro baseado no primeiro round
       const firstAttackerId = result.rounds[0].attacker;
       const firstAttacker =
         firstAttackerId === monster1.id ? "monster1" : "monster2";
@@ -94,7 +91,6 @@ const BattleMobileSimulation: React.FC<BattleMobileSimulationProps> = ({
         } começa por ser mais rápido!`,
       });
 
-      // Processa cada round em steps de ataque e dano
       for (const round of result.rounds) {
         const isMonster1Attacking = round.attacker === monster1.id;
         const attacker = isMonster1Attacking ? "monster1" : "monster2";
@@ -119,7 +115,6 @@ const BattleMobileSimulation: React.FC<BattleMobileSimulationProps> = ({
         } as BattleStep);
       }
 
-      // Adiciona o step final com o vencedor
       const battleWinner =
         result.battle.winnerId === monster1.id ? "monster1" : "monster2";
       steps.push({
@@ -132,7 +127,6 @@ const BattleMobileSimulation: React.FC<BattleMobileSimulationProps> = ({
 
       setBattleSteps(steps);
 
-      // Salva a batalha no repositório
       await createBattle(monster1.id, monster2.id);
 
       return steps;
@@ -142,7 +136,6 @@ const BattleMobileSimulation: React.FC<BattleMobileSimulationProps> = ({
     }
   };
 
-  // Auto-advance battle steps
   useEffect(() => {
     if (isSimulating && currentStep < battleSteps.length) {
       const timer = setTimeout(() => {
@@ -180,9 +173,7 @@ const BattleMobileSimulation: React.FC<BattleMobileSimulationProps> = ({
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white w-full h-full flex flex-col">
         <div className="flex-1 flex flex-col justify-center">
-          {/* Battle Arena */}
           <div className="flex flex-col items-center gap-4 p-4">
-            {/* Monster 1 */}
             <div className="w-full">
               <motion.div
                 animate={{
@@ -223,7 +214,6 @@ const BattleMobileSimulation: React.FC<BattleMobileSimulationProps> = ({
               </motion.div>
             </div>
 
-            {/* VS and Battle Log */}
             <div className="w-full">
               <div className="text-2xl font-bold text-yellow-500 text-center mb-2">
                 VS
@@ -241,7 +231,6 @@ const BattleMobileSimulation: React.FC<BattleMobileSimulationProps> = ({
               </AnimatePresence>
             </div>
 
-            {/* Monster 2 */}
             <div className="w-full">
               <motion.div
                 animate={{
@@ -283,7 +272,6 @@ const BattleMobileSimulation: React.FC<BattleMobileSimulationProps> = ({
             </div>
           </div>
 
-          {/* Controls */}
           <div className="flex justify-center gap-3 mt-4">
             {!isSimulating && (
               <Button

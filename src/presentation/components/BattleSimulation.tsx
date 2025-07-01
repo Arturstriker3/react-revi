@@ -20,10 +20,8 @@ interface BattleStep {
   message: string;
 }
 
-// Overlay de derrota: dois cortes diagonais vermelhos em X e filtro sépia
 const BurnedOverlay: React.FC = () => (
   <div className="absolute inset-0 z-20 pointer-events-none">
-    {/* Corte diagonal vermelho 1 */}
     <svg
       width="100%"
       height="100%"
@@ -77,7 +75,6 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
   const [winner, setWinner] = useState<"monster1" | "monster2" | null>(null);
   const [isSimulating, setIsSimulating] = useState(false);
 
-  // Usando o hook useMediaQuery para detectar telas menores
   const isMobile = window.matchMedia("(max-width: 768px)").matches;
 
   if (isMobile) {
@@ -90,13 +87,11 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
     );
   }
 
-  // Processa o resultado da batalha em steps para animação
   const processBattleResult = async () => {
     try {
       const result = await calculateBattle(monster1.id, monster2.id);
       const steps: BattleStep[] = [];
 
-      // Determina quem ataca primeiro baseado no primeiro round
       const firstAttackerId = result.rounds[0].attacker;
       const firstAttacker =
         firstAttackerId === monster1.id ? "monster1" : "monster2";
@@ -109,7 +104,6 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
         } começa por ser mais rápido!`,
       });
 
-      // Processa cada round em steps de ataque e dano
       for (const round of result.rounds) {
         const isMonster1Attacking = round.attacker === monster1.id;
         const attacker = isMonster1Attacking ? "monster1" : "monster2";
@@ -134,7 +128,6 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
         } as BattleStep);
       }
 
-      // Adiciona o step final com o vencedor
       const battleWinner =
         result.battle.winnerId === monster1.id ? "monster1" : "monster2";
       steps.push({
@@ -147,7 +140,6 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
 
       setBattleSteps(steps);
 
-      // Salva a batalha no repositório
       await createBattle(monster1.id, monster2.id);
 
       return steps;
@@ -157,7 +149,6 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
     }
   };
 
-  // Auto-advance battle steps
   useEffect(() => {
     if (isSimulating && currentStep < battleSteps.length) {
       const timer = setTimeout(() => {
@@ -191,14 +182,11 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
     setIsSimulating(true);
   };
 
-  // Renderização para desktop (mantendo o código existente)
   return (
     <div className="fixed inset-0 bg-black/80 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-xl shadow-2xl w-full max-w-4xl mx-4 overflow-hidden">
         <div className="p-4">
-          {/* Battle Arena */}
           <div className="flex items-center justify-between gap-4">
-            {/* Monster 1 */}
             <div className="w-1/3">
               <motion.div
                 animate={{
@@ -238,7 +226,6 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
               </motion.div>
             </div>
 
-            {/* VS and Battle Log */}
             <div className="flex-1 flex flex-col items-center justify-center">
               <div className="text-4xl font-bold text-yellow-500 mb-4">VS</div>
               <AnimatePresence mode="wait">
@@ -254,7 +241,6 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
               </AnimatePresence>
             </div>
 
-            {/* Monster 2 */}
             <div className="w-1/3">
               <motion.div
                 animate={{
@@ -295,7 +281,6 @@ const BattleSimulation: React.FC<BattleSimulationProps> = ({
             </div>
           </div>
 
-          {/* Controls */}
           <div className="flex justify-center gap-4 mt-8">
             {!isSimulating && (
               <Button

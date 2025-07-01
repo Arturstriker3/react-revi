@@ -2,18 +2,14 @@ import { Monster } from "../../domain/entities/Monster";
 
 function getDiceBearStyle(monsterName: string): string {
   const name = monsterName.toLowerCase();
-  if (name.includes("dragão") || name.includes("dragon")) return "bottts"; // robótico/dragão
-  if (name.includes("lobo") || name.includes("wolf")) return "adventurer"; // aventureiro/lobo
-  if (name.includes("golem")) return "lorelei"; // estilo mais "pedra"
+  if (name.includes("dragão") || name.includes("dragon")) return "bottts";
+  if (name.includes("lobo") || name.includes("wolf")) return "adventurer";
+  if (name.includes("golem")) return "lorelei";
   if (name.includes("fantasma") || name.includes("ghost")) return "identicon";
   if (name.includes("fada") || name.includes("fairy")) return "miniavs";
-  // Adicione mais padrões conforme desejar
-  return "bottts"; // padrão
+  return "bottts";
 }
 
-/**
- * Retorna a URL da imagem do monstro: usa image_url se existir, senão gera DiceBear com estilo temático.
- */
 export function getMonsterImageUrl(
   monster: Pick<Monster, "id" | "name" | "image_url">
 ): string {

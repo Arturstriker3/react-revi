@@ -100,7 +100,6 @@ const MonsterMobileCard: React.FC<MonsterMobileCardProps> = ({ monster }) => {
       styles={{ body: { padding: "12px" } }}
     >
       <div className="flex items-center gap-3">
-        {/* Monster Image */}
         <div className="w-16 h-16 flex-shrink-0">
           <img
             src={getMonsterImageUrl({
@@ -113,7 +112,6 @@ const MonsterMobileCard: React.FC<MonsterMobileCardProps> = ({ monster }) => {
           />
         </div>
 
-        {/* Monster Info */}
         <div className="flex-grow">
           <div className="flex items-center gap-1.5 mb-1">
             <div className={`text-sm font-semibold ${effects.rarityColor}`}>
@@ -133,7 +131,6 @@ const MonsterMobileCard: React.FC<MonsterMobileCardProps> = ({ monster }) => {
             </div>
           </div>
 
-          {/* Stats Grid */}
           <div className="grid grid-cols-2 gap-x-2 gap-y-1">
             <div className="flex items-center gap-1 text-xs">
               <GiSwordsPower className="text-red-500" />

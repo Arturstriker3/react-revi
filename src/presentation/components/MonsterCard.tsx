@@ -105,7 +105,6 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
   const effects = getRarityEffects(rarity);
   const stars = getStarsFromRarity(rarity);
 
-  // Gera partículas de glitter para cartas raras ou superiores
   useEffect(() => {
     if (rarity !== "common" && rarity !== "uncommon") {
       const particles = Array.from({ length: 12 }, (_, i) => ({
@@ -133,7 +132,6 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
       onMouseLeave={() => setIsHovered(false)}
       tabIndex={-1}
     >
-      {/* Camada holográfica com efeito arco-íris */}
       <div
         className={`
           absolute inset-0 rounded-lg opacity-0 group-hover:opacity-20
@@ -143,7 +141,6 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
         `}
       />
 
-      {/* Camada metálica */}
       <div
         className={`
           absolute inset-0 rounded-lg opacity-0 group-hover:opacity-30
@@ -152,7 +149,6 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
         `}
       />
 
-      {/* Efeito glitter para cartas raras */}
       {rarity !== "common" && rarity !== "uncommon" && (
         <div className="absolute inset-0 overflow-hidden rounded-lg pointer-events-none">
           {glitterParticles.map((particle) => (
@@ -173,9 +169,7 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
         </div>
       )}
 
-      {/* Conteúdo da carta */}
       <div className="relative h-full flex flex-col p-2 sm:p-4 z-10 select-none">
-        {/* Nome com efeito de raridade */}
         <div className="text-center mb-2 sm:mb-3 select-none px-2">
           <h3
             className={`
@@ -187,7 +181,6 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
           </h3>
         </div>
 
-        {/* Estrelas de nível sempre douradas */}
         <div className="flex flex-col items-center gap-1 mb-2">
           <div className="flex justify-center">
             {Array.from({ length: stars }).map((_, i) => (
@@ -208,7 +201,6 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
           </span>
         </div>
 
-        {/* Imagem do monstro com efeitos aprimorados */}
         <div className="relative flex-1 mb-2 sm:mb-3 overflow-hidden rounded-lg">
           <img
             src={getMonsterImageUrl(monster)}
@@ -221,7 +213,6 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
             draggable={false}
           />
 
-          {/* Indicador de raridade aprimorado */}
           {rarity !== "common" && (
             <div className="absolute top-1 sm:top-2 right-1 sm:right-2">
               <div
@@ -239,7 +230,6 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
           )}
         </div>
 
-        {/* Stats com aprimoramento de raridade */}
         <div
           className={`
           rounded-lg p-2 sm:p-4 border transition-all duration-300
@@ -247,7 +237,6 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
         `}
         >
           <div className="grid grid-cols-2 gap-2 sm:gap-3 text-sm sm:text-base">
-            {/* Ataque */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <GiSwordsPower className="w-4 h-4 sm:w-5 sm:h-5 text-red-600 mr-1.5" />
@@ -256,7 +245,6 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
               <span className="font-bold text-red-700">{monster.attack}</span>
             </div>
 
-            {/* Defesa */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <GiShield className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600 mr-1.5" />
@@ -265,7 +253,6 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
               <span className="font-bold text-blue-700">{monster.defense}</span>
             </div>
 
-            {/* Velocidade */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <GiRun className="w-4 h-4 sm:w-5 sm:h-5 text-green-600 mr-1.5" />
@@ -274,7 +261,6 @@ const MonsterCard: React.FC<MonsterCardProps> = ({ monster }) => {
               <span className="font-bold text-green-700">{monster.speed}</span>
             </div>
 
-            {/* HP */}
             <div className="flex items-center justify-between">
               <div className="flex items-center">
                 <GiHeartPlus className="w-4 h-4 sm:w-5 sm:h-5 text-pink-600 mr-1.5" />
